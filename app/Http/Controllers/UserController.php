@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Contract\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -22,6 +18,6 @@ class UserController extends Controller
 
     public function getAllUsers(): JsonResponse
     {
-        return response()->json(['data' =>$this->repository->getAll()]);
+        return response()->json(['data' => $this->repository->getAll()]);
     }
 }
