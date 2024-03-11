@@ -8,7 +8,9 @@ use App\Contract\PermissionRepositoryInterface;
 class All extends Component
 {
     public $permissions;
-    private $permissionRepository;
+    public $permissionsToDelete;
+
+    private $permissionRepository = [];
 
     public function render()
     {
@@ -20,5 +22,6 @@ class All extends Component
         $this->permissionRepository = $permissionRepository;
 
         $this->permissions = $this->permissionRepository->getAll();
+        // dd($this->permissions);
     }
 }
