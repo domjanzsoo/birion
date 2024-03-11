@@ -8,9 +8,13 @@ use App\Contract\PermissionRepositoryInterface;
 class All extends Component
 {
     public $permissions;
-    public $permissionsToDelete;
+    public $permissionsToDelete = [];
+    public $toastMessage = [
+        'message'   => null,
+        'type'      => null
+    ];
 
-    private $permissionRepository = [];
+    private $permissionRepository;
 
     public function render()
     {
@@ -22,6 +26,36 @@ class All extends Component
         $this->permissionRepository = $permissionRepository;
 
         $this->permissions = $this->permissionRepository->getAll();
-        // dd($this->permissions);
+    }
+
+    public function deletePermissions()
+    {
+        if (!empty($this->permissionsToDelete)) {
+            $this->permissionRepository->delete($this->permissionsToDelete);
+
+            $this->permissions = $this->permissionRepository->getAll();
+
+            return;
+        }
+
+        $this->setToastMessage('No permission is provided to delete!');
+    }
+
+    public function setToastMessage($msg)
+    {
+        $this->toastMessage = [
+            'message'   => $msg,
+            'type'      => 'error'
+        ];
+
+        $this->dispatch('toastr.error');
+    }
+
+    public function clearToast()
+    {
+        $this->toastMessage = [
+            'message'   => null,
+            'type'      => null
+        ];
     }
 }

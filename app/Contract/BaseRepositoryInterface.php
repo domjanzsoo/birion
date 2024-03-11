@@ -11,5 +11,5 @@ interface BaseRepositoryInterface
     public function getById(int $id): Model;
     public function create(array $attributes): Model;
     public function update(Model $user, array $attributes): Model;
-    public function delete(Model $user): void;
+    public function delete(Model | int $user): void;
 }

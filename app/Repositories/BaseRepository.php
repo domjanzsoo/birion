@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Contract\BaseRepositoryInterface;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,8 +39,18 @@ class BaseRepository implements BaseRepositoryInterface
         return $model;
     }
 
-    public function delete(Model $model): void
+    public function delete(Model | array | int $model): void
     {
-        $model->delete();
+        switch (gettype($model)) {
+            case 'integer':
+            case 'array':
+                $model::destroy($model);
+                break;
+            case 'object':
+                $model->delete();
+                break;
+            default:
+                throw new Exception('Invalid model type received');
+        }
     }
 }
