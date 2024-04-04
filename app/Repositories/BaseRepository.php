@@ -24,17 +24,17 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function getById(int $id): Model
     {
-        return Model::find($id);
+        return $this->model::find($id);
     }
 
     public function create(array $attributes): Model
     {
-        return User::create($attributes);
+        return $this->model::create($attributes);
     }
 
     public function update(Model $model, array $attributes): Model
     {
-        $model->update($attributes);
+        $this->model->update($attributes);
 
         return $model;
     }
@@ -44,10 +44,10 @@ class BaseRepository implements BaseRepositoryInterface
         switch (gettype($model)) {
             case 'integer':
             case 'array':
-                $model::destroy($model);
+                $this->model::destroy($model);
                 break;
             case 'object':
-                $model->delete();
+                $this->model->delete();
                 break;
             default:
                 throw new Exception('Invalid model type received');
