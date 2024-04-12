@@ -14,16 +14,23 @@
             <li> No permission found </li>
           @else
             <li class="flex justify-end">
-              <x-button class="bg-red mb-3" wire:click="deletePermissions" disabled="{{ count($permissionsToDelete) === 0 }}">
-                {{ __('Delete') }}
-                <x-icon name="trash"></x-icon>
-              </x-button>
+              @if ($deleteButtonAccess)
+                <x-button class="bg-red mb-3" wire:click="deletePermissions">
+                  {{ __('Delete') }}
+                  <x-icon name="trash"></x-icon>
+                </x-button>
+              @else
+                <x-button class="bg-red mb-3" wire:click="deletePermissions" disabled>
+                    {{ __('Delete') }}
+                    <x-icon name="trash"></x-icon>
+                </x-button>
+              @endif
             </li>
             @foreach ($permissions as $permission)
               <li class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
                     <label class="flex items-center">
-                        <x-checkbox wire:model="permissionsToDelete" value="{{ $permission->id }}" />
+                        <x-checkbox wire:model="permissionsToDelete.{{ $permission->id }}" wire:change="processPermissionCheck()"/>
                         <span class="ms-2 text-sm text-gray-600">{{ $permission->name }}</span>
                     </label>
                 </div>
