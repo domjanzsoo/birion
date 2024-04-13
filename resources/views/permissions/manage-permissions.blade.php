@@ -14,4 +14,5 @@
             @livewire('permissions.all')
         </div>
     </div>
+    <x-toaster></x-toaster>
 </x-app-layout>

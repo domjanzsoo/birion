@@ -26,6 +26,10 @@ class Add extends Component
     {
         $this->permissionRepository->create(['name' => $this->state['permission_name']]);
 
+        $this->state['permission_name'] = null;
+
+        $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission created successfully!']);
+
         $this->redirect('/permissions');
     }
 }

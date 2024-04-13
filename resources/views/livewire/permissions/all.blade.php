@@ -41,7 +41,6 @@
             @endforeach
           @endif
         </ul>
-        <x-toaster :message="$toastMessage"></x-toaster>
       </div>
     </x-slot>
 </x-form-section>

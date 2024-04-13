@@ -10,10 +10,6 @@ class All extends Component
     public $permissions;
     public $permissionsToDelete = [];
     public $deleteButtonAccess = false;
-    public $toastMessage = [
-        'message'   => null,
-        'type'      => null
-    ];
 
     private $permissionRepository;
 
@@ -32,6 +28,7 @@ class All extends Component
     public function processPermissionCheck()
     {
         $buttonDisable = false;
+
         foreach ($this->permissionsToDelete as $permission) {
             if ($permission) {
                 $buttonDisable = true;
@@ -51,29 +48,11 @@ class All extends Component
             $this->permissions = $this->permissionRepository->getAll();
             $this->permissionsToDelete = [];
 
-            $this->setToastMessage('Permissions deleted successfully!', 'confirm');
+            $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission deleted successfully!']);
 
             return;
         }
 
-        $this->setToastMessage('No permission is provided to delete!', 'error');
-    }
-
-    public function setToastMessage(string $msg, string $type): void
-    {
-        $this->toastMessage = [
-            'message'   => $msg,
-            'type'      => $type
-        ];
-
-        $this->dispatch('toastr');
-    }
-
-    public function clearToast()
-    {
-        $this->toastMessage = [
-            'message'   => null,
-            'type'      => null
-        ];
+        $this->dispatch('toastr', ['type' => 'error', 'message' => 'No permission is provided to delete!']);
     }
 }
