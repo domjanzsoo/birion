@@ -13,9 +13,10 @@ $maxWidth = [
 @endphp
 
 <div
-    x-data="{ show: @entangle($attributes->wire('model')) }"
+    x-data="{ show: true }"
     x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false"
+    @open-modal="show = true"
     x-show="show"
     id="{{ $id }}"
     class="jetstream-modal fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"

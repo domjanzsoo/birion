@@ -36,6 +36,8 @@ class All extends Component
         }
 
         $this->deleteButtonAccess = $buttonDisable;
+
+        return;
     }
 
     public function deletePermissions()

@@ -36,9 +36,21 @@
             <main>
                 {{ $slot }}
             </main>
-        </div>
 
-        @stack('modals')
+            <x-confirmation-modal>
+                <x-slot name="title">
+                    {{ __('blablablaaa title') }}
+                </x-slot>
+
+                <x-slot name="content">
+                    {{ __('blablablaaa content') }}
+                </x-slot>
+
+                <x-slot name="footer">
+                    {{ __('blablablaaa footer') }}
+                </x-slot>
+            </x-confirmation-modal>
+        </div>
 
         @livewireScripts
     </body>

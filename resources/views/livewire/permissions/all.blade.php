@@ -15,12 +15,12 @@
           @else
             <li class="flex justify-end">
               @if ($deleteButtonAccess)
-                <x-button class="bg-red mb-3" wire:click="deletePermissions">
+                <x-button x-data x-on:click="$dispatch('open-modal')" class="bg-red mb-3">
                   {{ __('Delete') }}
                   <x-icon name="trash"></x-icon>
                 </x-button>
               @else
-                <x-button class="bg-red mb-3" wire:click="deletePermissions" disabled>
+                <x-button class="bg-red mb-3"  disabled>
                     {{ __('Delete') }}
                     <x-icon name="trash"></x-icon>
                 </x-button>
