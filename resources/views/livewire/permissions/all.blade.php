@@ -15,7 +15,7 @@
           @else
             <li class="flex justify-end">
               @if ($deleteButtonAccess)
-                <x-button x-data x-on:click="$dispatch('open-modal')" class="bg-red mb-3">
+                <x-button x-data x-on:click="$dispatch('confirm', {title: 'here is some title'})" class="bg-red mb-3">
                   {{ __('Delete') }}
                   <x-icon name="trash"></x-icon>
                 </x-button>

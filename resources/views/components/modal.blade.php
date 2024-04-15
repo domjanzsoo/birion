@@ -1,4 +1,4 @@
-@props(['id', 'maxWidth'])
+@props(['id', 'maxWidth', 'show' => false])
 
 @php
 $id = $id ?? md5($attributes->wire('model'));
@@ -13,7 +13,7 @@ $maxWidth = [
 @endphp
 
 <div
-    x-data="{ show: true }"
+    x-data="{ show: @entangle('show') }"
     x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false"
     @open-modal="show = true"

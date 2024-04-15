@@ -1,7 +1,17 @@
-@props(['id' => null, 'maxWidth' => null])
+@props(['id' => null, 'maxWidth' => null, 'show' => false])
 
-<x-modal :id="$id" :maxWidth="$maxWidth" {{ $attributes }}>
-    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+<x-modal 
+    :id="$id" 
+    :maxWidth="$maxWidth"
+    :show="$show" 
+    {{ $attributes }}>
+    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4" x-data="{title: '', content: ''}" @confirm.window="event => {
+        const payload = event.detail;
+
+        title = payload.title;
+        content = payload.content;
+        show = true;
+    }">
         <div class="sm:flex sm:items-start">
             <div class="mx-auto shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                 <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -10,13 +20,9 @@
             </div>
 
             <div class="mt-3 text-center sm:mt-0 sm:ms-4 sm:text-start">
-                <h3 class="text-lg font-medium text-gray-900">
-                    {{ $title }}
-                </h3>
+                <h3 class="text-lg font-medium text-gray-900" x-text="title"></h3>
 
-                <div class="mt-4 text-sm text-gray-600">
-                    {{ $content }}
-                </div>
+                <div class="mt-4 text-sm text-gray-600" x-text="content"></div>
             </div>
         </div>
     </div>
