@@ -35,21 +35,8 @@
             <!-- Page Content -->
             <main>
                 {{ $slot }}
+
             </main>
-
-            <x-confirmation-modal>
-                <x-slot name="title">
-                    {{ __('blablablaaa title') }}
-                </x-slot>
-
-                <x-slot name="content">
-                    {{ __('blablablaaa content') }}
-                </x-slot>
-
-                <x-slot name="footer">
-                    {{ __('blablablaaa footer') }}
-                </x-slot>
-            </x-confirmation-modal>
         </div>
 
         @livewireScripts

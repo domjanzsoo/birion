@@ -15,7 +15,7 @@
           @else
             <li class="flex justify-end">
               @if ($deleteButtonAccess)
-                <x-button x-data x-on:click="$dispatch('confirm', {title: 'here is some title'})" class="bg-red mb-3">
+                <x-button x-data x-on:click="$dispatch('open-modal', {id: 'deletePermissions'})" class="bg-red mb-3">
                   {{ __('Delete') }}
                   <x-icon name="trash"></x-icon>
                 </x-button>
@@ -41,6 +41,16 @@
             @endforeach
           @endif
         </ul>
+        <div>
+          <x-modal 
+            type='confirmation'
+            id="deletePermissions"
+            title='{{ __("Are you sure?") }}'
+            content='{{ __("Are you sure you want to delete the selected permissions?") }}'
+            confirmButtonTitle='{{ __("Delete") }}'
+            confirmButtonIcon='trash'
+          ></x-modal>
+        </div>
       </div>
     </x-slot>
 </x-form-section>

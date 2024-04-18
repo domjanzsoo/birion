@@ -13,6 +13,10 @@ class All extends Component
 
     private $permissionRepository;
 
+    protected $listeners = [
+        'deletePermissions' => 'deletePermissions'
+    ];
+
     public function render()
     {
         return view('livewire.permissions.all');
@@ -56,5 +60,7 @@ class All extends Component
         }
 
         $this->dispatch('toastr', ['type' => 'error', 'message' => 'No permission is provided to delete!']);
+
+        return;
     }
 }

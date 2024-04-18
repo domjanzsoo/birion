@@ -30,6 +30,11 @@ export default {
                     DEFAULT: '#4ade80',
                     light: '#86efac',
                     dark: '#047857'
+                },
+                'gray': {
+                    DEFAULT: '#9ca3af',
+                    light: '#d4d4d8',
+                    dark: '#71717a'
                 }
             }
         },
