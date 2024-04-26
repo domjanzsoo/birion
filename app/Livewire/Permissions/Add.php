@@ -29,7 +29,8 @@ class Add extends Component
         $this->state['permission_name'] = null;
 
         $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission created successfully!']);
+        $this->dispatch('permissionAdded');
 
-        $this->redirect('/permissions');
+        return;
     }
 }

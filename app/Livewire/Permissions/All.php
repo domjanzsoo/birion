@@ -4,29 +4,32 @@ namespace App\Livewire\Permissions;
 
 use Livewire\Component;
 use App\Contract\PermissionRepositoryInterface;
+use Livewire\WithPagination;
 
 class All extends Component
 {
-    public $permissions;
+    use WithPagination;
+
     public $permissionsToDelete = [];
     public $deleteButtonAccess = false;
 
     private $permissionRepository;
 
     protected $listeners = [
-        'deletePermissions' => 'deletePermissions'
+        'deletePermissions' => 'deletePermissions',
+        'permissionAdded'   => 'refetchPermissions'
     ];
 
     public function render()
     {
-        return view('livewire.permissions.all');
+        return view('livewire.permissions.all', [
+            'permissions' => $this->permissionRepository->getAllPaginated()
+        ]);
     }
 
     public function boot(PermissionRepositoryInterface $permissionRepository)
     {
         $this->permissionRepository = $permissionRepository;
-
-        $this->permissions = $this->permissionRepository->getAll();
     }
 
     public function processPermissionCheck()
@@ -51,7 +54,6 @@ class All extends Component
         if (!empty($permissions)) {
             $this->permissionRepository->delete($permissions);
 
-            $this->permissions = $this->permissionRepository->getAll();
             $this->permissionsToDelete = [];
 
             $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission deleted successfully!']);
@@ -62,5 +64,10 @@ class All extends Component
         $this->dispatch('toastr', ['type' => 'error', 'message' => 'No permission is provided to delete!']);
 
         return;
+    }
+
+    public function refetchPermissions()
+    {
+        $this->permissions = $this->permissionRepository->getAll();
     }
 }

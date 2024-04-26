@@ -10,7 +10,7 @@
     <x-slot name="list">
       <div class="w-full">
         <ul role="list" class="divide-y divide-gray-100 w-full">
-          @if ($permissions->count() === 0)
+          @if ($permissions->hasPages())
             <li> No permission found </li>
           @else
             <li class="flex justify-end">
@@ -30,7 +30,7 @@
               <li class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
                     <label class="flex items-center">
-                        <x-checkbox wire:model="permissionsToDelete.{{ $permission->id }}" wire:change="processPermissionCheck()"/>
+                        <x-checkbox id="permission{{ $permission->id }}" wire:model="permissionsToDelete.{{ $permission->id }}" wire:change="processPermissionCheck()"/>
                         <span class="ms-2 text-sm text-gray-600">{{ $permission->name }}</span>
                     </label>
                 </div>
@@ -40,7 +40,7 @@
               </li>
             @endforeach
           @endif
-        </ul>
+        </ul> 
         <div>
           <x-modal 
             type='confirmation'
@@ -52,6 +52,7 @@
           ></x-modal>
         </div>
       </div>
+      <x-paginator page="{{ $permissions->currentPage() }}" totalPages="{{ $permissions->total() }}"/>
     </x-slot>
 </x-form-section>
 
