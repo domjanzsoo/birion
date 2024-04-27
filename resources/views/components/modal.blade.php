@@ -75,7 +75,6 @@ $maxWidth = [
             <x-button 
                 x-data
                 @click="() => {
-                    console.log('az isten megbaszta ' + id)
                     $dispatch(id);
                     show = false;
                 }"

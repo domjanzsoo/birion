@@ -12,19 +12,25 @@ class All extends Component
 
     public $permissionsToDelete = [];
     public $deleteButtonAccess = false;
+    public $pagination = 10;
 
     private $permissionRepository;
 
     protected $listeners = [
         'deletePermissions' => 'deletePermissions',
-        'permissionAdded'   => 'refetchPermissions'
+        'permissionAdded'   => 'refetchPermissions',
     ];
 
     public function render()
     {
         return view('livewire.permissions.all', [
-            'permissions' => $this->permissionRepository->getAllPaginated()
+            'permissions' => $this->permissionRepository->getAllPaginated($this->pagination)
         ]);
+    }
+
+    public function paginationView()
+    {
+        return 'components.pagination-links';
     }
 
     public function boot(PermissionRepositoryInterface $permissionRepository)
@@ -66,8 +72,8 @@ class All extends Component
         return;
     }
 
-    public function refetchPermissions()
-    {
-        $this->permissions = $this->permissionRepository->getAll();
-    }
+    // public function refetchPermissions()
+    // {
+    //     $this->permissions = $this->permissionRepository->getAllPaginated();
+    // }
 }

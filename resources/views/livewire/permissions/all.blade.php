@@ -2,15 +2,13 @@
     <x-slot name="title">
         {{ __('All Permissions') }}
     </x-slot>
-
     <x-slot name="description">
         {{ __('All existing permissions listed.') }}
     </x-slot>
-
     <x-slot name="list">
       <div class="w-full">
         <ul role="list" class="divide-y divide-gray-100 w-full">
-          @if ($permissions->hasPages())
+          @if ($permissions->total() === 0)
             <li> No permission found </li>
           @else
             <li class="flex justify-end">
@@ -52,7 +50,7 @@
           ></x-modal>
         </div>
       </div>
-      <x-paginator page="{{ $permissions->currentPage() }}" totalPages="{{ $permissions->total() }}"/>
+      {{ $permissions->links() }}
     </x-slot>
 </x-form-section>
 
