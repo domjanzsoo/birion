@@ -38,7 +38,7 @@
                     </label>
                 </div>
                 <div>
-                    <x-button class="bg-blue hover:bg-blue-dark mr-4">{{ __('Edit') }}</x-button>
+                    <x-button class="bg-blue hover:bg-blue-dark mr-4" x-on:click="$dispatch('open-edit-modal', { itemId: elmId, entity: 'permission'})">{{ __('Edit') }}</x-button>
                 </div>
               </li>
             @endforeach
@@ -53,6 +53,11 @@
             confirmButtonTitle='{{ __("Delete") }}'
             confirmButtonIcon='trash'
           ></x-modal>
+          <x-modal-edit>
+            <x-slot name="form">
+              @livewire('permissions.edit')
+            </x-slot>
+          </x-modal-edit>
         </div>
       </div>
       <div> {{ $items->links() }} </div>

@@ -39,7 +39,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function update(Model $model, array $attributes): Model
     {
-        $this->model->update($attributes);
+        $model->update($attributes);
 
         return $model;
     }
