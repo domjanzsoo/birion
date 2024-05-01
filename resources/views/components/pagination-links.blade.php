@@ -1,5 +1,5 @@
 <div class="flex mt-5 justify-center gap-4">
-  @if ($paginator->hasPages())
+  @if ($paginator->currentPage() > 1)
     <button
       class="flex justify-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-gray uppercase align-middle transition-all rounded-full select-none hover:bg-gray-dark hover:text-white active:bg-gray-dark disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
       wire:click="previousPage"
@@ -8,7 +8,7 @@
       {{ __('Previous')  }}
     </button>
   @else
-  <button
+    <button
       class="flex justify-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-gray uppercase align-middle transition-all rounded-full select-none hover:bg-gray-dark hover:text-white active:bg-gray-dark disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
       type="button"
       disabled>
@@ -51,11 +51,21 @@
       </button>
     @endfor
   </div>
-  <button
-    class="flex items-center gap-2 px-6 py-3 font-sans text-xs font-bold text-center text-gray uppercase align-middle transition-all rounded-full select-none hover:bg-gray-dark active:bg-gray-dark hover:text-white disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-    wire:click="nextPage"
-    type="button">
-    Next
-    <x-icon name="chevron-right" />
-  </button>
+  @if ($paginator->currentPage() < $paginator->lastPage())
+    <button
+      class="flex items-center gap-2 px-4 py-3 font-sans text-xs font-bold text-center text-gray uppercase align-middle transition-all rounded-full select-none hover:bg-gray-dark active:bg-gray-dark hover:text-white disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+      wire:click="nextPage"
+      type="button">
+      Next
+      <x-icon name="chevron-right" />
+    </button>
+  @else
+    <button
+      class="flex items-center gap-2 px-4 py-3 font-sans text-xs font-bold text-center text-gray uppercase align-middle transition-all rounded-full select-none hover:bg-gray-dark active:bg-gray-dark hover:text-white disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+      type="button"
+      disabled>
+      Next
+      <x-icon name="chevron-right" />
+    </button>
+  @endif
 </div>

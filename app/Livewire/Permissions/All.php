@@ -10,15 +10,18 @@ class All extends Component
 {
     use WithPagination;
 
-    public $permissionsToDelete = [];
     public $deleteButtonAccess = false;
-    public $pagination = 10;
+    public $pagination = 5;
+
+    public $entity = 'permission';
+    public $permissionsToDelete;
 
     private $permissionRepository;
 
     protected $listeners = [
         'deletePermissions' => 'deletePermissions',
         'permissionAdded'   => 'refetchPermissions',
+        'itemSelection'    => 'processPermissionCheck'
     ];
 
     public function render()
@@ -38,17 +41,20 @@ class All extends Component
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function processPermissionCheck()
+    public function processPermissionCheck(string $entity, array $items)
     {
-        $buttonDisable = false;
+        if ($entity === $this->entity) {
+            $buttonDisable = false;
 
-        foreach ($this->permissionsToDelete as $permission) {
-            if ($permission) {
-                $buttonDisable = true;
+            foreach ($items as $permission) {
+                if ($permission) {
+                    $buttonDisable = true;
+                }
             }
+    
+            $this->deleteButtonAccess = $buttonDisable;
+            $this->permissionsToDelete = $items;
         }
-
-        $this->deleteButtonAccess = $buttonDisable;
 
         return;
     }
