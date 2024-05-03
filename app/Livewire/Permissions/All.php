@@ -19,10 +19,10 @@ class All extends Component
     private $permissionRepository;
 
     protected $listeners = [
-        'deletePermissions' => 'deletePermissions',
-        'permissionAdded'   => 'refetchPermissions',
-        'itemSelection'    => 'processPermissionCheck',
-        'permission-edited'    => 'refetchPermissions'
+        'delete-permissions'    => 'deletePermissions',
+        'permission-added'      => 'refetchPermissions',
+        'item-selection'        => 'processPermissionCheck',
+        'permission-edited'     => 'refetchPermissions'
     ];
 
     public function render()
