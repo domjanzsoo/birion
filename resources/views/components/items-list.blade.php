@@ -53,7 +53,7 @@
             confirmButtonTitle='{{ __("Delete") }}'
             confirmButtonIcon='trash'
           ></x-modal>
-          <x-modal-edit>
+          <x-modal-edit entity='{{ $entity }}'>
             <x-slot name="form">
               @livewire('permissions.edit')
             </x-slot>

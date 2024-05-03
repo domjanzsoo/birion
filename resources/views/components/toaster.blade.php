@@ -1,8 +1,6 @@
 <div x-data="{ show: false, message: '', type: '' }" x-init="
     console.log('init');
     Livewire.on('toastr', payload => {
-        console.log('from alpine component');
-        console.log(event);
 
         type = payload[0].type;
         message = payload[0].message;

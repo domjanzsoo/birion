@@ -1,7 +1,7 @@
 @props([
-    'id'                    => '',
-    'maxWidth'              => null,
-    'entity'                => null
+    'id'        => '',
+    'maxWidth'  => null,
+    'entity'    => null
 ])
 
 @php
@@ -17,9 +17,16 @@ $maxWidth = [
 @endphp
 
 <div
-    x-data="{ show: false, id: '{{ $id }}', entity='{{ $entity }}' }" 
+    x-data="{ show: false, id: '{{ $id }}', entity:'{{ $entity }}' }" 
+    x-init="
+        console.log('edit modal init');
+        Livewire.on(entity + '-edited', payload => {
+            if(payload[0].entity === entity) {
+                show = false;
+            }
+        });
+    "
     @open-edit-modal.window="show = true"
-    @close-edit-modal.window="payload => { if(payload.entity === entity) show = false }"
     x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false"
     x-show="show"
@@ -44,28 +51,15 @@ $maxWidth = [
         x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-        <div class="bg-white px-4 pt-5 sm:p-6">
-            <div class="sm:flex sm:items-start">
-                <div class="mt-3 text-center sm:mt-0 sm:ms-4 sm:text-start">
-                    <div class="px-6 py-4">
-                        <div class="mt-4 text-sm text-gray-dark text-center mb-5"> 
-                            {{ $form }}
-                        </div>
-                    </div>
-                </div>
+        <div class="bg-white px-4 py-6 pt-5">
+            <div class="mt-4 text-sm text-gray-dark text-center mb-5"> 
+                {{ $form }}
             </div>
         </div>
         <div class="flex flex-row justify-end w-full bg-gray-light text-end rounded-b-lg p-3">
             <x-button @click="show = false" class="bg-gray-dark">
                 {{ __('Cancel') }}
             </x-button>
-            
-            <!-- <x-button 
-                type="submit"
-                class="bg-red ml-2"
-            >
-                {{ __('Save') }}
-            </x-button> -->
         </div>
     </div>
 </div>

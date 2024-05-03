@@ -8,11 +8,12 @@ use App\Contract\PermissionRepositoryInterface;
 class Edit extends Component
 {
     private $permissionRepository;
+    private $entity = 'permission';
     public $permission;
     public $name = '';
 
     protected $listeners = [
-        'openeditmodal' => 'handleEditModalData'
+        'open-edit-modal' => 'handleEditModalData'
     ];
 
     public function render()
@@ -25,19 +26,22 @@ class Edit extends Component
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function handleEditModalData($itemId)
+    public function handleEditModalData($itemId, $entity)
     {
-        $this->permission = $this->permissionRepository->getById($itemId);
+        if ($entity === $this->entity) {
+            $this->permission = $this->permissionRepository->getById($itemId);
 
-        $this->name = $this->permission->name;
+            $this->name = $this->permission->name;
+        }
     }
 
     public function save()
     {
-       $this->permissionRepository->update($this->permission, ['name' => $this->name]);
+        $this->permissionRepository->update($this->permission, ['name' => $this->name]);
 
-       $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission updated successfully!']);
+        $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission updated successfully!']);
+        $this->dispatch($this->entity . '-edited', ['entity' => $this->entity]);
 
-        return $this->redirect('/permissions');
+        return;
     }
 }

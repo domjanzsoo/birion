@@ -21,7 +21,8 @@ class All extends Component
     protected $listeners = [
         'deletePermissions' => 'deletePermissions',
         'permissionAdded'   => 'refetchPermissions',
-        'itemSelection'    => 'processPermissionCheck'
+        'itemSelection'    => 'processPermissionCheck',
+        'permission-edited'    => 'refetchPermissions'
     ];
 
     public function render()
@@ -78,8 +79,8 @@ class All extends Component
         return;
     }
 
-    // public function refetchPermissions()
-    // {
-    //     $this->permissions = $this->permissionRepository->getAllPaginated();
-    // }
+    public function refetchPermissions()
+    {
+        $this->permissions = $this->permissionRepository->getAllPaginated($this->pagination);
+    }
 }
