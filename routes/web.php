@@ -29,4 +29,8 @@ Route::middleware([
     Route::get('/permissions', function () {
         return view('permissions.manage-permissions');
     })->name('permissions');
+
+    Route::get('/roles', function () {
+        return view('roles.manage-roles');
+    })->name('roles');
 });
