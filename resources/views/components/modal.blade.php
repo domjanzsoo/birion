@@ -75,6 +75,7 @@ $maxWidth = [
             <x-button 
                 x-data
                 @click="() => {
+                    console.log(id)
                     $dispatch(id);
                     show = false;
                 }"

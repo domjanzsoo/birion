@@ -7,11 +7,11 @@
 
     <div>
     <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @livewire('permissions.add')
+            @livewire('roles.add')
         </div>
 
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @livewire('permissions.all')
+            @livewire('roles.all')
         </div>
     </div>
     <x-toaster></x-toaster>

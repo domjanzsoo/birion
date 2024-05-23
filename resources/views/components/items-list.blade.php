@@ -1,4 +1,9 @@
-@props(['title', 'description', 'entity', 'items', 'deleteButtonAccess'])
+@props(['title', 'description', 'entity', 'items', 'deleteButtonAccess', 'extraInformation' => null])
+
+@php
+  $dataProperty = $extraInformation ? $extraInformation['dataProperty'] : null;
+  $extraDataComponent =  $extraInformation ? $extraInformation['component'] : null;
+@endphp
 
 <x-form-section>
     <x-slot name="title">
@@ -8,10 +13,10 @@
         {{ $description }}
     </x-slot>
     <x-slot name="list">
-      <div x-data="{ itemsSelected: {}, entity: '{{ $entity }}' }" class="w-full" style="height: calc({{ $items->perPage() }} * 73px)">
+      <div x-data="{ itemsSelected: {}, entity: '{{ $entity }}' }" class="w-full" style="height: calc({{ $items->perPage() }} * 120px)">
         <ul role="list" class="divide-y divide-gray-100 w-full">
           @if ($items->total() === 0)
-            <li> No permission found </li>
+            <li> No {{ $entity }} found </li>
           @else
             <li class="flex justify-end">
               @if ($deleteButtonAccess)
@@ -31,11 +36,20 @@
                 <div class="flex min-w-0 gap-x-4">
                     <label class="flex items-center">
                         <x-checkbox id="{{ $item->id }}"  x-on:change="e => {
-                         itemsSelected[elmId] = e.target.checked;
+                          itemsSelected[elmId] = e.target.checked;
                           $dispatch('item-selection', {entity: '{{ $entity }}', items: itemsSelected});
                         }"/>
-                        <span class="ms-2 text-sm text-gray-600">{{ $item->name }}</span>
+                        <span class="ms-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
                     </label>
+                    @if($extraDataComponent)
+                          @switch($extraDataComponent)
+                            @case('tags')
+                              @if ($item->$dataProperty)
+                                <x-tags :data="$item->$dataProperty->toArray()" tagClasses="max-h-3"/>
+                              @endif
+                            @break
+                          @endswitch
+                        @endif
                 </div>
                 <div>
                     <x-button class="bg-blue hover:bg-blue-dark mr-4" x-on:click="$dispatch('open-edit-modal', { itemId: elmId, entity: entity})">{{ __('Edit') }}</x-button>
@@ -47,15 +61,14 @@
         <div>
           <x-modal 
             type='confirmation'
-            id="delete-permissions"
+            id="delete-{{ $entity }}s"
             title='{{ __("Are you sure?") }}'
-            content='{{ __("Are you sure you want to delete the selected permissions?") }}'
+            content='{{ __("Are you sure you want to delete the selected {$entity}s?") }}'
             confirmButtonTitle='{{ __("Delete") }}'
             confirmButtonIcon='trash'
           ></x-modal>
           <x-modal-edit entity='{{ $entity }}'>
             <x-slot name="form">
-              @livewire('permissions.edit')
             </x-slot>
           </x-modal-edit>
         </div>
