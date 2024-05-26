@@ -10,7 +10,7 @@
         <div class="col-span-6 sm:col-span-5">
             <x-label for="role_name" value="{{ __('Role Name') }}" />
             <x-input id="role_name" type="text" class="mt-1 block w-full" wire:model="state.role_name" />
-            <x-input-error for="role_name" class="mt-2" />
+            <x-input-error for="state.role_name" class="mt-2" />
         </div>
         <div class="col-span-6 sm:col-span-5">
             <x-label for="role_permissions" value="{{ __('Role Permissions') }}" />

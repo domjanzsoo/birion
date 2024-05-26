@@ -69,6 +69,7 @@
           ></x-modal>
           <x-modal-edit entity='{{ $entity }}'>
             <x-slot name="form">
+              @livewire($entity . 's.edit')
             </x-slot>
           </x-modal-edit>
         </div>

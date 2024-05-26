@@ -20,6 +20,16 @@ class Add extends Component
         'permissions'   => []
     ];
 
+    protected $rules = [
+        'state.role_name' => 'required|unique:roles,name',
+        'state.permissions' => 'array'
+    ];
+
+    protected $messages = [
+        'state.role_name.required' => 'The role name is required.',
+        'state.role_name.unique' => 'A role with the given name already exists.'
+    ];
+
     public function render()
     {
         return view('livewire.roles.add', [
@@ -49,7 +59,9 @@ class Add extends Component
 
     public function addRole(): void
     {
-        $this->roleRepository->createRole($this->state['role_name'], $this->state['permissions']);
+        $validatedData = $this->validate();
+
+        $this->roleRepository->createRole($validatedData['state']['role_name'], $validatedData['state']['permissions']);
 
         $this->state['role_name'] = null;
         $this->state['permissions'] = [];

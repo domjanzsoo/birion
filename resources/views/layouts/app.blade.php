@@ -39,6 +39,6 @@
             </main>
         </div>
 
-        @livewireScript
+        @livewireScripts
     </body>
 </html>

@@ -10,7 +10,23 @@ class Edit extends Component
     private $permissionRepository;
     private $entity = 'permission';
     public $permission;
-    public $name = '';
+
+    public $state = [
+        'id'    => null,
+        'name'  => null
+    ];
+
+    protected function rules()
+    {
+        return [
+            'state.name' => 'required|unique:permissions,name,' . $this->state['id']
+        ];
+    } 
+
+    protected $messages = [
+        'state.name.required' => 'Permission name is required.',
+        'state.name.unique' => 'The permission name given is already used.'
+    ];
 
     protected $listeners = [
         'open-edit-modal' => 'handleEditModalData'
@@ -31,13 +47,16 @@ class Edit extends Component
         if ($entity === $this->entity) {
             $this->permission = $this->permissionRepository->getById($itemId);
 
-            $this->name = $this->permission->name;
+            $this->state['name'] = $this->permission->name;
+            $this->state['id'] = $itemId;
         }
     }
 
     public function save()
     {
-        $this->permissionRepository->update($this->permission, ['name' => $this->name]);
+        $validatedData = $this->validate();
+
+        $this->permissionRepository->update($this->permission, ['name' => $validatedData['state']['name']]);
 
         $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission updated successfully!']);
         $this->dispatch($this->entity . '-edited', ['entity' => $this->entity]);
