@@ -17,7 +17,26 @@
     </button>
   @endif
   <div class="flex items-center gap-2">
-    @for ($i = 1; $i <= $paginator->lastPage(); $i++)
+    @php
+      $segment = 5;
+      $start = 1;
+      $end = $paginator->lastPage() < $segment ? $paginator->lastPage() : $segment;
+
+      if (($paginator->currentPage() - 1) % $segment === 0 && $paginator->currentPage() > $segment) {
+        $start =  $paginator->currentPage();
+      } elseif ($paginator->currentPage() > $segment + 1) {
+        $stepsAhead = ($paginator->currentPage() % $segment) - 1;
+
+        $start = $paginator->currentPage() - $stepsAhead;
+      }
+
+      if ($end === $paginator->currentPage() - 1) {
+        $end = $paginator->currentPage() + $segment > $paginator->lastPage() ? $paginator->lastPage() : $paginator->currentPage() + $segment;
+      } elseif ($paginator->currentPage() > $segment + 1) {
+        $end = $paginator->lastPage();
+      }
+    @endphp
+    @for ($i = $start; $i <= $end; $i++)
       <button
         @class([
           'relative', 
@@ -34,7 +53,7 @@
           'font-medium',
           'uppercase', 
           'text-gray' => $paginator->currentPage() != $i, 
-          'text-white' => $paginator->currentPAge() == $i, 
+          'text-white' => $paginator->currentPage() == $i, 
           'transition-all',
           'hover:bg-gray-900/10' => $paginator->currentPage() != $i,
           'active:bg-gray-900/20' => $paginator->currentPage() != $i,
