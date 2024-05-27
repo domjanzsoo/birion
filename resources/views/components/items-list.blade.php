@@ -32,7 +32,7 @@
               @endif
             </li>
             @foreach ($items as $item)
-              <li x-data="{ elmId: {{ $item->id }} }" class="flex justify-between gap-x-6 py-5">
+              <li x-data="{ elmId: {{ $item->id }} }" wire:key="item-{$item->id}" class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
                     <label class="flex items-center">
                         <x-checkbox id="{{ $item->id }}"  x-on:change="e => {
@@ -52,7 +52,7 @@
                         @endif
                 </div>
                 <div>
-                    <x-button class="bg-blue hover:bg-blue-dark mr-4" x-on:click="$dispatch('open-edit-modal', { itemId: elmId, entity: entity})">{{ __('Edit') }}</x-button>
+                    <x-button class="bg-blue hover:bg-blue-dark mr-4" x-on:click="$dispatch('open-edit-modal', { itemId: {{ $item->id }}, entity: entity})">{{ __('Edit') }}</x-button>
                 </div>
               </li>
             @endforeach

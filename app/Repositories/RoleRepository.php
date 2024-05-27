@@ -24,4 +24,11 @@ class RoleRepository extends BaseRepository implements RoleRepositoryInterface
 
         return $role;
     }
+
+    public function updatePermissions(Role $role, array $permissions): Role
+    {
+        $role->permissions()->sync($permissions);
+
+        return $role;
+    }
 }

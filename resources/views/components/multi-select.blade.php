@@ -1,4 +1,4 @@
-@props(['options' => [], 'event' => '', 'model' => ''])
+@props(['options' => [], 'event' => '', 'model' => '', 'selected' => null])
 
 <style>
 #select {
@@ -25,6 +25,17 @@
 <div
     x-init="() => {
       console.log('form-submit event');
+      selected = {};
+      let selections = {{ json_encode($selected) }}
+
+      if (selections) {
+        selections.forEach(selection => {
+          selected[selection.id] = {
+            name: selection.name,
+            selected: true
+          };
+        });
+      }
 
       Livewire.on('role-added', () => {
             selected = {};

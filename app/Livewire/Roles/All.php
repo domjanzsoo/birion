@@ -22,7 +22,7 @@ class All extends Component
         'delete-roles'          => 'deleteRoles',
         'role-added'            => 'refetchRoles    ',
         'item-selection'        => 'processRoleCheck',
-        'permission-edited'     => 'refetchPermissions'
+        'role-edited'           => 'refetchPermissions'
     ];
 
     public function render()
