@@ -6,6 +6,6 @@
 @endphp
 
 <div>
-  <x-items-list entity="{{__('role')}}" title="{{__('Roles')}}" description="{{ __('All existing roles listed.') }}" :deleteButtonAccess="$deleteButtonAccess" :items="$roles" :extraInformation="$extraInformation" />
+  <x-items-list entity="{{__('role')}}" title="{{__('Roles')}}" description="{{ __('All existing roles listed.') }}" :deleteButtonAccess="$deleteButtonAccess" :items="$roles" :extraInformation="$extraInformation" showEditSubmitButton="true" />
 </div>
 

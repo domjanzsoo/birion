@@ -1,7 +1,8 @@
 @props([
-    'id'        => '',
-    'maxWidth'  => null,
-    'entity'    => null
+    'id'            => '',
+    'maxWidth'      => null,
+    'entity'        => null,
+    'showSubmit'    => false
 ])
 
 @php
@@ -60,6 +61,11 @@ $maxWidth = [
             <x-button @click="show = false" class="bg-gray-dark">
                 {{ __('Cancel') }}
             </x-button>
+            @if ($showSubmit)
+                <x-button x-data x-on:click="$dispatch('save-modal-edit')" class="bg-blue ml-2">
+                    {{ __('Submit') }}
+                </x-button>
+            @endif
         </div>
     </div>
 </div>

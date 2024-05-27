@@ -29,7 +29,7 @@ class Edit extends Component
     ];
 
     protected $listeners = [
-        'open-edit-modal' => 'handleEditModalData'
+        'open-edit-modal'   => 'handleEditModalData'
     ];
 
     public function render()

@@ -1,4 +1,4 @@
-@props(['title', 'description', 'entity', 'items', 'deleteButtonAccess', 'extraInformation' => null])
+@props(['title', 'description', 'entity', 'items', 'deleteButtonAccess', 'extraInformation' => null, 'showEditSubmitButton' => false])
 
 @php
   $dataProperty = $extraInformation ? $extraInformation['dataProperty'] : null;
@@ -67,7 +67,7 @@
             confirmButtonTitle='{{ __("Delete") }}'
             confirmButtonIcon='trash'
           ></x-modal>
-          <x-modal-edit entity='{{ $entity }}'>
+          <x-modal-edit entity='{{ $entity }}' showSubmit="{{ $showEditSubmitButton }}">
             <x-slot name="form">
               @livewire($entity . 's.edit')
             </x-slot>

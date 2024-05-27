@@ -13,8 +13,10 @@ class Edit extends Component
     private $entity = 'role';
 
     protected $listeners = [
-        'role-permissions' => 'handlePermissions',
-        'open-edit-modal' => 'handleEditModalData'
+        'role-permissions'  => 'handlePermissions',
+        'open-edit-modal'   => 'handleEditModalData',
+        'save-modal-edit'   => 'save'
+
     ];
     
     public array $state = [
