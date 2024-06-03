@@ -19,27 +19,31 @@
             <li> No {{ $entity }} found </li>
           @else
             <li class="flex justify-end">
-              @if ($deleteButtonAccess)
-                <x-button x-data x-on:click="$dispatch('open-modal', {id: 'delete-' + entity})" class="bg-red mb-3">
-                  {{ __('Delete') }}
-                  <x-icon name="trash"></x-icon>
-                </x-button>
-              @else
-                <x-button class="bg-red mb-3"  disabled>
+              @canAccess(json_encode('delete_' . $entity))
+                @if ($deleteButtonAccess)
+                  <x-button x-data x-on:click="$dispatch('open-modal', {id: 'delete-' + entity})" class="bg-red mb-3">
                     {{ __('Delete') }}
                     <x-icon name="trash"></x-icon>
-                </x-button>
-              @endif
+                  </x-button>
+                @else
+                  <x-button class="bg-red mb-3"  disabled>
+                      {{ __('Delete') }}
+                      <x-icon name="trash"></x-icon>
+                  </x-button>
+                @endif
+              @endcanAccess
             </li>
             @foreach ($items as $item)
               <li x-data="{ elmId: {{ $item->id }} }" wire:key="item-{$item->id}" class="flex justify-between gap-x-6 py-5">
                 <div class="flex min-w-0 gap-x-4">
                     <label class="flex items-center">
-                        <x-checkbox id="{{ $item->id }}"  x-on:change="e => {
-                          itemsSelected[elmId] = e.target.checked;
-                          $dispatch('item-selection', {entity: '{{ $entity }}', items: itemsSelected});
-                        }"/>
-                        <span class="ms-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
+                      @canAccess(json_encode('delete_' . $entity))
+                          <x-checkbox id="{{ $item->id }}"  x-on:change="e => {
+                            itemsSelected[elmId] = e.target.checked;
+                            $dispatch('item-selection', {entity: '{{ $entity }}', items: itemsSelected});
+                          }"/>
+                      @endcanAccess
+                      <span class="ms-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
                     </label>
                     @if($extraDataComponent)
                           @switch($extraDataComponent)
@@ -52,8 +56,10 @@
                         @endif
                 </div>
                 <div>
+                  @canAccess(json_encode('edit_' . $entity))
                     <x-button class="bg-blue hover:bg-blue-dark mr-4" x-on:click="$dispatch('open-edit-modal', { itemId: {{ $item->id }}, entity: entity})">{{ __('Edit') }}</x-button>
-                </div>
+                  @endcanAccess
+                  </div>
               </li>
             @endforeach
           @endif

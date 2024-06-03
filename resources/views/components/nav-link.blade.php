@@ -20,10 +20,13 @@ $classes = ($active ?? false)
 
             <x-slot name="content">
                 <div class="z-50 py-2 text-gray-400">
-                    @foreach($dropdownElms as $elm => $route) 
-                        <x-dropdown-link href="{{ $route }}">
-                                {{ __(ucfirst($elm)) }}
-                        </x-dropdown-link>
+                    
+                    @foreach($dropdownElms as $elm => $dropdownData)
+                        @canAccess(json_encode($dropdownData['access']))
+                            <x-dropdown-link href="{{ $dropdownData['route'] }}">
+                                    {{ __(ucfirst($elm)) }}
+                            </x-dropdown-link>
+                        @endcanAccess
                     @endforeach
                 </div>
             </x-slot>
