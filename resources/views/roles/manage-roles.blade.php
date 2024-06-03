@@ -6,10 +6,11 @@
     </x-slot>
 
     <div>
-    <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @livewire('roles.add')
-        </div>
-
+        @canAccess('"add_role"')
+            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+                @livewire('roles.add')
+            </div>
+        @endcanAccess
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             @livewire('roles.all')
         </div>
