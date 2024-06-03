@@ -19,7 +19,7 @@ class AccessControlService
                     return true;
                 }
             }
-        } else if (in_array($permissions, $userPermissions)) {
+        } elseif (in_array($permissions, $userPermissions)) {
             return true;
         }
 
@@ -33,7 +33,7 @@ class AccessControlService
                         return true;
                     }
                 }
-            } else if (in_array ($permissions, $rolePermissions)) {
+            } elseif (in_array ($permissions, $rolePermissions)) {
                 return true;
             }
         }

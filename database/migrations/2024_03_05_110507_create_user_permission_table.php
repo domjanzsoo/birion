@@ -26,7 +26,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('permissions')
                 ->onDelete('cascade');
-
         });
     }
 

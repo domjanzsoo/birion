@@ -46,10 +46,9 @@
         event: '{{ $event }}',
         selected: {},
         show: false,
-        open() { console.log('keys'); console.log(Object.keys(this.selected)); this.show = true; },
+        open() { this.show = true; },
         close() { this.show = false },
         isOpen() { 
-          console.log(this.selected);
           return this.show === true;
         },
         select(elm) {
