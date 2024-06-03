@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Blade;
+use App\Services\AccessControlService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $accessControlInstance = AccessControlService::getInstance();
+
+        Blade::if('canAccess', function($expression) use ($accessControlInstance) {
+            eval("\$params = [$expression];");
+            list($permissions) = $params;
+    
+            return $accessControlInstance->canAccess($permissions, auth()->user());
+        });
     }
 }

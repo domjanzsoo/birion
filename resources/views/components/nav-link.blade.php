@@ -1,4 +1,4 @@
-@props(['active'])
+@props(['active', 'dropdown' => false, 'dropdownHeader' => '', 'dropdownElms' => []])
 
 @php
 $classes = ($active ?? false)
@@ -6,6 +6,34 @@ $classes = ($active ?? false)
             : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out';
 @endphp
 
-<a {{ $attributes->merge(['class' => $classes]) }}>
-    {{ $slot }}
-</a>
+@if($dropdown)
+    <div>
+        <x-dropdown align="left"  contentTopMargin="4" triggerClass="{{ $classes . ' cursor-pointer z-40' }}" dropdownClasses="-mt-5">
+            <x-slot name="trigger">
+                <span class="inline-flex mt-5 pb-5">
+                        <span>{{ $slot }}</span>
+                        <span class="mt-1 ml-1">
+                            <x-icon  class="mt-2" name="chevron-down" />
+                        </span>
+                </span>
+            </x-slot>
+
+            <x-slot name="content">
+                <div class="z-50 py-2 text-gray-400">
+                    
+                    @foreach($dropdownElms as $elm => $dropdownData)
+                        @canAccess(json_encode($dropdownData['access']))
+                            <x-dropdown-link href="{{ $dropdownData['route'] }}">
+                                    {{ __(ucfirst($elm)) }}
+                            </x-dropdown-link>
+                        @endcanAccess
+                    @endforeach
+                </div>
+            </x-slot>
+        </x-dropdown>
+    </div>
+@else
+    <a {{ $attributes->merge(['class' => $classes]) }} >
+        {{ $slot }}
+    </a>
+@endif
