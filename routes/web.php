@@ -27,7 +27,7 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('/permissions', function () {
-        return view('permissions.manage-permissions');
+        return view('livewire.permissions.manage');
     })->name('permissions');
 
     Route::get('/roles', function () {

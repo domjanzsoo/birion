@@ -13,20 +13,23 @@ class Edit extends Component
 
     public $state = [
         'id'    => null,
-        'name'  => null
+        'permission_name'  => null
     ];
 
     protected function rules()
     {
         return [
-            'state.name' => 'required|unique:permissions,name,' . $this->state['id']
+            'state.permission_name' => 'required|unique:permissions,name,' . $this->state['id']
         ];
-    } 
+    }
 
-    protected $messages = [
-        'state.name.required' => 'Permission name is required.',
-        'state.name.unique' => 'The permission name given is already used.'
-    ];
+    public function messages()
+    {
+        return [
+            'state.permission_name.required' => trans('validation.required', ['attribute' => 'name']),
+            'state.permission_name.unique' => trans('validation.unique', ['attribute' => 'permission name'])
+        ];
+    }
 
     protected $listeners = [
         'open-edit-modal'   => 'handleEditModalData'
@@ -47,7 +50,7 @@ class Edit extends Component
         if ($entity === $this->entity) {
             $this->permission = $this->permissionRepository->getById($itemId);
 
-            $this->state['name'] = $this->permission->name;
+            $this->state['permission_name'] = $this->permission->name;
             $this->state['id'] = $itemId;
         }
     }
@@ -56,7 +59,7 @@ class Edit extends Component
     {
         $validatedData = $this->validate();
 
-        $this->permissionRepository->update($this->permission, ['name' => $validatedData['state']['name']]);
+        $this->permissionRepository->update($this->permission, ['name' => $validatedData['state']['permission_name']]);
 
         $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission updated successfully!']);
         $this->dispatch($this->entity . '-edited', ['entity' => $this->entity]);

@@ -16,10 +16,13 @@ class Add extends Component
         'state.permission_name' => 'required|unique:permissions,name'
     ];
 
-    protected $messages = [
-        'state.permission_name.required' => 'Permission name is required.',
-        'state.permission_name.unique' => 'Permission with the given name already exists.'
-    ];
+    public function messages()
+    {
+        return [
+            'state.permission_name.required' => trans('validation.required', ['attribute' => 'name']),
+            'state.permission_name.unique' => trans('validation.unique', ['attribute' => 'permission name'])
+        ];
+    } 
 
     public function render()
     {
@@ -39,7 +42,7 @@ class Add extends Component
 
         $this->state['permission_name'] = null;
 
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission created successfully!']);
+        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'Permission'])]);
         $this->dispatch('permission-added');
 
         return;

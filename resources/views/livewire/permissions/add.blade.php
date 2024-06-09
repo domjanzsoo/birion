@@ -1,9 +1,9 @@
 <x-form-section submit="addPermission">
     <x-slot name="title">
-        {{ __('Add Permission') }}
+        {{ __('permissions.add') }}
     </x-slot>
     <x-slot name="description">
-        {{ __('Add a new permission.') }}
+        {{ __('permissions.add_full') }}
     </x-slot>
 
     <x-slot name="form">

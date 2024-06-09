@@ -1,4 +1,4 @@
 <div>
-  <x-items-list entity="{{__('permission')}}" title="{{__('Permissions')}}" description="{{ __('All existing permissions listed.') }}" :deleteButtonAccess="$deleteButtonAccess" :items="$permissions" />
+  <x-items-list entity="{{__('permissions.permission_entity')}}" title="{{__('permissions.permissions')}}" description="{{ __('permissions.permissions_full') }}" :deleteButtonAccess="$deleteButtonAccess" :items="$permissions" />
 </div>
 

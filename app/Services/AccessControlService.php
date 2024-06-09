@@ -46,7 +46,7 @@ class AccessControlService
         return in_array($role, $user->roles->pluck('name')->all());
     }
 
-    public function canAccess(string|array $permissions = [], User $user, string $role = null)
+    public function canAccess(User $user, string|array $permissions = [], string $role = null)
     {
         $access = $this->hasPermissions($permissions, $user);
 

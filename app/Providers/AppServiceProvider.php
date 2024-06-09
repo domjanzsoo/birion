@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
             eval("\$params = [$expression];");
             list($permissions) = $params;
     
-            return $accessControlInstance->canAccess($permissions, auth()->user());
+            return $accessControlInstance->canAccess(auth()->user(), $permissions);
         });
     }
 }
