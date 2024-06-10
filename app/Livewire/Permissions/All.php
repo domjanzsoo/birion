@@ -69,12 +69,12 @@ class All extends Component
 
             $this->permissionsToDelete = [];
 
-            $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission deleted successfully!']);
+            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_deletion', ['entity' => 'Permission'])]);
 
             return;
         }
 
-        $this->dispatch('toastr', ['type' => 'error', 'message' => 'No permission is provided to delete!']);
+        $this->dispatch('toastr', ['type' => 'error', 'message' => trans('notifications.nothing_provided_to_action', ['entity' => 'Permission', 'action' => 'delete'])]);
 
         return;
     }

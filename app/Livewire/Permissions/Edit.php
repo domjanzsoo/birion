@@ -61,7 +61,7 @@ class Edit extends Component
 
         $this->permissionRepository->update($this->permission, ['name' => $validatedData['state']['permission_name']]);
 
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission updated successfully!']);
+        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'Permission'])]);
         $this->dispatch($this->entity . '-edited', ['entity' => $this->entity]);
 
         return;
