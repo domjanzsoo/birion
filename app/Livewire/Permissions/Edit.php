@@ -4,6 +4,7 @@ namespace App\Livewire\Permissions;
 
 use Livewire\Component;
 use App\Contract\PermissionRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class Edit extends Component
 {
@@ -57,6 +58,12 @@ class Edit extends Component
 
     public function save()
     {
+        if (!access_control()->canAccess(auth()->user(), 'add_permission')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add permission']));
+
+            return false;
+        }
+
         $validatedData = $this->validate();
 
         $this->permissionRepository->update($this->permission, ['name' => $validatedData['state']['permission_name']]);

@@ -173,6 +173,7 @@ return [
 
         // ...other declared providers
         App\Providers\RepositoryServiceProvider::class,
+        App\Providers\GlobalFunctionsServiceProvider::class,
     ])->toArray(),
 
     /*

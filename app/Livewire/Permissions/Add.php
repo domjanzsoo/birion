@@ -4,13 +4,11 @@ namespace App\Livewire\Permissions;
 
 use Livewire\Component;
 use App\Contract\PermissionRepositoryInterface;
-use App\Services\AccessControlService;
 use Illuminate\Auth\Access\AuthorizationException;
 
 class Add extends Component
 {
     private $permissionRepository;
-    private $accessControlService;
 
     public array $state = [
         'permission_name' => ''
@@ -26,7 +24,7 @@ class Add extends Component
             'state.permission_name.required' => trans('validation.required', ['attribute' => 'name']),
             'state.permission_name.unique' => trans('validation.unique', ['attribute' => 'permission name'])
         ];
-    } 
+    }   
 
     public function render()
     {
@@ -36,15 +34,12 @@ class Add extends Component
     public function boot(PermissionRepositoryInterface $permissionRepository)
     {
         $this->permissionRepository = $permissionRepository;
-        $this->accessControlService = AccessControlService::getInstance();
     }
 
     public function addPermission()
     {
-        if (!$this->accessControlService->canAccess(auth()->user(), 'add_permission')) {
+        if (!access_control()->canAccess(auth()->user(), 'add_permission')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add permission']));
-
-            return false;
         }
 
         $validatedData = $this->validate();
