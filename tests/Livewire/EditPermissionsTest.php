@@ -26,18 +26,14 @@ class EditPermissionsTest extends TestCase
     {
         parent::setUp();
 
-        $this->permissionToUpdate = new Permission(['name' => self::INITIAL_PERMISSION_NAME]);
-        $this->permissionToUpdate->save();
+        $this->permissionToUpdate = Permission::create(['name' => self::INITIAL_PERMISSION_NAME]);
 
         $this->userWithEditPermissionAccess = User::factory()->create();
-        $editPermission = new Permission(['name' => 'edit_permission']);
-        $editPermission->save();
-
+        $editPermission = Permission::create(['name' => 'edit_permission']);
         $this->userWithEditPermissionAccess->permissions()->attach($editPermission);
 
         $this->userWithAdminRole = User::factory()->create();
-        $adminRole = new Role(['name' => 'admin']);
-        $adminRole->save();
+        $adminRole = Role::create(['name' => 'admin']);
 
         $adminRole->permissions()->attach($editPermission);
         $this->userWithAdminRole->roles()->attach($adminRole);
@@ -49,6 +45,7 @@ class EditPermissionsTest extends TestCase
     public function renders_sucessfully(): void
     {
         $this->actingAs($this->userWithEditPermissionAccess);
+        
         Livewire::test(EditPermission::class)
             ->assertSeeHtml('test-id="edit_permissions" wire:submit="save"')
             ->assertStatus(200);

@@ -17,11 +17,7 @@ class ManagePermissionsTest extends TestCase
     public function test_renders_successfully(): void
     {
         $user = User::factory()->create();
-        $user ->save();
-
-        $viewPermission = new Permission(['name' => 'view_permissions']);
-        $viewPermission->save();
-
+        $viewPermission = Permission::create(['name' => 'view_permissions']);
         $user->permissions()->attach($viewPermission);
 
         $this->actingAs($user);

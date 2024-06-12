@@ -25,48 +25,32 @@ class ListPermissionsTest extends TestCase
         parent::setUp();
 
         for ($i = 0; $i < 10; $i++) {
-            $newPermission = new Permission(['name' => 'test-' . $i]);
-            $newPermission->save();
+            Permission::create(['name' => 'test-' . $i]);
         }
 
-        $permissionToView = new Permission(['name' => 'view_permissions']);
-        $permissionToView->save();
-
-        $permissionToAdd = new Permission(['name' => 'add_permission']);
-        $permissionToAdd->save();
-
-        $permissionToEdit = new Permission(['name' => 'edit_permission']);
-        $permissionToEdit->save();
-
-        $permissionToDelete = new Permission(['name' => 'delete_permission']);
-        $permissionToDelete->save();
+        $permissionToView = Permission::create(['name' => 'view_permissions']);
+        $permissionToAdd = Permission::create(['name' => 'add_permission']);
+        $permissionToEdit = Permission::create(['name' => 'edit_permission']);
+        $permissionToDelete = Permission::create(['name' => 'delete_permission']);
 
         $this->userWithDeletePermissionAccess = User::factory()->create();
         $this->userWithDeletePermissionAccess->permissions()->attach($permissionToView);
         $this->userWithDeletePermissionAccess->permissions()->attach($permissionToDelete);
-        $this->userWithDeletePermissionAccess->save();
-
 
         $this->userWithViewPermissionAccess = User::factory()->create();
         $this->userWithViewPermissionAccess->permissions()->attach($permissionToView);
-        $this->userWithViewPermissionAccess->save();
 
         $this->userWithAddPermissionAccess = User::factory()->create();
         $this->userWithAddPermissionAccess->permissions()->attach($permissionToAdd);
-        $this->userWithAddPermissionAccess->save();
 
         $this->userWithEditPermissionAccess = User::factory()->create();
         $this->userWithEditPermissionAccess->permissions()->attach($permissionToEdit);
-        $this->userWithEditPermissionAccess->save();
 
-
-        $role = new Role(['name' => 'test']);
-        $role->save();
+        $role = Role::create(['name' => 'test']);
         $role->permissions()->attach($permissionToView);
         
         $this->userWithViewPermissionInRole = User::factory()->create();
         $this->userWithViewPermissionInRole->roles()->attach($role);
-        $this->userWithViewPermissionInRole->save();
     }
 
     /** @test */
@@ -210,7 +194,7 @@ class ListPermissionsTest extends TestCase
     {
         $this->actingAs($this->userWithDeletePermissionAccess);
 
-        $firstPermissionId= Permission::first()->id;
+        $firstPermissionId = Permission::first()->id;
 
         Livewire::test(ListPermissions::class)
             ->set('permissionsToDelete', [ $firstPermissionId => true, $firstPermissionId + 1 => true])

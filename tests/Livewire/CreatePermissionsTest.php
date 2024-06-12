@@ -23,14 +23,12 @@ class CreatePermissionsTest extends TestCase
         parent::setUp();
 
         $this->userWithAddPermissionAccess = User::factory()->create();
-        $addPermission = new Permission(['name' => 'add_permission']);
-        $addPermission->save();
+        $addPermission = Permission::create(['name' => 'add_permission']);
 
         $this->userWithAddPermissionAccess->permissions()->attach($addPermission);
 
         $this->userWithAdminRole = User::factory()->create();
-        $adminRole = new Role(['name' => 'admin']);
-        $adminRole->save();
+        $adminRole = Role::create(['name' => 'admin']);
 
         $adminRole->permissions()->attach($addPermission);
         $this->userWithAdminRole->roles()->attach($adminRole);
@@ -118,21 +116,20 @@ class CreatePermissionsTest extends TestCase
         $this->assertEquals(1, Permission::count());
     }
 
-        /** @test */
-        public function fails_with_permission_already_existing()
-        {
-            $this->actingAs($this->userWithAddPermissionAccess);
+    /** @test */
+    public function fails_with_permission_already_existing()
+    {
+        $this->actingAs($this->userWithAddPermissionAccess);
 
-            $existingPermission = new Permission(['name' => 'already_existing']);
-            $existingPermission->save();
+        $existingPermission = Permission::create(['name' => 'already_existing']);
 
-            $this->assertEquals(2, Permission::count());
-    
-            Livewire::test(CreatePermission::class)
-                ->set('state', ['permission_name' => $existingPermission->name])
-                ->call('addPermission')
-                ->assertHasErrors(['state.permission_name' => 'unique']);
-    
-            $this->assertEquals(2, Permission::count());
-        }
+        $this->assertEquals(2, Permission::count());
+
+        Livewire::test(CreatePermission::class)
+            ->set('state', ['permission_name' => $existingPermission->name])
+            ->call('addPermission')
+            ->assertHasErrors(['state.permission_name' => 'unique']);
+
+        $this->assertEquals(2, Permission::count());
+    }
 }

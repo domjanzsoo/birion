@@ -5,6 +5,7 @@ namespace App\Livewire\Roles;
 use App\Contract\RoleRepositoryInterface;
 use App\Contract\PermissionRepositoryInterface;
 use Livewire\Component;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class Add extends Component
 {
@@ -59,6 +60,10 @@ class Add extends Component
 
     public function addRole(): void
     {
+        if (!access_control()->canAccess(auth()->user(), 'add_role')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add role']));
+        }
+
         $validatedData = $this->validate();
 
         $this->roleRepository->createRole($validatedData['state']['role_name'], $validatedData['state']['permissions']);
