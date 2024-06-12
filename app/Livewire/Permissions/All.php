@@ -5,6 +5,7 @@ namespace App\Livewire\Permissions;
 use Livewire\Component;
 use App\Contract\PermissionRepositoryInterface;
 use Livewire\WithPagination;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class All extends Component
 {
@@ -12,9 +13,9 @@ class All extends Component
 
     public $deleteButtonAccess = false;
     public $pagination = 5;
-
-    public $entity = 'permission';
     public $permissionsToDelete;
+
+    const ENTITY = 'permission';
 
     private $permissionRepository;
 
@@ -27,6 +28,10 @@ class All extends Component
 
     public function render()
     {
+        if (!access_control()->canAccess(auth()->user(), ['view_permissions', 'add_permission', 'edit_permission'])) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'view permission']));
+        }
+
         return view('livewire.permissions.all', [
             'permissions' => $this->permissionRepository->getAllPaginated($this->pagination)
         ]);
@@ -44,7 +49,11 @@ class All extends Component
 
     public function processPermissionCheck(string $entity, array $items)
     {
-        if ($entity === $this->entity) {
+        if (!access_control()->canAccess(auth()->user(), 'delete_permission')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'delete permission']));
+        }
+
+        if ($entity === self::ENTITY) {
             $buttonDisable = false;
 
             foreach ($items as $permission) {
@@ -62,6 +71,10 @@ class All extends Component
 
     public function deletePermissions()
     {
+        if (!access_control()->canAccess(auth()->user(), 'delete_permission')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'delete permission']));
+        }
+
         $permissions = array_keys($this->permissionsToDelete, true);
 
         if (!empty($permissions)) {

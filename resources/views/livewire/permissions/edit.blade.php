@@ -1,4 +1,4 @@
-<form wire:submit="save" class="w-full">
+<form test-id="edit_permissions" wire:submit="save" class="w-full">
     <div class="grid grid-cols-4 gap-1">
         <div class="py-3">
             <x-label for="state.permission_name" value="{{ __('permissions.permission_name') }}" />

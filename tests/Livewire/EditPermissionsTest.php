@@ -17,10 +17,17 @@ class EditPermissionsTest extends TestCase
     private $userWithEditPermissionAccess;
     private $userWithAdminRole;
     private $userWithNoPermission;
+    private $permissionToUpdate;
+
+    const INITIAL_PERMISSION_NAME = 'edit_me';
+    const NEW_PERMISSION_NAME = 'name_updated';
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->permissionToUpdate = new Permission(['name' => self::INITIAL_PERMISSION_NAME]);
+        $this->permissionToUpdate->save();
 
         $this->userWithEditPermissionAccess = User::factory()->create();
         $editPermission = new Permission(['name' => 'edit_permission']);
@@ -39,28 +46,101 @@ class EditPermissionsTest extends TestCase
     }
 
     /** @test */
-    public function renders_sucessfully()
+    public function renders_sucessfully(): void
     {
-        // $this->actingAs($this->userWithEditPermissionAccess);
-        // Livewire::test(EditPermission::class)
-        //     ->assertSeeHtml('<x-input id="permission_name" type="text" class="pt-2 block w-full" wire:model="state.permission_name" value="{{ $state["permission_name"] }}"/>')
-        //     ->assertStatus(200);
+        $this->actingAs($this->userWithEditPermissionAccess);
+        Livewire::test(EditPermission::class)
+            ->assertSeeHtml('test-id="edit_permissions" wire:submit="save"')
+            ->assertStatus(200);
     }
 
     /** @test */
-    public function edits_permission_with_add_permission_permission_granted()
+    public function edits_permission_with_edit_permission_permission_granted(): void
     {
-        // $this->actingAs($this->userWithEditPermissionAccess);
+        $this->actingAs($this->userWithEditPermissionAccess);
 
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::INITIAL_PERMISSION_NAME);
 
-        // Livewire::test(EditPermission::class)
-        //     ->set('state', ['permission_name' => 'test_permissions'])
-        //     ->call('addPermission')
-        //     ->assertDispatched('toastr',
-        //     [
-        //         'type' => 'confirm',
-        //         'message' => trans('notifications.successfull_creation', ['entity' => 'Permission'])
-        //     ])
-        //     ->assertDispatched('permission-added');
+        Livewire::test(EditPermission::class)
+            ->call('handleEditModalData', $this->permissionToUpdate->id, 'permission')
+            ->set("state.permission_name", self::NEW_PERMISSION_NAME)
+            ->call('save')
+            ->assertDispatched('toastr',
+            [
+                'type' => 'confirm',
+                'message' => trans('notifications.successfull_update', ['entity' => 'Permission'])
+            ])
+            ->assertDispatched('permission-edited');
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::NEW_PERMISSION_NAME);
+    }
+
+    /** @test */
+    public function edit_permission_with_edit_permission_permission_granted_through_role(): void
+    {
+        $this->actingAs($this->userWithAdminRole);
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::INITIAL_PERMISSION_NAME);
+    
+        Livewire::test(EditPermission::class)
+            ->call('handleEditModalData', $this->permissionToUpdate->id, 'permission')
+            ->set("state.permission_name", self::NEW_PERMISSION_NAME)
+            ->call('save')
+            ->assertDispatched('toastr',
+            [
+                'type' => 'confirm',
+                'message' => trans('notifications.successfull_update', ['entity' => 'Permission'])
+            ])
+            ->assertDispatched('permission-edited');
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::NEW_PERMISSION_NAME);
+    }
+
+    /** @test */
+    public function edit_permission_with_no_permission_fails(): void
+    {
+        $this->actingAs($this->userWithNoPermission);
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::INITIAL_PERMISSION_NAME);
+
+        Livewire::test(EditPermission::class)
+            ->call('handleEditModalData', $this->permissionToUpdate->id, 'permission')
+            ->set("state.permission_name", self::NEW_PERMISSION_NAME)
+            ->call('save')
+            ->assertForbidden();
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::INITIAL_PERMISSION_NAME);
+    }
+
+    /** @test */
+    public function fails_with_missing_permission_name(): void
+    {
+        $this->actingAs($this->userWithEditPermissionAccess);
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::INITIAL_PERMISSION_NAME);
+
+        Livewire::test(EditPermission::class)
+            ->call('handleEditModalData', $this->permissionToUpdate->id, 'permission')
+            ->set("state.permission_name", '')
+            ->call('save')
+            ->assertHasErrors(['state.permission_name' => 'required']);
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::INITIAL_PERMISSION_NAME);
+    }
+
+    /** @test */
+    public function fails_with_already_existing_permission_name(): void
+    {
+        $this->actingAs($this->userWithEditPermissionAccess);
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::INITIAL_PERMISSION_NAME);
+
+        Livewire::test(EditPermission::class)
+            ->call('handleEditModalData', $this->permissionToUpdate->id, 'permission')
+            ->set("state.permission_name", 'edit_permission')
+            ->call('save')
+            ->assertHasErrors(['state.permission_name' => 'unique']);
+
+        $this->assertEquals(Permission::find($this->permissionToUpdate->id)->name, self::INITIAL_PERMISSION_NAME);
     }
 }

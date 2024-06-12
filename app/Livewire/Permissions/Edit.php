@@ -9,8 +9,9 @@ use Illuminate\Auth\Access\AuthorizationException;
 class Edit extends Component
 {
     private $permissionRepository;
-    private $entity = 'permission';
     public $permission;
+
+    const ENTITY = 'permission';
 
     public $state = [
         'id'    => null,
@@ -48,7 +49,7 @@ class Edit extends Component
 
     public function handleEditModalData($itemId, $entity)
     {
-        if ($entity === $this->entity) {
+        if ($entity === self::ENTITY) {
             $this->permission = $this->permissionRepository->getById($itemId);
 
             $this->state['permission_name'] = $this->permission->name;
@@ -58,10 +59,8 @@ class Edit extends Component
 
     public function save()
     {
-        if (!access_control()->canAccess(auth()->user(), 'add_permission')) {
-            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add permission']));
-
-            return false;
+        if (!access_control()->canAccess(auth()->user(), 'edit_permission')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'edit permission']));
         }
 
         $validatedData = $this->validate();
@@ -69,7 +68,7 @@ class Edit extends Component
         $this->permissionRepository->update($this->permission, ['name' => $validatedData['state']['permission_name']]);
 
         $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'Permission'])]);
-        $this->dispatch($this->entity . '-edited', ['entity' => $this->entity]);
+        $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
 
         return;
     }

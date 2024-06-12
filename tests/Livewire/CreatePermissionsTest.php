@@ -89,7 +89,7 @@ class CreatePermissionsTest extends TestCase
     }
 
     /** @test */
-    public function creates_permission_with_no_permission()
+    public function creates_permission_with_no_permission_fails()
     {
         $this->actingAs($this->userWithNoPermission);
 
