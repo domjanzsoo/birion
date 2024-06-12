@@ -18,14 +18,14 @@ class Edit extends Component
         'permission_name'  => null
     ];
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
             'state.permission_name' => 'required|unique:permissions,name,' . $this->state['id']
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'state.permission_name.required' => trans('validation.required', ['attribute' => 'name']),
@@ -47,7 +47,7 @@ class Edit extends Component
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function handleEditModalData($itemId, $entity)
+    public function handleEditModalData($itemId, $entity): void
     {
         if ($entity === self::ENTITY) {
             $this->permission = $this->permissionRepository->getById($itemId);
@@ -57,7 +57,7 @@ class Edit extends Component
         }
     }
 
-    public function save()
+    public function save(): void
     {
         if (!access_control()->canAccess(auth()->user(), 'edit_permission')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'edit permission']));

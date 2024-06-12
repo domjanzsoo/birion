@@ -1,4 +1,4 @@
-<form wire:submit="save">
+<form test-id="edit_roles" wire:submit="save">
     <div class="md:grid md:grid-cols-6 md:gap-6">
         <div class="col-span-3 sm:col-span-3 text-left">
             <x-label for="state.role_name" value="{{ __('Role Name') }}" />
