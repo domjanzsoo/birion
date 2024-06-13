@@ -57,7 +57,7 @@ class AccessControlService
         return $access;
     }
 
-    public static function getInstance()
+    public static function getInstance(): AccessControlService
     {
         if (self::$instance === null) {
             self::$instance = new AccessControlService();
