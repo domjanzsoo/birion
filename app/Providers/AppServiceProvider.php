@@ -20,8 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // $accessControlInstance = AccessControlService::getInstance();
-
         Blade::if('canAccess', function($expression) {
             eval("\$params = [$expression];");
             list($permissions) = $params;

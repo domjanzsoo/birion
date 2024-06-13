@@ -14,7 +14,9 @@
             @endcanAccess
 
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                @livewire('permissions.all')
+                @canAccess("['view_permissions', 'add_permission', 'edit_permission']")
+                    @livewire('permissions.all')
+                @endcanAccess
             </div>
         </div>
         <x-toaster></x-toaster>
