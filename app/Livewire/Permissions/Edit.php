@@ -4,29 +4,34 @@ namespace App\Livewire\Permissions;
 
 use Livewire\Component;
 use App\Contract\PermissionRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class Edit extends Component
 {
     private $permissionRepository;
-    private $entity = 'permission';
     public $permission;
+
+    const ENTITY = 'permission';
 
     public $state = [
         'id'    => null,
-        'name'  => null
+        'permission_name'  => null
     ];
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
-            'state.name' => 'required|unique:permissions,name,' . $this->state['id']
+            'state.permission_name' => 'required|unique:permissions,name,' . $this->state['id']
         ];
-    } 
+    }
 
-    protected $messages = [
-        'state.name.required' => 'Permission name is required.',
-        'state.name.unique' => 'The permission name given is already used.'
-    ];
+    public function messages(): array
+    {
+        return [
+            'state.permission_name.required' => trans('validation.required', ['attribute' => 'name']),
+            'state.permission_name.unique' => trans('validation.unique', ['attribute' => 'permission name'])
+        ];
+    }
 
     protected $listeners = [
         'open-edit-modal'   => 'handleEditModalData'
@@ -42,24 +47,28 @@ class Edit extends Component
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function handleEditModalData($itemId, $entity)
+    public function handleEditModalData($itemId, $entity): void
     {
-        if ($entity === $this->entity) {
+        if ($entity === self::ENTITY) {
             $this->permission = $this->permissionRepository->getById($itemId);
 
-            $this->state['name'] = $this->permission->name;
+            $this->state['permission_name'] = $this->permission->name;
             $this->state['id'] = $itemId;
         }
     }
 
-    public function save()
+    public function save(): void
     {
+        if (!access_control()->canAccess(auth()->user(), 'edit_permission')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'edit permission']));
+        }
+
         $validatedData = $this->validate();
 
-        $this->permissionRepository->update($this->permission, ['name' => $validatedData['state']['name']]);
+        $this->permissionRepository->update($this->permission, ['name' => $validatedData['state']['permission_name']]);
 
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Permission updated successfully!']);
-        $this->dispatch($this->entity . '-edited', ['entity' => $this->entity]);
+        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'Permission'])]);
+        $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
 
         return;
     }

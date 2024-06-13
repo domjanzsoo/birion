@@ -5,18 +5,19 @@ namespace App\Livewire\Roles;
 use Livewire\Component;
 use App\Contract\RoleRepositoryInterface;
 use App\Contract\PermissionRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class Edit extends Component
 {
     private $roleRepository;
     private $permissionRepository;
-    private $entity = 'role';
+    
+    const ENTITY = 'role';
 
     protected $listeners = [
         'role-permissions'  => 'handlePermissions',
         'open-edit-modal'   => 'handleEditModalData',
         'save-modal-edit'   => 'save'
-
     ];
     
     public array $state = [
@@ -27,19 +28,22 @@ class Edit extends Component
         'id'                    => null
     ];
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
             'state.role_name'           => 'required|unique:roles,name,' . $this->state['id'],
             'state.permission_update'   => 'array',
             'state.id'                  => 'int'
         ];
-    } 
+    }
 
-    protected $messages = [
-        'state.role_name.required' => 'The role name is required.',
-        'state.role_name.unique' => 'A role with the given name already exists.'
-    ];
+    public function messages(): array
+    {
+        return [
+            'state.role_name.required' => trans('validation.required', ['attribute' => 'name']),
+            'state.role_name.unique' => trans('validation.unique', ['attribute' => 'role name'])
+        ];
+    }
 
     public function render()
     {
@@ -57,9 +61,9 @@ class Edit extends Component
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function handleEditModalData($itemId, $entity)
+    public function handleEditModalData($itemId, $entity): void
     {
-        if ($entity === $this->entity) {
+        if ($entity === self::ENTITY) {
             $role = $this->roleRepository->getById($itemId);
 
             $this->state['role_name'] = $role->name;
@@ -83,6 +87,10 @@ class Edit extends Component
 
     public function save(): void
     {
+        if (!access_control()->canAccess(auth()->user(), 'edit_role')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'edit role']));
+        }
+
         $validatedData = $this->validate();
         $role = $this->roleRepository->getById($validatedData['state']['id']);
 
@@ -98,8 +106,8 @@ class Edit extends Component
         $this->state['permission_update'] = [];
         $this->state['id'] = null;
 
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Role edited successfully!']);
-        $this->dispatch($this->entity . '-edited', ['entity' => $this->entity]);
+        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'Role'])]);
+        $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
 
         return;
     }

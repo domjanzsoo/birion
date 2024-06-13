@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE'),
 
     /*
     |--------------------------------------------------------------------------
@@ -173,6 +173,7 @@ return [
 
         // ...other declared providers
         App\Providers\RepositoryServiceProvider::class,
+        App\Providers\GlobalFunctionsServiceProvider::class,
     ])->toArray(),
 
     /*

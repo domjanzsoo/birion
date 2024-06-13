@@ -5,6 +5,7 @@ namespace App\Livewire\Roles;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Contract\RoleRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class All extends Component
 {
@@ -27,6 +28,10 @@ class All extends Component
 
     public function render()
     {
+        if (!access_control()->canAccess(auth()->user(), ['view_roles', 'add_role', 'edit_role'])) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'view role']));
+        }
+
         return view('livewire.roles.all', [
             'roles' => $this->roleRepository->getAllPaginated($this->pagination)
         ]);
@@ -44,6 +49,10 @@ class All extends Component
 
     public function processRoleCheck(string $entity, array $items)
     {
+        if (!access_control()->canAccess(auth()->user(), 'delete_role')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'select role']));
+        }
+
         if ($entity === $this->entity) {
             $buttonDisable = false;
 
@@ -62,6 +71,10 @@ class All extends Component
 
     public function deleteRoles()
     {
+        if (!access_control()->canAccess(auth()->user(), 'delete_role')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'delete role']));
+        }
+
         $roles = array_keys($this->rolesToDelete, true);
 
         if (!empty($roles)) {
@@ -69,12 +82,12 @@ class All extends Component
 
             $this->rolesToDelete = [];
 
-            $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Roles deleted successfully!']);
+            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_deletion', ['entity' => 'Role'])]);
 
             return;
         }
 
-        $this->dispatch('toastr', ['type' => 'error', 'message' => 'No role is provided to delete!']);
+        $this->dispatch('toastr', ['type' => 'error', 'message' => trans('notifications.nothing_provided_to_action', ['entity' => 'Role', 'action' => 'delete'])]);
 
         return;
     }
