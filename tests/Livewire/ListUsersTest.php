@@ -57,4 +57,118 @@ class ListUsersTest extends MainListTestCase
           </span>')
             ->assertStatus(200);
     }
+
+    /** @test */
+    public function renders_sucessfully_with_edit_edit_granted_by_role(): void
+    { 
+        $this->actingAs($this->userWithViewAccessInRole);
+
+        $pageCount = ceil(USer::count() / 5);
+
+        Livewire::test(ListUsers::class)
+            ->assertSeeHtml('<span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+            ' . $pageCount . '
+          </span>')
+            ->assertStatus(200);
+    }
+
+    /** @test */
+    public function fails_to_select_users_checked_with_view_permission(): void
+    {
+        $this->actingAs($this->userWithViewAccess);
+
+        Livewire::test(ListUsers::class)
+            ->call('processItemCheck', 'user', ['1' => true])
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function fails_to_select_users_checked_with_add_permission(): void
+    {
+        $this->actingAs($this->userWithAddAccess);
+
+        Livewire::test(ListUsers::class)
+            ->call('processItemCheck', 'user', ['1' => true])
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function fails_to_select_users_checked_with_edit_permission(): void
+    {
+        $this->actingAs($this->userWithEditAccess);
+
+        Livewire::test(ListUsers::class)
+            ->call('processItemCheck', 'user', ['1' => true])
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function selects_users_checked_with_delete_permission(): void
+    {
+        $this->actingAs($this->userWithDeleteAccess);
+
+        Livewire::test(ListUsers::class)
+            ->call('processItemCheck', 'user', ['1' => true])
+            ->assertSet('deleteButtonAccess', true)
+            ->assertSet('usersToDelete', ['1' => true]);
+    }
+
+    /** @test */
+    public function deselects_users_unchecked(): void
+    {
+        $this->actingAs($this->userWithDeleteAccess);
+
+        Livewire::test(ListUsers::class)
+            ->set('deleteButtonAccess', true)
+            ->call('processItemCheck', 'user', ['1' => false])
+            ->assertSet('deleteButtonAccess', false)
+            ->assertSet('usersToDelete', ['1' => false]);
+    }
+
+    /** @test */
+    public function fails_to_delete_checked_users_with_view_permission(): void
+    {
+        $this->actingAs($this->userWithViewAccess);
+
+        Livewire::test(ListUsers::class)
+            ->call('deleteUsers')
+            ->assertForbidden();
+    }
+
+    /** @test */
+    public function fails_to_delete_checked_users_if_no_permission_is_passed(): void
+    {
+        $this->actingAs($this->userWithDeleteAccess);
+
+        Livewire::test(ListUsers::class)
+            ->set('usersToDelete', [])
+            ->call('deleteUsers')
+            ->assertDispatched('toastr',
+            [
+                'type' => 'error',
+                'message' => trans('notifications.nothing_provided_to_action', ['entity' => 'User', 'action' => 'delete'])
+            ]);
+
+        $this->assertEquals(15, User::count());
+    }
+
+    /** @test */
+    public function deletes_checked_users(): void
+    {
+        $this->actingAs($this->userWithDeleteAccess);
+
+        $firstUserId = User::first()->id;
+
+        Livewire::test(ListUsers::class)
+            ->set('usersToDelete', [ $firstUserId => true, ++$firstUserId => true])
+            ->call('deleteUsers')
+            ->assertDispatched('toastr',
+            [
+                'type' => 'confirm',
+                'message' => trans('notifications.successfull_deletion', ['entity' => 'User'])
+            ])
+            ->assertSet('usersToDelete', []);
+
+        $this->assertEquals(13, User::count());
+    }
 }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -56,7 +58,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $appends = [
-        'profile_photo_url',
+        'profile_photo_url', 'verified'
     ];
 
     public function permissions()
@@ -67,5 +69,12 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function getVerifiedAttribute()
+    {
+        $now = new DateTime();
+        
+        return isset($this->email_verified_at) && $this->email_verified_at->getTimestamp() < $now->getTimestamp() ? 'verified' : 'unverified';
     }
 }

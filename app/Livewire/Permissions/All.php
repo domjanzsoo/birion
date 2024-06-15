@@ -4,7 +4,6 @@ namespace App\Livewire\Permissions;
 
 use App\Livewire\MainList;
 use App\Contract\PermissionRepositoryInterface;
-use Illuminate\Auth\Access\AuthorizationException;
 
 class All extends MainList
 {
@@ -38,9 +37,7 @@ class All extends MainList
 
     public function deletePermissions()
     {
-        if (!access_control()->canAccess(auth()->user(), 'delete_permission')) {
-            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'delete permission']));
-        }
+        $this->authorizeDelete();
 
         $permissions = array_keys($this->permissionsToDelete, true);
 

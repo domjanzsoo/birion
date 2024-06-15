@@ -1,12 +1,16 @@
 @php
     $accessControlDropdown = [
-      'permissions' => [
+        'permissions' => [
             'route'     => route('permissions'),
-            'access'    => ['view_permissions', 'add_permissions', 'edit_permissions']
+            'access'    => ['view_permissions', 'add_permission', 'edit_permission']
         ],
-      'roles'       => [
+        'roles'       => [
             'route'     => route('roles'),
-            'access'    => ['view_roles', 'add_roles', 'edit_roles']
+            'access'    => ['view_roles', 'add_role', 'edit_role']
+        ],
+        'users'       => [
+            'route'     => route('users'),
+            'access'    => ['view_users', 'add_user', 'edit_user']
         ]
     ];
 @endphp

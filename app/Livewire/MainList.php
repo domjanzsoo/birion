@@ -3,8 +3,6 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Contract\BaseRepositoryInterface;
-use App\Contract\PermissionRepositoryInterface;
 use Exception;
 use Livewire\WithPagination;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -43,6 +41,15 @@ class MainList extends Component
     { 
         if (!access_control()->canAccess(auth()->user(), ['view_' . $this->entity . 's', 'add_' . $this->entity, 'edit_' . $this->entity])) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'view ' . $this->entity]));
+        }
+
+        return;
+    }
+
+    protected function authorizeDelete()
+    {
+        if (!access_control()->canAccess(auth()->user(), 'delete_' . $this->entity)) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'delete ' . $this->entity]));
         }
 
         return;

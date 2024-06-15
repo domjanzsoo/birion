@@ -52,6 +52,9 @@
                                 <x-tags :data="$item->$dataProperty->toArray()" tagClasses="max-h-3"/>
                               @endif
                             @break
+                            @case('data-grid')
+                              <x-data-grid :item="$item" :fields="$dataProperty" />
+                            @break
                           @endswitch
                         @endif
                 </div>
