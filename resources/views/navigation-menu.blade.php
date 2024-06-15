@@ -7,10 +7,6 @@
         'roles'       => [
             'route'     => route('roles'),
             'access'    => ['view_roles', 'add_role', 'edit_role']
-        ],
-        'users'       => [
-            'route'     => route('users'),
-            'access'    => ['view_users', 'add_user', 'edit_user']
         ]
     ];
 @endphp
@@ -30,11 +26,18 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('general.dashboard') }}
                     </x-nav-link >
-                    <x-nav-link :dropdown="true" dropdownHeader="{{ __('Access Control') }}" :dropdownElms="$accessControlDropdown" :active="request()->routeIs('permissions')">
-                        {{ __('Access Control') }}
-                    </x-nav-link>
+                    @canAccess("['view_permissions', 'add_permission', 'edit_permission', 'view_roles', 'add_role', 'edit_role']")
+                        <x-nav-link :dropdown="true" dropdownHeader="{{ __('general.access_control') }}" :dropdownElms="$accessControlDropdown" :active="request()->routeIs('permissions')">
+                            {{ __('general.access_control') }}
+                        </x-nav-link>
+                    @endcanAccess
+                    @canAccess("['view_users', 'add_user', 'edit_user']")
+                        <x-nav-link href="{{ route('users') }}" :active="request()->routeIs('users')">
+                            {{ __('general.user_management') }}
+                        </x-nav-link >
+                    @endcanAccess
                 </div>
             </div>
 
