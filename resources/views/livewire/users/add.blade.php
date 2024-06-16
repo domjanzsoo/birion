@@ -1,16 +1,39 @@
-<x-form-section submit="addPermission">
+<x-form-section submit="addUser">
     <x-slot name="title">
-        {{ __('permissions.add') }}
+        {{ __('users.add') }}
     </x-slot>
     <x-slot name="description">
-        {{ __('permissions.add_full') }}
+        {{ __('users.add_full') }}
     </x-slot>
 
     <x-slot name="form">
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="permission_name" value="{{ __('permission_name') }}" />
-            <x-input id="permission_name" type="text" class="mt-1 block w-full" wire:model="state.permission_name" />
-            <x-input-error for="state.permission_name" class="mt-2" />
+        <div>
+            <x-label for="full_name" value="{{ __('users.full_name') }}" />
+            <x-input id="full_name" type="text" class="mt-1 w-72" wire:model="state.full_name"/>
+            <x-input-error for="state.full_name" class="mt-2" />
+        </div>
+        <div>
+            <x-label for="email" value="{{ __('users.email') }}" />
+            <x-input id="email" type="text" class="mt-1 w-72" wire:model="state.email" />
+            <x-input-error for="state.email" class="mt-2" />
+        </div>
+        <div>
+            <x-label for="password" value="{{ __('users.password') }}" />
+            <x-input id="password" type="password" class="mt-1 w-72" wire:model.live="state.password" />
+            <x-input-error for="state.password" class="mt-2 form-control" />
+        </div>
+        <div>
+            <x-label for="confirm_password" value="{{ __('users.confirm_password') }}"/>
+            <x-input id="confirm_password" type="password" class="mt-1 w-72" wire:model.live="state.password_confirmation" />
+            <x-input-error for="state.password_confirmation" class="mt-2" />
+        </div>
+        <div class="flex flex-row justify-end col-span-2 pr-5 mt-6">
+            <x-button @click="show = false" class="bg-gray-dark">
+                {{ __('Cancel') }}
+            </x-button>
+            <x-button x-data x-on:click="addUser" class="bg-blue ml-2">
+                {{ __('Submit') }}
+            </x-button>
         </div>
     </x-slot>
 </x-form-section>

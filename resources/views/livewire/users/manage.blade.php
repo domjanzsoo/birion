@@ -9,7 +9,7 @@
         <div>
             @canAccess('"add_user"')
                 <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                    @livewire('permissions.add')
+                    @livewire('users.add')
                 </div>
             @endcanAccess
 
