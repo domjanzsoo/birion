@@ -10,5 +10,6 @@ return [
     'full_name' => 'Full Name',
     'email' => 'Email Address',
     'password' => 'Password',
-    'confirm_password' => 'Confirm Password'
+    'confirm_password' => 'Confirm Password',
+    'profile_picture' => 'Profile Picture'
 ];

@@ -43,7 +43,10 @@
                             $dispatch('item-selection', {entity: '{{ $entity }}', items: itemsSelected});
                           }"/>
                       @endcanAccess
-                      <span class="ms-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
+                      <div class="flex">
+                      <img class="inline-block h-10 w-10 rounded-full ring-2 ml-4 mb-2 ring-gray" src="{{ $item->profile_photo_path ? asset($item->profile_photo_path) : asset('/storage/avatar/user.png') }}" alt="">
+                        <span class="ms-2 mt-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
+                      </div>
                     </label>
                     @if($extraDataComponent)
                           @switch($extraDataComponent)

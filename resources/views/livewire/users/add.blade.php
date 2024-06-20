@@ -27,6 +27,17 @@
             <x-input id="confirm_password" type="password" class="mt-1 w-72" wire:model.live="state.password_confirmation" />
             <x-input-error for="state.password_confirmation" class="mt-2" />
         </div>
+        <div class="col-span-2 flex">
+            @if ($state['profile_picture'])
+                Photo Preview:
+                <img src="{{ $state['profile_picture']->temporaryUrl() }}">
+            @endif
+            <div>
+                <x-label for="profile_picture" value="{{ __('users.profile_picture') }}"/>
+                <x-input id="profile_picture" type="file" class="mt-1 w-72" wire:model="state.profile_picture" />
+                <x-input-error for="state.profile_picture" class="mt-2" />
+            </div>
+        </div>
         <div class="flex flex-row justify-end col-span-2 pr-5 mt-6">
             <x-button @click="show = false" class="bg-gray-dark">
                 {{ __('Cancel') }}
