@@ -11,5 +11,9 @@ return [
     'email' => 'Email Address',
     'password' => 'Password',
     'confirm_password' => 'Confirm Password',
-    'profile_picture' => 'Profile Picture'
+    'profile_picture' => 'Profile Picture',
+    'profile' => 'Profile',
+    'manage_account' => 'Manage Account',
+    'api_tokens' => 'API Tokens',
+    'log_out' => 'Log Out'
 ];

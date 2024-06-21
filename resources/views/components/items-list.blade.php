@@ -45,7 +45,7 @@
                       @endcanAccess
                       <div @class(['flex' => $withProfileImage])>
                         @if($withProfileImage)
-                          <div class="inline-block h-11 w-11 rounded-full ring-2 ml-4 mb-2 ring-gray bg-center bg-cover bg-no-repeat" style="background-image: url('{{ $item->profile_photo_path ? asset($item->profile_photo_path) : asset('/storage/avatar/user.png') }}')"></div>
+                          <x-profile-img :imgUrl="$item->profile_photo_path" />
                         @endif
                         <span class="ms-2 mt-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
                       </div>
