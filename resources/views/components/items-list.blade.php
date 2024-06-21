@@ -1,4 +1,4 @@
-@props(['title', 'description', 'entity', 'items', 'deleteButtonAccess', 'extraInformation' => null, 'showEditSubmitButton' => false])
+@props(['title', 'description', 'entity', 'items', 'deleteButtonAccess', 'extraInformation' => null, 'showEditSubmitButton' => false, 'withProfileImage' => false])
 
 @php
   $dataProperty = $extraInformation ? $extraInformation['dataProperty'] : null;
@@ -34,7 +34,7 @@
               @endcanAccess
             </li>
             @foreach ($items as $item)
-              <li x-data="{ elmId: {{ $item->id }} }" wire:key="item-{$item->id}" class="flex justify-between gap-x-6 py-5">
+              <li x-data="{ elmId: {{ $item->id }} }" wire:key="item-{$item->id}" class="flex justify-between gap-x-5 pt-4 pb-2">
                 <div class="flex min-w-0 gap-x-4">
                     <label class="flex items-center">
                       @canAccess(json_encode('delete_' . $entity))
@@ -43,8 +43,10 @@
                             $dispatch('item-selection', {entity: '{{ $entity }}', items: itemsSelected});
                           }"/>
                       @endcanAccess
-                      <div class="flex">
-                      <img class="inline-block h-10 w-10 rounded-full ring-2 ml-4 mb-2 ring-gray" src="{{ $item->profile_photo_path ? asset($item->profile_photo_path) : asset('/storage/avatar/user.png') }}" alt="">
+                      <div @class(['flex' => $withProfileImage])>
+                        @if($withProfileImage)
+                          <div class="inline-block h-11 w-11 rounded-full ring-2 ml-4 mb-2 ring-gray bg-center bg-cover bg-no-repeat" style="background-image: url('{{ $item->profile_photo_path ? asset($item->profile_photo_path) : asset('/storage/avatar/user.png') }}')"></div>
+                        @endif
                         <span class="ms-2 mt-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
                       </div>
                     </label>

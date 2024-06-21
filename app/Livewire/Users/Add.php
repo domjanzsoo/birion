@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Contract\UserRepositoryInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
+use Illuminate\Support\Facades\Storage;
 
 class Add extends Component
 {
@@ -85,7 +86,7 @@ class Add extends Component
         if ($this->state['profile_picture']) {
             $profilePictureFileName = md5($user->id) . '.' . $this->state['profile_picture']->extension();
 
-            $this->state['profile_picture']->storeAs('/avatar', $profilePictureFileName, $disk = 'public');
+            $this->state['profile_picture']->storeAs('/avatar', $profilePictureFileName, $disk = config('filesystems.default'));
 
             $user->profile_photo_path = 'storage/avatar/' . $profilePictureFileName;
             $user->save();
