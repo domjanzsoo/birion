@@ -59,7 +59,9 @@ class CreateUsersTest extends TestCase
                     'email' => 'test33.user@email.com',
                     'password' => 'password',
                     'password_confirmation' => 'password',
-                    'profile_picture' => null
+                    'profile_picture' => null,
+                    'permissions' => [],
+                    'roles' => []
                 ])
                 ->call('addUser')
                 ->assertDispatched('toastr',
@@ -67,7 +69,8 @@ class CreateUsersTest extends TestCase
                     'type' => 'confirm',
                     'message' => trans('notifications.successfull_creation', ['entity' => 'User'])
                 ])
-                ->assertDispatched('user-added');
+                ->assertDispatched('user-permissions-submitted')
+                ->assertDispatched('user-roles-submitted');
     
             $this->assertEquals(4, User::count());
         }
