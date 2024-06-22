@@ -15,5 +15,7 @@ return [
     'profile' => 'Profile',
     'manage_account' => 'Manage Account',
     'api_tokens' => 'API Tokens',
-    'log_out' => 'Log Out'
+    'log_out' => 'Log Out',
+    'user_permissions' => 'User Permissions',
+    'user_roles' => 'User Roles'
 ];

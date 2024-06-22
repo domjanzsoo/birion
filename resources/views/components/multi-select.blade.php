@@ -37,7 +37,7 @@
         });
       }
 
-      Livewire.on('role-added', () => {
+      Livewire.on(event + '-submitted', () => {
             selected = {};
         });
     }"

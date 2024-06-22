@@ -5,24 +5,29 @@ namespace App\Livewire\Users;
 use Livewire\Component;
 use Illuminate\Support\Facades\Hash;
 use App\Contract\UserRepositoryInterface;
+use App\Contract\PermissionRepositoryInterface;
+use App\Contract\RoleRepositoryInterface;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\Storage;
 
 class Add extends Component
 {
     use WithFileUploads;
 
     private $userRepository;
+    private $permissionRepository;
+    private $roleRepository;
 
-    public $test;
     public array $state = [
         'full_name'             => null,
         'email'                 => null,
         'password'              => null,
         'password_confirmation' => null,
         'verified'              => false,
-        'profile_picture'       => null
+        'profile_picture'       => null,
+        'permissions'           => [],
+        'roles'                 => []
     ];
 
     protected $rules = [
@@ -30,10 +35,17 @@ class Add extends Component
         'state.email'                   => 'required|email|unique:users,email',
         'state.password'                => 'required|confirmed|min:6|max:2048',
         'state.password_confirmation'   => 'required',
-        'state.profile_picture'         => 'image|max:2048'
+        'state.profile_picture'         => 'image|max:2048|nullable',
+        'state.permissions'             => 'array',
+        'state.roles'                   => 'array'
+        
+    ];
+
+    protected $listeners = [
+        'user-permissions' => 'handlePermissions'
     ];
     
-    public function messages()
+    public function messages(): array
     {
         return [
             'state.permission_name.required' => trans('validation.required', ['attribute' => 'name']),
@@ -47,49 +59,87 @@ class Add extends Component
         ];
     }
 
-    public function updatedStatePassword($value)
+    public function updatedStatePassword(): void
     {
         $this->validateOnly('state.password');
     }
 
-    public function updatedStatePasswordConfirmation($value)
+    public function updatedStatePasswordConfirmation(): void
     {
         $this->validateOnly('state.password');
+    }
+
+    public function handlePermissions(array $selections): void
+    {
+        $this->state['permissions'] = [];
+
+        foreach ($selections as $id => $selection) {
+            if ($selection['selected'] && !in_array($id, $this->state['permissions'])) {
+                array_push($this->state['permissions'], $id);
+            }
+        }
+    }
+
+    public function handleRoles(array $selections): void
+    {
+        $this->state['roles'] = [];
+
+        foreach ($selections as $id => $selection) {
+            if ($selection['selected'] && !in_array($id, $this->state['roles'])) {
+                array_push($this->state['roles'], $id);
+            }
+        }
     }
 
     public function render()
     {
-        return view('livewire.users.add');
+        return view('livewire.users.add', [
+            'permissions'   => $this->permissionRepository->getAll(),
+            'roles'         => $this->roleRepository->getAll()
+        ]);
     }
 
-    public function boot(UserRepositoryInterface $userRepository)
+    public function boot(
+        UserRepositoryInterface $userRepository,
+        PermissionRepositoryInterface $permissionRepository,
+        RoleRepositoryInterface $roleRepository
+    )
     {
         $this->userRepository = $userRepository;
+        $this->permissionRepository = $permissionRepository;
+        $this->roleRepository = $roleRepository;
     }
 
-    public function addUser()
+    public function addUser(): void
     {
         if (!access_control()->canAccess(auth()->user(), 'add_user')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add user']));
         }
 
-        $validatedData = $this->validate();
+        try {
+            $validatedData = $this->validate();
 
-        $user = $this->userRepository->create(
-            [
-                'name'      => $validatedData['state']['full_name'],
-                'email'     => $validatedData['state']['email'],
-                'password'  => Hash::make($validatedData['state']['password'])
-            ]
-        );
+            $user = $this->userRepository->createUser(
+                [
+                    'name'      => $validatedData['state']['full_name'],
+                    'email'     => $validatedData['state']['email'],
+                    'password'  => Hash::make($validatedData['state']['password'])
+                ],
+                $this->state['permissions'],
+                $this->state['roles']
+            );
 
-        if ($this->state['profile_picture']) {
-            $profilePictureFileName = md5($user->id) . '.' . $this->state['profile_picture']->extension();
+            if ($this->state['profile_picture']) {
+                $profilePictureFileName = md5($user->id) . '.' . $this->state['profile_picture']->extension();
+    
+                $this->state['profile_picture']->storeAs('/avatar', $profilePictureFileName, $disk = config('filesystems.default'));
+    
+                $user->profile_photo_path = 'storage/avatar/' . $profilePictureFileName;
+                $user->save();
+            }
 
-            $this->state['profile_picture']->storeAs('/avatar', $profilePictureFileName, $disk = config('filesystems.default'));
-
-            $user->profile_photo_path = 'storage/avatar/' . $profilePictureFileName;
-            $user->save();
+        } catch(Exception $exception) {
+            $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
 
         $this->state['full_name'] = null;
@@ -97,9 +147,12 @@ class Add extends Component
         $this->state['password'] = null;
         $this->state['password_confirmation'] = null;
         $this->state['profile_picture'] = null;
+        $this->state['permissions'] = [];
+        $this->state['roles'] = [];
 
         $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'User'])]);
-        $this->dispatch('user-added');
+        $this->dispatch('user-permissions-submitted');
+        $this->dispatch('user-roles-submitted');
 
         return;
     }

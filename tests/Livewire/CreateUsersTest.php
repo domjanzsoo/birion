@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Permission;
 use App\Models\Role;
 
-class CreatePermissionsTest extends TestCase
+class CreateUsersTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -42,7 +42,33 @@ class CreatePermissionsTest extends TestCase
         $this->actingAs($this->userWithAddPermissionAccess);
         Livewire::test(CreateUser::class)
             ->assertSee(trans('users.add'))
-            ->assertSee(trans('user.add_full'))
+            ->assertSee(trans('users.add_full'))
             ->assertStatus(200);
     }
+
+        /** @test */
+        public function creates_user_with_add_user_permission_granted()
+        {
+            $this->actingAs($this->userWithAddPermissionAccess);
+    
+            $this->assertEquals(3, User::count());
+    
+            Livewire::test(CreateUser::class)
+                ->set('state', [
+                    'full_name' => 'test_user',
+                    'email' => 'test33.user@email.com',
+                    'password' => 'password',
+                    'password_confirmation' => 'password',
+                    'profile_picture' => null
+                ])
+                ->call('addUser')
+                ->assertDispatched('toastr',
+                [
+                    'type' => 'confirm',
+                    'message' => trans('notifications.successfull_creation', ['entity' => 'User'])
+                ])
+                ->assertDispatched('user-added');
+    
+            $this->assertEquals(4, User::count());
+        }
 }

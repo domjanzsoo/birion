@@ -32,13 +32,23 @@
             <x-input id="confirm_password" type="password" class="mt-1 w-72" wire:model.live="state.password_confirmation" />
             <x-input-error for="state.password_confirmation" class="mt-2" />
         </div>
+        <div>
+            <x-label for="state.permissions" value="{{ __('users.user_permissions') }}" />
+            <x-multi-select :options="$permissions" event="user-permissions" />
+            <x-input-error for="state.permissions" class="mt-2" />
+        </div>
+        <div>
+            <x-label for="state.roles" value="{{ __('users.user_roles') }}" />
+            <x-multi-select :options="$roles" event="user-roles" />
+            <x-input-error for="state.roles" class="mt-2" />
+        </div>
         <div class="col-span-2 mt-3">
             <x-label for="profile_picture" value="{{ __('users.profile_picture') }}"/>
             <x-drag-and-drop-upload wire:model="state.profile_picture" class="w-full" fileType='profile-picture' />
             <x-input-error for="state.profile_picture" class="mt-2" />
         </div>
         <div class="flex flex-row justify-end col-span-2 pr-5 mt-6">
-            <x-button x-data x-on:click="addUser" class="bg-blue ml-2">
+            <x-button type="submit" class="bg-blue ml-2">
                 {{ __('general.submit') }}
             </x-button>
         </div>
