@@ -9,10 +9,10 @@
     <x-slot name="form">
         <div class="grid grid-cols-4">
             <div class="mt-3">
-                <x-profile-img :imgUrl="$state['profile_picture'] ? $state['profile_picture']->temporaryUrl() : null" size="16"/>
+                <x-profile-img :imgUrl="$state['profile_picture'] && method_exists($state['profile_picture'], 'temporaryUrl') ? $state['profile_picture']->temporaryUrl() : null" size="16"/>
             </div>
             <div class="col-start-2 col-span-3">
-                <x-label for="full_name" value="{{ __('users.full_name') }}" />
+                <x-label for="state.full_name" value="{{ __('users.full_name') }}" />
                 <x-input id="full_name" type="text" class="mt-1 w-full" wire:model="state.full_name"/>
                 <x-input-error for="state.full_name" class="mt-2" />
             </div>

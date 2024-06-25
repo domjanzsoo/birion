@@ -33,7 +33,7 @@ class Add extends Component
     protected $rules = [
         'state.full_name'               => 'required',
         'state.email'                   => 'required|email|unique:users,email',
-        'state.password'                => 'required|confirmed|min:6|max:2048',
+        'state.password'                => 'required|confirmed|min:6',
         'state.password_confirmation'   => 'required',
         'state.profile_picture'         => 'image|max:2048|nullable',
         'state.permissions'             => 'array',
@@ -48,14 +48,15 @@ class Add extends Component
     public function messages(): array
     {
         return [
-            'state.permission_name.required' => trans('validation.required', ['attribute' => 'name']),
+            'state.full_name.required' => trans('validation.required', ['attribute' => 'name']),
             'state.email.required' => trans('validation.required', ['attribute' => 'email']),
             'state.email.unique' => trans('validation.unique', ['attribute' => 'user email']),
             'state.email.email' => trans('validation.email', ['attribute' => 'user email']),
-            'state.password.required' => trans('validation.required', ['attribute' => 'user email']),
+            'state.password.required' => trans('validation.required', ['attribute' => 'password']),
+            'state.password.min' => trans('validation.min.string', ['attribute' => 'password', 'min' => 6]),
             'state.password.confirmed' => trans('validation.confirmed', ['attribute' => 'password']),
             'state.profile_picture.image' => trans('validation.image', ['attribute' => 'profile picture']),
-            'state.profile_picture.max' => trans('validation.max.file', ['max' => '1024', 'attribute' => 'profile picture'])
+            'state.profile_picture.max' => trans('validation.max.file', ['max' => '2048', 'attribute' => 'profile picture'])
         ];
     }
 
@@ -111,28 +112,28 @@ class Add extends Component
     }
 
     public function addUser(): void
-    {
+    {     
         if (!access_control()->canAccess(auth()->user(), 'add_user')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add user']));
         }
 
-        try {
-            $validatedData = $this->validate();
+        $validatedData = $this->validate();
 
+        try {
             $user = $this->userRepository->createUser(
                 [
                     'name'      => $validatedData['state']['full_name'],
                     'email'     => $validatedData['state']['email'],
                     'password'  => Hash::make($validatedData['state']['password'])
                 ],
-                $this->state['permissions'],
-                $this->state['roles']
+                $validatedData['state']['permissions'],
+                $validatedData['state']['roles']
             );
 
-            if ($this->state['profile_picture']) {
-                $profilePictureFileName = md5($user->id) . '.' . $this->state['profile_picture']->extension();
+            if ($validatedData['state']['profile_picture']) {
+                $profilePictureFileName = md5($user->id) . '.' . $validatedData['state']['profile_picture']->extension();
     
-                $this->state['profile_picture']->storeAs('/avatar', $profilePictureFileName, $disk = config('filesystems.default'));
+                $validatedData['state']['profile_picture']->storeAs('/avatar', $profilePictureFileName, $disk = config('filesystems.default'));
     
                 $user->profile_photo_path = 'storage/avatar/' . $profilePictureFileName;
                 $user->save();
