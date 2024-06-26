@@ -14,6 +14,7 @@
     :deleteButtonAccess="$deleteButtonAccess"
     :extraInformation="$extraInformation"
     :items="$users"
+    :showEditSubmitButton="true"
   />
 </div>
 
