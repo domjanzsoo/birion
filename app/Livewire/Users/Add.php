@@ -37,8 +37,7 @@ class Add extends Component
         'state.password_confirmation'   => 'required',
         'state.profile_picture'         => 'image|max:2048|nullable',
         'state.permissions'             => 'array',
-        'state.roles'                   => 'array'
-        
+        'state.roles'                   => 'array'    
     ];
 
     protected $listeners = [
