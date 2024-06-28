@@ -62,7 +62,7 @@ $maxWidth = [
                 {{ __('Cancel') }}
             </x-button>
             @if ($showSubmit)
-                <x-button x-data x-on:click="$dispatch('save-modal-edit')" class="bg-blue ml-2">
+                <x-button x-data x-on:click="$dispatch('save-modal-edit-{{ $entity }}')" class="bg-blue ml-2">
                     {{ __('Submit') }}
                 </x-button>
             @endif

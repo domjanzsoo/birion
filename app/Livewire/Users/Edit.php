@@ -6,10 +6,14 @@ use Livewire\Component;
 use App\Contract\UserRepositoryInterface;
 use App\Contract\PermissionRepositoryInterface;
 use App\Contract\RoleRepositoryInterface;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Livewire\WithFileUploads;
 
 class Edit extends Component
 {
+    use WithFileUploads;
+
     private $userRepository;
     private $permissionRepository;
     private $roleRepository;
@@ -19,6 +23,7 @@ class Edit extends Component
     const ENTITY = 'user';
 
     public array $state = [
+        'id'                    => null,
         'full_name'             => null,
         'email'                 => null,
         'password'              => null,
@@ -26,18 +31,22 @@ class Edit extends Component
         'verified'              => false,
         'profile_picture'       => null,
         'permissions'           => [],
+        'selected_permissions'  => [],
         'roles'                 => []
     ];
 
-    protected $rules = [
-        'state.full_name'               => 'required',
-        'state.email'                   => 'required|email|unique:users,email',
-        'state.password'                => 'required|confirmed|min:6',
-        'state.password_confirmation'   => 'required',
-        'state.profile_picture'         => 'image|max:2048|nullable',
-        'state.permissions'             => 'array',
-        'state.roles'                   => 'array'
-    ];
+    protected function rules(): array
+    {
+        return [
+            'state.full_name'               => 'required',
+            'state.email'                   => 'required|email|unique:users,email,' . $this->state['id'],
+            'state.password'                => 'confirmed|min:6|nullable',
+            'state.password_confirmation'   => 'min:6|nullable',
+            'state.profile_picture'         => 'image|max:2048|nullable',
+            'state.permissions'             => 'array',
+            'state.roles'                   => 'array'
+        ];
+    }
 
     public function messages(): array
     {
@@ -46,7 +55,6 @@ class Edit extends Component
             'state.email.required' => trans('validation.required', ['attribute' => 'email']),
             'state.email.unique' => trans('validation.unique', ['attribute' => 'user email']),
             'state.email.email' => trans('validation.email', ['attribute' => 'user email']),
-            'state.password.required' => trans('validation.required', ['attribute' => 'password']),
             'state.password.min' => trans('validation.min.string', ['attribute' => 'password', 'min' => 6]),
             'state.password.confirmed' => trans('validation.confirmed', ['attribute' => 'password']),
             'state.profile_picture.image' => trans('validation.image', ['attribute' => 'profile picture']),
@@ -55,7 +63,8 @@ class Edit extends Component
     }
 
     protected $listeners = [
-        'open-edit-modal'   => 'handleEditModalData'
+        'open-edit-modal'       => 'handleEditModalData',
+        'save-modal-edit-user'  => 'save'
     ];
 
     public function render()
@@ -95,7 +104,7 @@ class Edit extends Component
             $this->state['full_name'] = $this->user->name;
             $this->state['email'] = $this->user->email;
             $this->state['profile_picture'] = isset($this->user->profile_photo_path) ? asset($this->user->profile_photo_path) : asset('/storage/avatar/user.png');
-            $this->state['permissions'] = $this->user->permissions()->pluck('permissions.id')->toArray();
+            $this->state['selected_permissions'] = $this->user->permissions;
             $this->state['roles'] = $this->user->roles()->pluck('roles.id')->toArray();
             $this->state['id'] = $itemId;
         }
@@ -109,17 +118,22 @@ class Edit extends Component
 
         $validatedData = $this->validate();
 
-        $this->userRepository->update(
-            $this->user,
-            [
-                'name' => $validatedData['state']['full_name'],
-                'email' => $validatedData['state']['email'],
-                'profile_photo_path' => $validatedData['state']['profile_picture']
-            ]
-        );
+        try {
+            $this->userRepository->update(
+                $this->user,
+                [
+                    'name' => $validatedData['state']['full_name'],
+                    'email' => $validatedData['state']['email'],
+                    'profile_photo_path' => $validatedData['state']['profile_picture']
+                ]
+            );
 
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'User'])]);
-        $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
+            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'User'])]);
+            $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
+        } catch(Exception $exception) {
+            $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
+        }
+
 
         return;
     }

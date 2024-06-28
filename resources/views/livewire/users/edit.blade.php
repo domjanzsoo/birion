@@ -29,7 +29,7 @@
         </div>
         <div class="text-left">
             <x-label for="state.permissions" value="{{ __('users.user_permissions') }}" />
-            <x-multi-select :options="$permissions" event="user-permissions" />
+            <x-multi-select :options="$permissions" event="user-permissions" :selected="$state['selected_permissions']" />
             <x-input-error for="state.permissions" class="mt-2" />
         </div>
         <div class="text-left">

@@ -5,6 +5,7 @@ namespace App\Livewire\Roles;
 use Livewire\Component;
 use App\Contract\RoleRepositoryInterface;
 use App\Contract\PermissionRepositoryInterface;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 
 class Edit extends Component
@@ -15,9 +16,9 @@ class Edit extends Component
     const ENTITY = 'role';
 
     protected $listeners = [
-        'role-permissions'  => 'handlePermissions',
-        'open-edit-modal'   => 'handleEditModalData',
-        'save-modal-edit'   => 'save'
+        'role-permissions'       => 'handlePermissions',
+        'open-edit-modal'        => 'handleEditModalData',
+        'save-modal-edit-role'   => 'save'
     ];
     
     public array $state = [
@@ -92,23 +93,28 @@ class Edit extends Component
         }
 
         $validatedData = $this->validate();
-        $role = $this->roleRepository->getById($validatedData['state']['id']);
 
-        $this->roleRepository->update($role, ['name' => $validatedData['state']['role_name']]);
+        try {
+            $role = $this->roleRepository->getById($validatedData['state']['id']);
 
-        if (!empty($validatedData['state']['permission_update'])) {
-            $this->roleRepository->updatePermissions($role, $validatedData['state']['permission_update']);
+            $this->roleRepository->update($role, ['name' => $validatedData['state']['role_name']]);
+
+            if (!empty($validatedData['state']['permission_update'])) {
+                $this->roleRepository->updatePermissions($role, $validatedData['state']['permission_update']);
+            }
+
+            $this->state['role_name'] = null;
+            $this->state['permissions'] = [];
+            $this->state['selected_permissions'] = [];
+            $this->state['permission_update'] = [];
+            $this->state['id'] = null;
+
+            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'Role'])]);
+            $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
+        } catch (Exception $exception) {
+            $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
-
-        $this->state['role_name'] = null;
-        $this->state['permissions'] = [];
-        $this->state['selected_permissions'] = [];
-        $this->state['permission_update'] = [];
-        $this->state['id'] = null;
-
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'Role'])]);
-        $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
-
+     
         return;
     }
 }
