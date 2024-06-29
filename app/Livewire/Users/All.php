@@ -56,4 +56,9 @@ class All extends MainList
 
         return;
     }
+
+    public function refetchRoles()
+    {
+        $this->users = $this->userRepository->getAllPaginated($this->pagination);
+    }
 }

@@ -37,9 +37,9 @@
         });
       }
 
-      Livewire.on(event + '-submitted', () => {
+      Livewire.on(event + '-cleared', () => {
             selected = {};
-        });
+      });
     }"
     x-data="{
         options: {{ json_encode($options) }},

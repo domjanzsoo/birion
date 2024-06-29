@@ -34,7 +34,7 @@
         </div>
         <div class="text-left">
             <x-label for="state.roles" value="{{ __('users.user_roles') }}" />
-            <x-multi-select :options="$roles" event="user-roles" />
+            <x-multi-select :key="$user ? $user->email : 'none'" :options="$roles" event="user-roles" />
             <x-input-error for="state.roles" class="mt-2" />
         </div>
     </div>

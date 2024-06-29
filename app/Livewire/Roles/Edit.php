@@ -18,6 +18,7 @@ class Edit extends Component
     protected $listeners = [
         'role-permissions'       => 'handlePermissions',
         'open-edit-modal'        => 'handleEditModalData',
+        'modal-closed'           => 'resetFields',
         'save-modal-edit-role'   => 'save'
     ];
     
@@ -69,10 +70,21 @@ class Edit extends Component
 
             $this->state['role_name'] = $role->name;
             $this->state['selected_permissions'] = $role->permissions;
+            $this->state['permission_update'] = $role->permissions;
+            $this->state['permissions'] = $role->permissions->pluck('permissions.id')->toArray();
             $this->state['id'] = $itemId;
         }
 
         return;
+    }
+
+    public function resetFields()
+    {
+        $this->state['role_name'] = null;
+        $this->state['selected_permissions'] = [];
+        $this->state['id'] = null;
+
+        $this->dispatch(self::ENTITY . '-permissions-cleared', ['entity' => self::ENTITY]);
     }
 
     public function handlePermissions(array $selections): void
@@ -103,14 +115,10 @@ class Edit extends Component
                 $this->roleRepository->updatePermissions($role, $validatedData['state']['permission_update']);
             }
 
-            $this->state['role_name'] = null;
-            $this->state['permissions'] = [];
-            $this->state['selected_permissions'] = [];
-            $this->state['permission_update'] = [];
-            $this->state['id'] = null;
+            $this->resetFields();
 
-            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'Role'])]);
             $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
+            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'Role'])]);
         } catch (Exception $exception) {
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }

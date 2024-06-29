@@ -30,7 +30,7 @@ class Edit extends Component
         'password_confirmation' => null,
         'verified'              => false,
         'profile_picture'       => null,
-        'permissions'           => [],
+        'permission_update'     => [],
         'selected_permissions'  => [],
         'roles'                 => []
     ];
@@ -64,6 +64,8 @@ class Edit extends Component
 
     protected $listeners = [
         'open-edit-modal'       => 'handleEditModalData',
+        'role-permissions'      => 'handlePermissions',
+        'modal-closed'          => 'resetFields',
         'save-modal-edit-user'  => 'save'
     ];
 
@@ -104,8 +106,33 @@ class Edit extends Component
             $this->state['full_name'] = $this->user->name;
             $this->state['email'] = $this->user->email;
             $this->state['selected_permissions'] = $this->user->permissions;
-            $this->state['roles'] = $this->user->roles()->pluck('roles.id')->toArray();
+            $this->state['selected_roles'] = $this->user->roles;
+            $this->state['profile_picture'] = null;
             $this->state['id'] = $itemId;
+        }
+    }
+
+    public function resetFields()
+    {
+        $this->user = null;
+        $this->state['full_name'] = null;
+        $this->state['email'] = null;
+        $this->state['selected_permissions'] = [];
+        $this->state['roles'] = [];
+        $this->state['profile_picture'] = null;
+        $this->state['id'] = null;
+
+        $this->dispatch(self::ENTITY . '-permissions-cleared', ['entity' => self::ENTITY]);
+    }
+
+    public function handlePermissions(array $selections): void
+    {
+        $this->state['permission_update'] = [];
+
+        foreach ($selections as $id => $selection) {
+            if ($selection['selected'] && !in_array($id, $this->state['permissions'])) {
+                array_push($this->state['permission_update'], $id);
+            }
         }
     }
 
@@ -118,21 +145,31 @@ class Edit extends Component
         $validatedData = $this->validate();
 
         try {
+            $userUpdateData = [
+                'name' => $validatedData['state']['full_name'],
+                'email' => $validatedData['state']['email']
+            ];
+
+            if ($validatedData['state']['profile_picture']) {
+                $profilePictureFileName = md5($this->user->id) . '.' . $validatedData['state']['profile_picture']->extension();
+    
+                $validatedData['state']['profile_picture']->storeAs(explode('/', config('filesystems.user_profile_image_path'))[1], $profilePictureFileName, $disk = config('filesystems.default'));
+    
+                $userUpdateData['profile_photo_path'] = config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName;
+            }
+
             $this->userRepository->update(
                 $this->user,
-                [
-                    'name' => $validatedData['state']['full_name'],
-                    'email' => $validatedData['state']['email'],
-                    'profile_photo_path' => $validatedData['state']['profile_picture']
-                ]
+                $userUpdateData
             );
+
+            $this->resetFields();
 
             $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'User'])]);
             $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
         } catch(Exception $exception) {
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
-
 
         return;
     }

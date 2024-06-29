@@ -35,12 +35,15 @@ $maxWidth = [
     class="jetstream-modal fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
     style="display: none;"
 >
-    <div x-show="show" class="fixed inset-0 transform transition-all" @click="show = false" x-transition:enter="ease-out duration-300"
-                    x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100"
-                    x-transition:leave="ease-in duration-200"
-                    x-transition:leave-start="opacity-100"
-                    x-transition:leave-end="opacity-0">
+    <div x-show="show" 
+        class="fixed inset-0 transform transition-all" @click="show = false" 
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+    >
         <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
     </div>
 
@@ -58,7 +61,11 @@ $maxWidth = [
             </div>
         </div>
         <div class="flex flex-row justify-end w-full bg-gray-light text-end rounded-b-lg p-3">
-            <x-button @click="show = false" class="bg-gray-dark">
+            <x-button @click="() => {
+                    $dispatch('modal-closed');
+                    show = false;
+                }" 
+                class="bg-gray-dark">
                 {{ __('Cancel') }}
             </x-button>
             @if ($showSubmit)
