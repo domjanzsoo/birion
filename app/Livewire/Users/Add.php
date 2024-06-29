@@ -19,6 +19,8 @@ class Add extends Component
     private $permissionRepository;
     private $roleRepository;
 
+    const ENTITY = 'user';
+
     public array $state = [
         'full_name'             => null,
         'email'                 => null,
@@ -132,12 +134,11 @@ class Add extends Component
             if ($validatedData['state']['profile_picture']) {
                 $profilePictureFileName = md5($user->id) . '.' . $validatedData['state']['profile_picture']->extension();
     
-                $validatedData['state']['profile_picture']->storeAs('/avatar', $profilePictureFileName, $disk = config('filesystems.default'));
+                $validatedData['state']['profile_picture']->storeAs(explode('/', config('filesystems.user_profile_image_path'))[1], $profilePictureFileName, $disk = config('filesystems.default'));
     
-                $user->profile_photo_path = 'storage/avatar/' . $profilePictureFileName;
+                $user->profile_photo_path = config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName;
                 $user->save();
             }
-
         } catch(Exception $exception) {
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
@@ -151,6 +152,7 @@ class Add extends Component
         $this->state['roles'] = [];
 
         $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'User'])]);
+        $this->dispatch(self::ENTITY . '-added');
         $this->dispatch('user-permissions-submitted');
         $this->dispatch('user-roles-submitted');
 

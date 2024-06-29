@@ -2,9 +2,9 @@
     <div class="grid grid-cols-2 gap-3">
         <div class="grid grid-cols-3">
             <div class="mt-3">
-                <x-profile-img :changable="true" wire:model="state.profile_picture" :imgUrl="is_string($state['profile_picture']) ? $state['profile_picture'] : (
-                    isset($state['profile_picture']) && method_exists($state['profile_picture'], 'temporaryUrl') ? $state['profile_picture']->temporaryUrl() : null
-                )" size="16"/>
+                <x-profile-img :changable="true" wire:model="state.profile_picture" :imgUrl="isset($state['profile_picture']) && method_exists($state['profile_picture'], 'temporaryUrl') ? 
+                $state['profile_picture']->temporaryUrl() : 
+                $user->profile_photo_path ?? asset(config('filesystems.user_profile_image_path') . '/user.png')" size="16"/>
             </div>
             <div class="col-start-2 col-span-2 text-left">
                 <x-label for="state.full_name" value="{{ __('users.full_name') }}" />

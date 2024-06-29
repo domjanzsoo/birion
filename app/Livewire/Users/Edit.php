@@ -103,7 +103,6 @@ class Edit extends Component
 
             $this->state['full_name'] = $this->user->name;
             $this->state['email'] = $this->user->email;
-            $this->state['profile_picture'] = isset($this->user->profile_photo_path) ? asset($this->user->profile_photo_path) : asset('/storage/avatar/user.png');
             $this->state['selected_permissions'] = $this->user->permissions;
             $this->state['roles'] = $this->user->roles()->pluck('roles.id')->toArray();
             $this->state['id'] = $itemId;

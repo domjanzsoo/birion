@@ -9,7 +9,7 @@
     <x-slot name="form">
         <div class="grid grid-cols-4">
             <div class="mt-3">
-                <x-profile-img :imgUrl="$state['profile_picture'] && method_exists($state['profile_picture'], 'temporaryUrl') ? $state['profile_picture']->temporaryUrl() : asset('/storage/avatar/user.png')" size="16"/>
+                <x-profile-img :imgUrl="$state['profile_picture'] && method_exists($state['profile_picture'], 'temporaryUrl') ? $state['profile_picture']->temporaryUrl() : asset(config('filesystems.user_profile_image_path') . '/user.png')" size="16"/>
             </div>
             <div class="col-start-2 col-span-3">
                 <x-label for="state.full_name" value="{{ __('users.full_name') }}" />
