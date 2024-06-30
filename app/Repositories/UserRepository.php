@@ -28,4 +28,12 @@ class UserRepository extends BaseRepository implements ContractUserRepositoryInt
 
       return $user;
    }
+
+   public function updatePermissions(User $user, array $permissions): User
+    {
+      dd('permissions will be sunced');
+        $user->permissions()->sync($permissions);
+
+        return $user;
+    }
 }

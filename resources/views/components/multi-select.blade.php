@@ -37,6 +37,10 @@
         });
       }
 
+      Livewire.on(event + '-submitted', () => {
+            selected = {};
+      });
+
       Livewire.on(event + '-cleared', () => {
             selected = {};
       });

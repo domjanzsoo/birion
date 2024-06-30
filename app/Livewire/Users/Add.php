@@ -143,6 +143,17 @@ class Add extends Component
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
 
+        $this->resetFields();
+
+        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'User'])]);
+        $this->dispatch(self::ENTITY . '-added');
+        $this->dispatch('user-roles-submitted');
+
+        return;
+    }
+
+    public function resetFields()
+    {
         $this->state['full_name'] = null;
         $this->state['email'] = null;
         $this->state['password'] = null;
@@ -151,11 +162,6 @@ class Add extends Component
         $this->state['permissions'] = [];
         $this->state['roles'] = [];
 
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'User'])]);
-        $this->dispatch(self::ENTITY . '-added');
-        $this->dispatch('user-permissions-submitted');
-        $this->dispatch('user-roles-submitted');
-
-        return;
+        $this->dispatch('user-permissions-cleared');
     }
 }
