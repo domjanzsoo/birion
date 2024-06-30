@@ -33,6 +33,15 @@ class UserRepository extends BaseRepository implements ContractUserRepositoryInt
     {
         $user->permissions()->sync($permissions);
 
+        $user->save();
+
+        return $user;
+    }
+
+    public function updateRoles(User $user, array $permissions): User
+    {
+        $user->roles()->sync($permissions);
+
         return $user;
     }
 }

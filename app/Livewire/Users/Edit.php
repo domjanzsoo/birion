@@ -33,7 +33,8 @@ class Edit extends Component
         'profile_picture'       => null,
         'permission_update'     => [],
         'selected_permissions'  => [],
-        'roles'                 => []
+        'role_update'           => [],
+        'selected_roles'        => []
     ];
 
     protected function rules(): array
@@ -44,8 +45,8 @@ class Edit extends Component
             'state.password'                => 'confirmed|min:6|nullable',
             'state.password_confirmation'   => 'min:6|nullable',
             'state.profile_picture'         => 'image|max:2048|nullable',
-            'state.permission_update'       => 'array',
-            'state.roles'                   => 'array'
+            'state.permission_update'       => 'array|nullable',
+            'state.role_update'             => 'array|nullable',
         ];
     }
 
@@ -66,6 +67,7 @@ class Edit extends Component
     protected $listeners = [
         'open-edit-modal'       => 'handleEditModalData',
         'user-permissions'      => 'handlePermissions',
+        'user-roles'            => 'handleRoles',
         'modal-closed'          => 'resetFields',
         'save-modal-edit-user'  => 'save'
     ];
@@ -107,9 +109,9 @@ class Edit extends Component
             $this->state['full_name'] = $this->user->name;
             $this->state['email'] = $this->user->email;
             $this->state['selected_permissions'] = $this->user->permissions;
-            $this->state['permission_update'] = $this->user->permissions;
-            $this->state['permissions'] = $this->user->permissions->pluck('permissions.id')->toArray();
+            $this->state['permission_update'] = [];
             $this->state['selected_roles'] = $this->user->roles;
+            $this->state['role_update'] = [];
             $this->state['profile_picture'] = null;
             $this->state['id'] = $itemId;
         }
@@ -121,7 +123,6 @@ class Edit extends Component
         $this->state['full_name'] = null;
         $this->state['email'] = null;
         $this->state['selected_permissions'] = [];
-        $this->state['roles'] = [];
         $this->state['profile_picture'] = null;
         $this->state['id'] = null;
 
@@ -133,8 +134,19 @@ class Edit extends Component
         $this->state['permission_update'] = [];
 
         foreach ($selections as $id => $selection) {
-            if ($selection['selected'] && !in_array($id, $this->state['permissions'])) {
+            if ($selection['selected']) {
                 array_push($this->state['permission_update'], $id);
+            }
+        }
+    }
+
+    public function handleRoles(array $selections): void
+    {
+        $this->state['role_update'] = [];
+
+        foreach ($selections as $id => $selection) {
+            if ($selection['selected']) {
+                array_push($this->state['role_update'], $id);
             }
         }
     }
@@ -170,6 +182,10 @@ class Edit extends Component
 
             if (!empty($validatedData['state']['permission_update'])) {
                 $this->userRepository->updatePermissions($this->user, $validatedData['state']['permission_update']);
+            }
+
+            if (!empty($validatedData['state']['role_update'])) {
+                $this->userRepository->updateRoles($this->user, $validatedData['state']['role_update']);
             }
 
             $this->resetFields();

@@ -30,12 +30,12 @@
         <div class="text-left">
             <x-label for="state.permissions" value="{{ __('users.user_permissions') }}" />
             <x-multi-select :options="$permissions" event="user-permissions" :selected="$state['selected_permissions']" />
-            <x-input-error for="state.permissions" class="mt-2" />
+            <x-input-error for="state.permission_update" class="mt-2" />
         </div>
         <div class="text-left">
             <x-label for="state.roles" value="{{ __('users.user_roles') }}" />
-            <x-multi-select :key="$user ? $user->email : 'none'" :options="$roles" event="user-roles" />
-            <x-input-error for="state.roles" class="mt-2" />
+            <x-multi-select :options="$roles" event="user-roles" />
+            <x-input-error for="state.role_update" class="mt-2" />
         </div>
     </div>
 </form>
