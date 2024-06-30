@@ -7,6 +7,7 @@ use App\Contract\UserRepositoryInterface;
 use App\Contract\PermissionRepositoryInterface;
 use App\Contract\RoleRepositoryInterface;
 use Exception;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
 use DateTime;
@@ -164,6 +165,10 @@ class Edit extends Component
                 'name' => $validatedData['state']['full_name'],
                 'email' => $validatedData['state']['email']
             ];
+
+            if ($validatedData['state']['password']) {
+                $userUpdateData['password'] = Hash::make($validatedData['state']['password']);
+            }
 
             if ($validatedData['state']['profile_picture']) {
                 $currentDateTime = new DateTime();
