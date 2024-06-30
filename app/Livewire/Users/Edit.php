@@ -44,7 +44,7 @@ class Edit extends Component
             'state.password'                => 'confirmed|min:6|nullable',
             'state.password_confirmation'   => 'min:6|nullable',
             'state.profile_picture'         => 'image|max:2048|nullable',
-            'state.permissions'             => 'array',
+            'state.permission_update'       => 'array',
             'state.roles'                   => 'array'
         ];
     }
@@ -65,7 +65,7 @@ class Edit extends Component
 
     protected $listeners = [
         'open-edit-modal'       => 'handleEditModalData',
-        'role-permissions'      => 'handlePermissions',
+        'user-permissions'      => 'handlePermissions',
         'modal-closed'          => 'resetFields',
         'save-modal-edit-user'  => 'save'
     ];
