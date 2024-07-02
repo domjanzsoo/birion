@@ -11,13 +11,29 @@ class All extends MainList
 
     const ENTITY = 'user';
 
+    public $extraInformation = [
+        'component' => 'data-grid',
+        'dataProperty' => [
+          'email', 
+          'verified',
+          'user_permission_list' => [
+            'componentName'     => 'info-tooltip',
+            'attributes'        => [
+              'information'     => 'user_permissions_list',
+              'label'           => '[all_user_permissions_count] permissions',
+              'refreshEvent'    => 'user-edited'
+            ]
+          ]
+        ],
+      ];
+
     protected $userRepository;
 
     protected $listeners = [
         'delete-users'    => 'deleteUsers',
         'user-added'      => 'refetch',
+        'user-edited'     => 'refetchUsers',
         'item-selection'  => 'processItemCheck',
-        'user-edited'     => 'refetchUsers'
     ];
 
     public function render()
@@ -32,6 +48,7 @@ class All extends MainList
     public function boot(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
+        $this->extraInformation['enityType'] = self::ENTITY;
 
         parent::preBoot();
     }
@@ -57,7 +74,7 @@ class All extends MainList
         return;
     }
 
-    public function refetchRoles()
+    public function refetchUsers()
     {
         $this->users = $this->userRepository->getAllPaginated($this->pagination);
     }

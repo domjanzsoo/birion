@@ -10,7 +10,13 @@
               'pb-2',
               'border-l-2' => $index
           ])>
-      <span class="mb-2"> {{ $item->$field }} </span>
+          <span class="mb-2">
+            @if (gettype($field) === 'array')
+              <x-dynamic-component :component="$field['componentName']" :entity="$item" {{ $attributes->merge($field['attributes']) }}  class="mt-4" />
+            @else
+              {{ $item->$field }} 
+            @endif
+          </span>
     </div>
   @endforeach
 </div>

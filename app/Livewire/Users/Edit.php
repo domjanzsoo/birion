@@ -195,8 +195,8 @@ class Edit extends Component
 
             $this->resetFields();
 
-            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'User'])]);
             $this->dispatch(self::ENTITY . '-edited', ['entity' => self::ENTITY]);
+            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_update', ['entity' => 'User'])]);
         } catch(Exception $exception) {
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }

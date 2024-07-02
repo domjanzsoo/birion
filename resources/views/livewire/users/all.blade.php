@@ -1,10 +1,3 @@
-@php
-  $extraInformation = [
-    'component' => 'data-grid',
-    'dataProperty' => ['email', 'verified']
-  ];
-@endphp
-
 <div>
   <x-items-list
     entity="{{__('users.user_entity')}}"
