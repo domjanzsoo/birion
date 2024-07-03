@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
 use DateTime;
+use Illuminate\Validation\Rules\Password;
 
 class Edit extends Component
 {
@@ -43,8 +44,8 @@ class Edit extends Component
         return [
             'state.full_name'               => 'required',
             'state.email'                   => 'required|email|unique:users,email,' . $this->state['id'],
-            'state.password'                => 'confirmed|min:6|nullable',
-            'state.password_confirmation'   => 'min:6|nullable',
+            'state.password'                => ['confirmed', 'nullable', Password::min(6)->mixedCase()->symbols()],
+            'state.password_confirmation'   => 'nullable',
             'state.profile_picture'         => 'image|max:2048|nullable',
             'state.permission_update'       => 'array|nullable',
             'state.role_update'             => 'array|nullable',

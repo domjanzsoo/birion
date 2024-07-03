@@ -38,7 +38,7 @@ class Add extends Component
         return [
             'state.full_name'               => 'required',
             'state.email'                   => 'required|email|unique:users,email',
-            'state.password'                => ['required', Password::min(6)->mixedCase()->symbols()],
+            'state.password'                => ['required', 'confirmed', Password::min(6)->mixedCase()->symbols()],
             'state.password_confirmation'   => 'required',
             'state.profile_picture'         => 'image|max:2048|nullable',
             'state.permissions'             => 'array',

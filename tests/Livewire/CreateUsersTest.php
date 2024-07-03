@@ -58,8 +58,8 @@ class CreateUsersTest extends TestCase
             ->set('state', [
                 'full_name' => 'test_user',
                 'email' => 'test33.user@email.com',
-                'password' => 'password',
-                'password_confirmation' => 'password',
+                'password' => 'Password!',
+                'password_confirmation' => 'Password!',
                 'profile_picture' => null,
                 'permissions' => [],
                 'roles' => []
@@ -87,8 +87,8 @@ class CreateUsersTest extends TestCase
             ->set('state', [
                 'full_name' => 'test_user',
                 'email' => 'test33.user@email.com',
-                'password' => 'password',
-                'password_confirmation' => 'password',
+                'password' => 'Password!',
+                'password_confirmation' => 'Password!',
                 'profile_picture' => null,
                 'permissions' => [],
                 'roles' => []
@@ -209,16 +209,39 @@ class CreateUsersTest extends TestCase
                 'full_name' => 'Joe Doe',
                 'email' => 'test33.user@email.com',
                 'password' => 'passw',
-                'password_confirmation' => 'password',
+                'password_confirmation' => 'passw',
                 'profile_picture' => null,
                 'permissions' => [],
                 'roles' => []
             ])
             ->call('addUser')
-            ->assertHasErrors(['state.password' => 'min']);
+            ->assertHasErrors();
 
         $this->assertEquals(3, User::count());
     }
+
+      /** @test */
+      public function fails_with_invalid_password_on_missing_camel_case()
+      {
+          $this->actingAs($this->userWithAddPermissionAccess);
+  
+          $this->assertEquals(3, User::count());
+  
+          Livewire::test(CreateUser::class)
+              ->set('state', [
+                  'full_name' => 'Joe Doe',
+                  'email' => 'test33.user@email.com',
+                  'password' => 'password',
+                  'password_confirmation' => 'password',
+                  'profile_picture' => null,
+                  'permissions' => [],
+                  'roles' => []
+              ])
+              ->call('addUser')
+              ->assertHasErrors();
+  
+          $this->assertEquals(3, User::count());
+      }
 
     /** @test */
     public function fails_with_missing_password()
@@ -254,7 +277,7 @@ class CreateUsersTest extends TestCase
             ->set('state', [
                 'full_name' => null,
                 'email' => 'test33.user@email.com',
-                'password' => 'password',
+                'password' => 'Password!',
                 'password_confirmation' => 'password-different',
                 'profile_picture' => null,
                 'permissions' => [],
@@ -307,8 +330,8 @@ class CreateUsersTest extends TestCase
             ->set('state', [
                 'full_name' => 'test_user',
                 'email' => 'test33.user@email.com',
-                'password' => 'password',
-                'password_confirmation' => 'password',
+                'password' => 'Password!',
+                'password_confirmation' => 'Password!',
                 'profile_picture' => null,
                 'permissions' => [$permission1->id, $permission2->id],
                 'roles' => []
@@ -336,8 +359,8 @@ class CreateUsersTest extends TestCase
     {
         $this->actingAs($this->userWithAddPermissionAccess);
 
-        $role1 = Permission::create(['name' => 'test1']);
-        $role2 = Permission::create(['name' => 'test2']);
+        $role1 = Role::create(['name' => 'test1']);
+        $role2 = Role::create(['name' => 'test2']);
 
         $this->assertEquals(3, User::count());
 
@@ -345,11 +368,11 @@ class CreateUsersTest extends TestCase
             ->set('state', [
                 'full_name' => 'test_user',
                 'email' => 'test33.user@email.com',
-                'password' => 'password',
-                'password_confirmation' => 'password',
+                'password' => 'Password!',
+                'password_confirmation' => 'Password!',
                 'profile_picture' => null,
-                'permissions' => [$role1->id, $role2->id],
-                'roles' => []
+                'roles' => [$role1->id, $role2->id],
+                'permissions' => []
             ])
             ->call('addUser')
             ->assertDispatched('toastr',
@@ -362,9 +385,9 @@ class CreateUsersTest extends TestCase
 
         $newUser = User::where(['name' => 'test_user'])->first();
 
-        $this->assertEquals(2, $newUser->permissions->count());
-        $this->assertContains($role1->id, $newUser->permissions->pluck('id')->toArray());
-        $this->assertContains($role2->id, $newUser->permissions->pluck('id')->toArray());
+        $this->assertEquals(2, $newUser->roles->count());
+        $this->assertContains($role1->id, $newUser->roles()->pluck('roles.id')->toArray());
+        $this->assertContains($role2->id, $newUser->roles()->pluck('roles.id')->toArray());
 
         $this->assertEquals(4, User::count());
     }
