@@ -70,7 +70,7 @@ class Edit extends Component
 
             $this->state['role_name'] = $role->name;
             $this->state['selected_permissions'] = $role->permissions;
-            $this->state['permission_update'] = $role->permissions;
+            $this->state['permission_update'] = $role->permissions()->pluck('permissions.id')->toArray();
             $this->state['permissions'] = $role->permissions->pluck('permissions.id')->toArray();
             $this->state['id'] = $itemId;
         }
@@ -111,9 +111,7 @@ class Edit extends Component
 
             $this->roleRepository->update($role, ['name' => $validatedData['state']['role_name']]);
 
-            if (!empty($validatedData['state']['permission_update'])) {
-                $this->roleRepository->updatePermissions($role, $validatedData['state']['permission_update']);
-            }
+            $this->roleRepository->updatePermissions($role, $validatedData['state']['permission_update']);
 
             $this->resetFields();
 

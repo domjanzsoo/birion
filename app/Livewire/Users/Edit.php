@@ -110,9 +110,9 @@ class Edit extends Component
             $this->state['full_name'] = $this->user->name;
             $this->state['email'] = $this->user->email;
             $this->state['selected_permissions'] = $this->user->permissions;
-            $this->state['permission_update'] = [];
+            $this->state['permission_update'] = $this->user->permissions()->pluck('permissions.id')->toArray();
             $this->state['selected_roles'] = $this->user->roles;
-            $this->state['role_update'] = [];
+            $this->state['role_update'] = $this->user->roles()->pluck('roles.id')->toArray();
             $this->state['profile_picture'] = null;
             $this->state['id'] = $itemId;
         }
@@ -185,13 +185,9 @@ class Edit extends Component
                 $userUpdateData
             );
 
-            if (!empty($validatedData['state']['permission_update'])) {
-                $this->userRepository->updatePermissions($this->user, $validatedData['state']['permission_update']);
-            }
+            $this->userRepository->updatePermissions($this->user, $validatedData['state']['permission_update']);
 
-            if (!empty($validatedData['state']['role_update'])) {
-                $this->userRepository->updateRoles($this->user, $validatedData['state']['role_update']);
-            }
+            $this->userRepository->updateRoles($this->user, $validatedData['state']['role_update']);
 
             $this->resetFields();
 

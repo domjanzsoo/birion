@@ -59,7 +59,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $appends = [
-        'profile_photo_url', 'verified', 'user_permissions_list', 'all_user_permissions_count'
+        'profile_photo_url',
+        'verified',
+        'user_permissions_list',
+        'all_user_permissions_count',
+        'all_user_roles_count',
+        'user_roles_list'
     ];
 
     public function permissions()
@@ -72,7 +77,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function getVerifiedAttribute()
+    public function getVerifiedAttribute(): string
     {
         $now = new DateTime();
         
@@ -99,5 +104,17 @@ class User extends Authenticatable
     public function getUserPermissionsListAttribute(): string
     {
         return implode(', ', $this->getAllUserPermissions());
+    }
+
+    public function getAllUserRolesCountAttribute(): int
+    {
+        return $this->roles->count();
+    }
+
+    public function getUserRolesListAttribute(): string
+    {
+        $roles = $this->roles()->pluck('roles.name')->toArray();
+
+        return implode(', ', $roles);
     }
 }

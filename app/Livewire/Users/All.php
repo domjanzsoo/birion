@@ -23,6 +23,14 @@ class All extends MainList
               'label'           => '[all_user_permissions_count] permissions',
               'refreshEvent'    => 'user-edited'
             ]
+          ],
+          'user_roles_list' => [
+            'componentName'     => 'info-tooltip',
+            'attributes'        => [
+              'information'     => 'user_roles_list',
+              'label'           => '[all_user_roles_count] roles',
+              'refreshEvent'    => 'user-edited'
+            ]
           ]
         ],
       ];
