@@ -10,6 +10,7 @@ use App\Contract\RoleRepositoryInterface;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
+use Illuminate\Validation\Rules\Password;
 
 class Add extends Component
 {
@@ -32,15 +33,18 @@ class Add extends Component
         'roles'                 => []
     ];
 
-    protected $rules = [
-        'state.full_name'               => 'required',
-        'state.email'                   => 'required|email|unique:users,email',
-        'state.password'                => 'required|confirmed|min:6',
-        'state.password_confirmation'   => 'required',
-        'state.profile_picture'         => 'image|max:2048|nullable',
-        'state.permissions'             => 'array',
-        'state.roles'                   => 'array'    
-    ];
+    public function rules(): array 
+    {
+        return [
+            'state.full_name'               => 'required',
+            'state.email'                   => 'required|email|unique:users,email',
+            'state.password'                => ['required', Password::min(6)->mixedCase()->symbols()],
+            'state.password_confirmation'   => 'required',
+            'state.profile_picture'         => 'image|max:2048|nullable',
+            'state.permissions'             => 'array',
+            'state.roles'                   => 'array'    
+        ];
+    } 
 
     protected $listeners = [
         'user-permissions' => 'handlePermissions'
@@ -56,6 +60,7 @@ class Add extends Component
             'state.password.required' => trans('validation.required', ['attribute' => 'password']),
             'state.password.min' => trans('validation.min.string', ['attribute' => 'password', 'min' => 6]),
             'state.password.confirmed' => trans('validation.confirmed', ['attribute' => 'password']),
+            'state.password_confirmation.required' => trans('validation.required', ['attribute' => 'password confirmation']),
             'state.profile_picture.image' => trans('validation.image', ['attribute' => 'profile picture']),
             'state.profile_picture.max' => trans('validation.max.file', ['max' => '2048', 'attribute' => 'profile picture'])
         ];
