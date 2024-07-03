@@ -70,7 +70,7 @@ class CreateUsersTest extends TestCase
                 'type' => 'confirm',
                 'message' => trans('notifications.successfull_creation', ['entity' => 'User'])
             ])
-            ->assertDispatched('user-permissions-submitted')
+            ->assertDispatched('user-permissions-cleared')
             ->assertDispatched('user-roles-submitted');
 
         $this->assertEquals(4, User::count());
@@ -99,7 +99,7 @@ class CreateUsersTest extends TestCase
                 'type' => 'confirm',
                 'message' => trans('notifications.successfull_creation', ['entity' => 'User'])
             ])
-            ->assertDispatched('user-permissions-submitted')
+            ->assertDispatched('user-permissions-cleared')
             ->assertDispatched('user-roles-submitted');
 
         $this->assertEquals(4, User::count());
@@ -266,7 +266,6 @@ class CreateUsersTest extends TestCase
         $this->assertEquals(3, User::count());
     }
 
-    /** @test */
     // TO-DO NEEDS FIXING
     // public function fails_with_oversized_profile_image()
     // {
@@ -320,7 +319,7 @@ class CreateUsersTest extends TestCase
                 'type' => 'confirm',
                 'message' => trans('notifications.successfull_creation', ['entity' => 'User'])
             ])
-            ->assertDispatched('user-permissions-submitted')
+            ->assertDispatched('user-permissions-cleared')
             ->assertDispatched('user-roles-submitted');
 
         $newUser = User::where(['name' => 'test_user'])->first();
@@ -358,7 +357,7 @@ class CreateUsersTest extends TestCase
                 'type' => 'confirm',
                 'message' => trans('notifications.successfull_creation', ['entity' => 'User'])
             ])
-            ->assertDispatched('user-permissions-submitted')
+            ->assertDispatched('user-permissions-cleared')
             ->assertDispatched('user-roles-submitted');
 
         $newUser = User::where(['name' => 'test_user'])->first();
