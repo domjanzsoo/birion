@@ -9,7 +9,6 @@ use App\Livewire\Users\Add as CreateUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Permission;
 use App\Models\Role;
-use Illuminate\Http\UploadedFile;
 
 class CreateUsersTest extends TestCase
 {

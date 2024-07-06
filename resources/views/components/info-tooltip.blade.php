@@ -20,8 +20,6 @@
 
             Livewire.on(this.refreshEvent, () => {
                 this.entity = {{ json_encode($entity) }}
-                console.log('tooltip to refresh');
-                console.log(this.entity);
 
                 this.replaceInformationData();
             });
