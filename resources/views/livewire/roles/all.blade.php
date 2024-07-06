@@ -8,7 +8,7 @@
 <div>
   <x-items-list
     entity="{{__('role')}}"
-    title="{{__('roles')}}"
+    title="{{__('roles.roles')}}"
     description="{{ __('roles.roles_full') }}"
     :deleteButtonAccess="$deleteButtonAccess"
     :items="$roles"
