@@ -37,9 +37,13 @@
         });
       }
 
-      Livewire.on('role-added', () => {
+      Livewire.on(event + '-submitted', () => {
             selected = {};
-        });
+      });
+
+      Livewire.on(event + '-cleared', () => {
+            selected = {};
+      });
     }"
     x-data="{
         options: {{ json_encode($options) }},

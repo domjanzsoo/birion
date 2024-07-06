@@ -72,6 +72,7 @@ class Add extends Component
         $this->state['permissions'] = [];
 
         $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Role created successfully!']);
+        $this->dispatch('role-permissions-submitted');
         $this->dispatch('role-added');
 
         return;

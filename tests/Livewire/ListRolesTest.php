@@ -2,60 +2,34 @@
 
 namespace Tests\Livewire;
 
-use App\Models\User;
 use Livewire\Livewire;
-use Tests\TestCase;
 use App\Livewire\Roles\All as ListRoles;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Role;
-use App\Models\Permission;
 
-class ListRolesTest extends TestCase
+class ListRolesTest extends MainListTestCase
 {
-    use RefreshDatabase;
+    protected $entityModel = [
+        'entity'    => 'role',
+        'className' => Role::class,
+        'fields'    => [
+            ['name' => 'test1'],
+            ['name' => 'test2'],
+            ['name' => 'test3'],
+            ['name' => 'test4'],
+            ['name' => 'test5'],
+            ['name' => 'test6'],
+            ['name' => 'test7'],
+            ['name' => 'test8'],
+            ['name' => 'test9'],
+            ['name' => 'test10'],
+        ]
+    ];
 
-    private $userWithViewRolesAccess;
-    private $userWithEditRoleAccess;
-    private $userWithAddRoleAccess;
-    private $userWithDeleteRoleAccess;
-    private $userWithViewRoleInRole;
-    private $roleCount;
+    protected $roleCount;
 
     protected function setUp(): void
     {
         parent::setUp();
-
-        for ($i = 0; $i < 10; $i++) {
-            Role::create(['name' => 'test-' . $i]);
-        }
-
-        $permissionToView = Permission::create(['name' => 'view_roles']);
-
-        $permissionToAdd = Permission::create(['name' => 'add_role']);
-
-        $permissionToEdit = Permission::create(['name' => 'edit_role']);
-
-        $permissionToDelete = Permission::create(['name' => 'delete_role']);
-
-        $this->userWithDeleteRoleAccess = User::factory()->create();
-        $this->userWithDeleteRoleAccess->permissions()->attach($permissionToView);
-        $this->userWithDeleteRoleAccess->permissions()->attach($permissionToDelete);
-
-
-        $this->userWithViewRolesAccess = User::factory()->create();
-        $this->userWithViewRolesAccess->permissions()->attach($permissionToView);
-
-        $this->userWithAddRoleAccess = User::factory()->create();
-        $this->userWithAddRoleAccess->permissions()->attach($permissionToAdd);
-
-        $this->userWithEditRoleAccess = User::factory()->create();
-        $this->userWithEditRoleAccess->permissions()->attach($permissionToEdit);
-
-        $role = Role::create(['name' => 'view_role']);
-        $role->permissions()->attach($permissionToView);
-        
-        $this->userWithViewRoleInRole = User::factory()->create();
-        $this->userWithViewRoleInRole->roles()->attach($role);
 
         $this->roleCount = Role::count();
     }
@@ -63,7 +37,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function renders_sucessfully_with_view_permission_granted(): void
     {
-        $this->actingAs($this->userWithViewRolesAccess);
+        $this->actingAs($this->userWithViewAccess);
 
         $pageCount = ceil($this->roleCount / 5);
 
@@ -77,7 +51,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function renders_sucessfully_with_add_role_permission_granted(): void
     { 
-        $this->actingAs($this->userWithAddRoleAccess);
+        $this->actingAs($this->userWithAddAccess);
 
         $pageCount = ceil(Role::count() / 5);
 
@@ -91,7 +65,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function renders_sucessfully_with_edit_role_permission_granted(): void
     { 
-        $this->actingAs($this->userWithEditRoleAccess);
+        $this->actingAs($this->userWithEditAccess);
 
         $pageCount = ceil($this->roleCount / 5);
 
@@ -105,7 +79,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function renders_sucessfully_with_view_role_permission_granted_by_role(): void
     { 
-        $this->actingAs($this->userWithViewRoleInRole);
+        $this->actingAs($this->userWithViewAccessInRole);
 
         $pageCount = ceil($this->roleCount / 5);
 
@@ -119,7 +93,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function fails_to_select_roles_checked_with_view_role_permission_only(): void
     {
-        $this->actingAs($this->userWithViewRolesAccess);
+        $this->actingAs($this->userWithViewAccess);
 
         Livewire::test(ListRoles::class)
             ->call('processRoleCheck', 'role', ['1' => true])
@@ -129,7 +103,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function fails_to_select_roles_checked_with_add_roles_permission_only(): void
     {
-        $this->actingAs($this->userWithAddRoleAccess);
+        $this->actingAs($this->userWithAddAccess);
 
         Livewire::test(ListRoles::class)
             ->call('processRoleCheck', 'role', ['1' => true])
@@ -139,7 +113,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function fails_to_select_roles_checked_with_edit_role_permission_only(): void
     {
-        $this->actingAs($this->userWithEditRoleAccess);
+        $this->actingAs($this->userWithEditAccess);
 
         Livewire::test(ListRoles::class)
             ->call('processRoleCheck', 'role', ['1' => true])
@@ -149,7 +123,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function selects_permissions_checked_with_delete_role_permission(): void
     {
-        $this->actingAs($this->userWithDeleteRoleAccess);
+        $this->actingAs($this->userWithDeleteAccess);
 
         Livewire::test(ListRoles::class)
             ->call('processRoleCheck', 'role', ['1' => true])
@@ -160,7 +134,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function deselects_roles_unchecked(): void
     {
-        $this->actingAs($this->userWithDeleteRoleAccess);
+        $this->actingAs($this->userWithDeleteAccess);
 
         Livewire::test(ListRoles::class)
             ->set('deleteButtonAccess', true)
@@ -172,7 +146,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function fails_to_delete_checked_roels_with_view_roles_permission_only(): void
     {
-        $this->actingAs($this->userWithViewRolesAccess);
+        $this->actingAs($this->userWithViewAccess);
 
         Livewire::test(ListRoles::class)
             ->call('deleteRoles')
@@ -182,7 +156,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function fails_to_delete_checked_roles_if_no_role_is_passed(): void
     {
-        $this->actingAs($this->userWithDeleteRoleAccess);
+        $this->actingAs($this->userWithDeleteAccess);
 
         Livewire::test(ListRoles::class)
             ->set('rolesToDelete', [])
@@ -199,7 +173,7 @@ class ListRolesTest extends TestCase
     /** @test */
     public function successfully_deletes_checked_roles(): void
     {
-        $this->actingAs($this->userWithDeleteRoleAccess);
+        $this->actingAs($this->userWithDeleteAccess);
 
         $firstRoleId= Role::first()->id;
 

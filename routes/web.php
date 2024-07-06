@@ -33,4 +33,8 @@ Route::middleware([
     Route::get('/roles', function () {
         return view('roles.manage-roles');
     })->name('roles');
+
+    Route::get('/users', function() {
+        return view('livewire.users.manage');
+    })->name('users');
 });

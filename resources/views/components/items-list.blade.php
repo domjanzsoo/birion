@@ -1,4 +1,4 @@
-@props(['title', 'description', 'entity', 'items', 'deleteButtonAccess', 'extraInformation' => null, 'showEditSubmitButton' => false])
+@props(['title', 'description', 'entity', 'items', 'deleteButtonAccess', 'extraInformation' => null, 'showEditSubmitButton' => false, 'withProfileImage' => false])
 
 @php
   $dataProperty = $extraInformation ? $extraInformation['dataProperty'] : null;
@@ -34,7 +34,7 @@
               @endcanAccess
             </li>
             @foreach ($items as $item)
-              <li x-data="{ elmId: {{ $item->id }} }" wire:key="item-{$item->id}" class="flex justify-between gap-x-6 py-5">
+              <li x-data="{ elmId: {{ $item->id }} }" wire:key="item-{$item->id}" class="flex justify-between gap-x-5 pt-4 pb-2">
                 <div class="flex min-w-0 gap-x-4">
                     <label class="flex items-center">
                       @canAccess(json_encode('delete_' . $entity))
@@ -43,7 +43,12 @@
                             $dispatch('item-selection', {entity: '{{ $entity }}', items: itemsSelected});
                           }"/>
                       @endcanAccess
-                      <span class="ms-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
+                      <div @class(['flex' => $withProfileImage])>
+                        @if($withProfileImage)
+                          <x-profile-img :imgUrl="$item->profile_photo_path ?? asset('/storage/avatar/user.png')" />
+                        @endif
+                        <span class="ms-2 mt-2 text-sm text-gray-600 min-w-4">{{ $item->name }}</span>
+                      </div>
                     </label>
                     @if($extraDataComponent)
                           @switch($extraDataComponent)
@@ -51,6 +56,9 @@
                               @if ($item->$dataProperty)
                                 <x-tags :data="$item->$dataProperty->toArray()" tagClasses="max-h-3"/>
                               @endif
+                            @break
+                            @case('data-grid')
+                              <x-data-grid :item="$item" :fields="$dataProperty" />
                             @break
                           @endswitch
                         @endif

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -27,6 +27,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_photo_path'
     ];
 
     /**
@@ -57,6 +58,11 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'verified',
+        'user_permissions_list',
+        'all_user_permissions_count',
+        'all_user_roles_count',
+        'user_roles_list'
     ];
 
     public function permissions()
@@ -67,5 +73,46 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+
+    public function getVerifiedAttribute(): string
+    {
+        $now = new DateTime();
+        
+        return isset($this->email_verified_at) && $this->email_verified_at->getTimestamp() < $now->getTimestamp() ? 'verified' : 'unverified';
+    }
+
+    public function getAllUserPermissions(): array
+    {
+        $userPermissionsFromRoles = [];
+        $userPermissions = $this->permissions()->pluck('permissions.name')->toArray();
+        
+        $this->roles()->each(function($role) use (&$userPermissionsFromRoles) {
+            $userPermissionsFromRoles = array_unique(array_merge($userPermissionsFromRoles, $role->permissions()->pluck('permissions.name')->toArray()), SORT_REGULAR);
+        });
+
+        return array_unique(array_merge($userPermissions, $userPermissionsFromRoles), SORT_REGULAR);
+    }
+
+    public function getAllUserPermissionsCountAttribute(): int
+    {
+        return count($this->getAllUserPermissions());
+    }
+
+    public function getUserPermissionsListAttribute(): string
+    {
+        return implode(', ', $this->getAllUserPermissions());
+    }
+
+    public function getAllUserRolesCountAttribute(): int
+    {
+        return $this->roles->count();
+    }
+
+    public function getUserRolesListAttribute(): string
+    {
+        $roles = $this->roles()->pluck('roles.name')->toArray();
+
+        return implode(', ', $roles);
     }
 }
