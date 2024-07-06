@@ -20,6 +20,10 @@
   stroke: #4691f6;
   stroke-width: 1;
 }
+
+[x-cloak] {
+  display: none !important
+}
 </style>
 
 <div
@@ -94,7 +98,7 @@
             
           </div>
           <div class="text-gray-300 w-8 py-1 pl-2 pr-1 border-l flex items-center border-gray-200 svelte-1l8159u">
-            <button type="button" x-show="isOpen() === true" x-on:click="open" class="cursor-pointer w-6 h-6 text-gray-600 outline-none focus:outline-none">
+            <button x-cloak type="button" x-show="isOpen() === true" x-on:click="open" class="cursor-pointer w-6 h-6 text-gray-600 outline-none focus:outline-none">
                 <x-icon name="chevron-up" />
             </button>
             
@@ -104,7 +108,7 @@
           </div>
         </div>
       </div>
-      <div class="w-full px-4">
+      <div x-cloak class="w-full px-4">
         <div x-show.transition.origin.top="isOpen()" class="absolute shadow top-100 bg-white z-40 w-full left-0 rounded max-h-select" x-on:click.away="close">
           <div class="flex flex-col w-full overflow-y-auto h-64">
             <template x-for="option in options" :key="option.id" class="overflow-auto">
