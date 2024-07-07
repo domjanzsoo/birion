@@ -12,6 +12,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
 use DateTime;
 use Illuminate\Validation\Rules\Password;
+use Livewire\Attributes\Renderless;
 
 class Edit extends Component
 {
@@ -131,6 +132,7 @@ class Edit extends Component
         $this->dispatch(self::ENTITY . '-permissions-cleared', ['entity' => self::ENTITY]);
     }
 
+    #[Renderless]
     public function handlePermissions(array $selections): void
     {
         $this->state['permission_update'] = [];
@@ -142,6 +144,7 @@ class Edit extends Component
         }
     }
 
+    #[Renderless]
     public function handleRoles(array $selections): void
     {
         $this->state['role_update'] = [];

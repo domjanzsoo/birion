@@ -59,17 +59,17 @@
         isOpen() { 
           return this.show === true;
         },
-        select(elm) {
-            if (!this.selected[elm.id]) {
-                this.selected[elm.id] = {
-                    name: elm.name,
-                    selected: true
-                };
-            } else {
-                this.selected[elm.id].selected = !this.selected[elm.id].selected;
-            }
+        select(elm) {        
+          if (!this.selected[elm.id]) {
+              this.selected[elm.id] = {
+                  name: elm.name,
+                  selected: true
+              };
+          } else {
+              this.selected[elm.id].selected = !this.selected[elm.id].selected;
+          }
 
-            $dispatch(this.event, { selections: this.selected });
+          $dispatch(this.event, { selections: this.selected });
         },
         remove(id) {
             this.selected[id].selected = false;
