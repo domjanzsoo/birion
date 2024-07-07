@@ -19,7 +19,7 @@
         </div>
         <div>
             <x-label for="email" value="{{ __('users.email') }}" />
-            <x-input id="email" type="text" class="mt-1 w-72" wire:model="state.email" />
+            <x-input id="email" type="text" class="mt-1 w-full" wire:model="state.email" />
             <x-input-error for="state.email" class="mt-2" />
         </div>
         <div>
@@ -29,7 +29,7 @@
         </div>
         <div>
             <x-label for="confirm_password" value="{{ __('users.confirm_password') }}"/>
-            <x-input id="confirm_password" type="password" class="mt-1 w-72" wire:model.live="state.password_confirmation" />
+            <x-input id="confirm_password" type="password" class="mt-1 w-full" wire:model.live="state.password_confirmation" />
             <x-input-error for="state.password_confirmation" class="mt-2" />
         </div>
         <div>
