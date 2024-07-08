@@ -26,7 +26,7 @@
                     <x-icon name="trash"></x-icon>
                   </x-button>
                 @else
-                  <x-button class="bg-red mb-3"  disabled>
+                  <x-button class="bg-red mb-3 opacity-50 cursor-not-allowed"  disabled>
                       {{ __('Delete') }}
                       <x-icon name="trash"></x-icon>
                   </x-button>
