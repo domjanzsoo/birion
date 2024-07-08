@@ -1,6 +1,10 @@
 @props(['fileType' => ''])
 
-<div 
+<style>
+[x-cloak] { display: none !important }
+</style>
+
+<div
     x-data="{
         'inputId': '{{ $fileType . '-field' }}',
         'selectedFileName': ''
@@ -31,7 +35,7 @@
         </span>
         <input id="{{ $fileType . '-field' }}" type="file" name="file_upload" {!! $attributes->merge(['class' => 'hidden']) !!}>
     </label>
-    <div class="w-full text-center" x-show="selectedFileName">
+    <div x-cloak class="w-full text-center" x-show="selectedFileName">
         {{ ucfirst(__('files.selected')) }}: <span x-text="selectedFileName"></span>
     </div>
 </div>
