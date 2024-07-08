@@ -29,7 +29,7 @@
                         {{ __('general.dashboard') }}
                     </x-nav-link >
                     @canAccess("['view_permissions', 'add_permission', 'edit_permission', 'view_roles', 'add_role', 'edit_role']")
-                        <x-nav-link :dropdown="true" dropdownHeader="{{ __('general.access_control') }}" :dropdownElms="$accessControlDropdown" :active="request()->routeIs('permissions')">
+                        <x-nav-link :dropdown="true" dropdownHeader="{{ __('general.access_control') }}" :dropdownElms="$accessControlDropdown" :active="request()->routeIs('permissions') || request()->routeIs('roles')">
                             {{ __('general.access_control') }}
                         </x-nav-link>
                     @endcanAccess
