@@ -101,8 +101,8 @@ class Add extends Component
     public function render()
     {
         return view('livewire.users.add', [
-            'permissions'   => $this->permissionRepository->getAll(),
-            'roles'         => $this->roleRepository->getAll()
+            'permissions'   => $this->permissionRepository->getAll('name'),
+            'roles'         => $this->roleRepository->getAll('name')
         ]);
     }
 

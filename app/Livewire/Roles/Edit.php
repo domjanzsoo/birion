@@ -51,7 +51,7 @@ class Edit extends Component
     public function render()
     {
         return view('livewire.roles.edit', [
-            'permissions' => $this->permissionRepository->getAll()
+            'permissions' => $this->permissionRepository->getAll('name')
         ]);
     }
 

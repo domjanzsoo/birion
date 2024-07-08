@@ -8,7 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface BaseRepositoryInterface
 {
-    public function getAll(): Collection;
+    public function getAll(string $orderBy): Collection;
     public function getAllPaginated(int $pagination = 10): LengthAwarePaginator;
     public function getById(int $id): Model;
     public function create(array $attributes): Model;
