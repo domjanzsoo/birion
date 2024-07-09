@@ -34,7 +34,7 @@ class Add extends Component
     public function render()
     {
         return view('livewire.roles.add', [
-            'permissions' => $this->permissionRepository->getAll()
+            'permissions' => $this->permissionRepository->getAll('name')
         ]);
     }
 

@@ -7,6 +7,7 @@ use App\Contract\RoleRepositoryInterface;
 use App\Contract\PermissionRepositoryInterface;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Livewire\Attributes\Renderless;
 
 class Edit extends Component
 {
@@ -50,7 +51,7 @@ class Edit extends Component
     public function render()
     {
         return view('livewire.roles.edit', [
-            'permissions' => $this->permissionRepository->getAll()
+            'permissions' => $this->permissionRepository->getAll('name')
         ]);
     }
 
@@ -87,6 +88,7 @@ class Edit extends Component
         $this->dispatch(self::ENTITY . '-permissions-cleared', ['entity' => self::ENTITY]);
     }
 
+    #[Renderless]
     public function handlePermissions(array $selections): void
     {
         $this->state['permission_update'] = [];
