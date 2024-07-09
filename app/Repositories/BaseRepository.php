@@ -7,7 +7,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Permission;
 
 class BaseRepository implements BaseRepositoryInterface
 {
