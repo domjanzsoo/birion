@@ -51,6 +51,19 @@ class PermissionSeeder extends Seeder
             ],
             [
                 'name'  => 'delete_user'
+            ],
+            // properties
+            [
+                'name'  => 'view_properties'
+            ],
+            [
+                'name'  => 'add_property'
+            ],
+            [
+                'name'  => 'edit_property'
+            ],
+            [
+                'name'  => 'delete_property'
             ]
         ];
 
