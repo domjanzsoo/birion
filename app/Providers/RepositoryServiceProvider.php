@@ -9,6 +9,8 @@ use App\Contract\PermissionRepositoryInterface;
 use App\Repositories\PermissionRepository;
 use App\Repositories\RoleRepository;
 use App\Contract\RoleRepositoryInterface;
+use App\Repositories\PropertyRepository;
+use App\Contract\PropertyRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(PropertyRepositoryInterface::class, PropertyRepository::class);
     }
 
     /**
