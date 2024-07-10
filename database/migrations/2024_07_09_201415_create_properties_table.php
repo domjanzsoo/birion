@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
+            $table->longText('description');
             $table->smallInteger('room_number');
             $table->enum('heating', ['gas', 'wood', 'electric']);
             $table->string('address');
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->smallInteger('size');
             $table->enum('offer_type', ['sale', 'rent']);
             $table->integer('price');
+            $table->string('main_photo_path');
             $table->timestamps();
         });
     }

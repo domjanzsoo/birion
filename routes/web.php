@@ -37,4 +37,8 @@ Route::middleware([
     Route::get('/users', function() {
         return view('livewire.users.manage');
     })->name('users');
+
+    Route::get('/properties', function() {
+        return view('livewire.properties.manage');
+    })->name('properties');
 });
