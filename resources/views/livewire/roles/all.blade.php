@@ -5,15 +5,21 @@
   ];
 @endphp
 
-<div>
+<x-form-section>
+  <x-slot name="title">
+    {{ __('roles.roles') }}
+  </x-slot>
+  <x-slot name="description">
+    {{ __('roles.roles_full') }}
+  </x-slot>
+  <x-slot name="list">
   <x-items-list
     entity="{{__('role')}}"
-    title="{{__('roles.roles')}}"
-    description="{{ __('roles.roles_full') }}"
     :deleteButtonAccess="$deleteButtonAccess"
     :items="$roles"
     :extraInformation="$extraInformation"
     showEditSubmitButton="true"
   />
-</div>
+  </x-slot>
+</x-form-section>
 
