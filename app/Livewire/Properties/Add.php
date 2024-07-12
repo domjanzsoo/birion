@@ -1,79 +1,97 @@
 <?php
 
-namespace App\Livewire\Roles;
+namespace App\Livewire\Properties;
 
-use App\Contract\RoleRepositoryInterface;
-use App\Contract\PermissionRepositoryInterface;
+use App\Contract\PropertyRepositoryInterface;
 use Livewire\Component;
 use Illuminate\Auth\Access\AuthorizationException;
+use App\Models\Enums\HeatingEnum;
+use Illuminate\Validation\Rule;
 
 class Add extends Component
 {
-    private $roleRepository;
-    private $permissionRepository;
-
-    protected $listeners = [
-        'role-permissions' => 'handlePermissions'
-    ];
+    private $propertyRepository;
     
     public array $state = [
-        'role_name'     => '',
-        'permissions'   => []
+        'address'       => '',
+        'description'   => '',
+        'heating'       => null,
+        'room_number'   => 1,
+        'location'      => '',
+        'country'       => '',
+        'size'          => null,
+        'photos'        => []
     ];
 
-    protected $rules = [
-        'state.role_name' => 'required|unique:roles,name',
-        'state.permissions' => 'array'
-    ];
+    public function rules(): array
+    {
+        return [
+            'state.address'     => 'required',
+            'state.heating'     => ['required', Rule::enum(HeatingEnum::class)],
+            'state.room_number' => 'required|numeric',
+            'state.location'    => 'required',
+            'state.country'     => 'required',
+            'state.size'        => 'requried|numeric',
+            'state.description' => 'nullable',
+            'state.photos'      => 'array'
+        ];
+    } 
 
-    protected $messages = [
-        'state.role_name.required' => 'The role name is required.',
-        'state.role_name.unique' => 'A role with the given name already exists.'
-    ];
+    public function messages(): array
+    {
+        return [
+            'state.address.required'        => trans('validation.required', ['attribute' => 'address']),
+            'state.heating.required'        => trans('validation.required', ['attribute' => 'heating']),
+            'state.room_number.required'    => trans('validation.required', ['attribute' => 'room number']),
+            'state.room_number.numeric'     => trans('validation.numeric', ['attribute' => 'room number']),
+            'state.location.required'       => trans('validation.required', ['attribute' => 'location']),
+            'state.size.required'           => trans('validation.required', ['attribute' => 'size']),
+            'state.size.numeric'            => trans('validation.numeric', ['attribute' => 'size']),
+            'state.country.required'        => trans('validation.required', ['attribute' => 'country']),
+            'state.photos.array'            => trans('validation.array', ['attribute' => 'photos']),
+        ];
+    }
 
     public function render()
     {
-        return view('livewire.roles.add', [
-            'permissions' => $this->permissionRepository->getAll('name')
-        ]);
+        return view('livewire.properties.add');
     }
 
     public function boot(
-        RoleRepositoryInterface $roleRepository,
-        PermissionRepositoryInterface $permissionRepository
+        PropertyRepositoryInterface $propertyRepository
     )
     {
-        $this->roleRepository = $roleRepository;
-        $this->permissionRepository = $permissionRepository;
+        $this->propertyRepository = $propertyRepository;
     }
 
-    public function handlePermissions(array $selections): void
+    public function refreshFields()
     {
-        $this->state['permissions'] = [];
-
-        foreach ($selections as $id => $selection) {
-            if ($selection['selected'] && !in_array($id, $this->state['permissions'])) {
-                array_push($this->state['permissions'], $id);
-            }
-        }
+        $this->state['address'] = '';
+        $this->state['location'] = '';
+        $this->state['country'] = '';
+        $this->state['description'] = '';
+        $this->state['heating'] = null;
+        $this->state['room_number'] = null;
+        $this->state['size'] = null;
+        $this->state['photos'] = [];
     }
 
-    public function addRole(): void
+
+    public function addProperty(): void
     {
-        if (!access_control()->canAccess(auth()->user(), 'add_role')) {
-            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add role']));
+        if (!access_control()->canAccess(auth()->user(), 'add_property')) {
+            throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add property']));
         }
 
         $validatedData = $this->validate();
 
-        $this->roleRepository->createRole($validatedData['state']['role_name'], $validatedData['state']['permissions']);
+        $this->propertyRepository->create($validatedData['state']);
 
-        $this->state['role_name'] = null;
-        $this->state['permissions'] = [];
+        $this->refreshFields();
 
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => 'Role created successfully!']);
-        $this->dispatch('role-permissions-submitted');
-        $this->dispatch('role-added');
+        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'Property'])]);
+        
+        $this->dispatch('property-added');
 
         return;
     }
