@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Enums\HeatingEnum;
 
 return new class extends Migration
 {
@@ -15,13 +16,11 @@ return new class extends Migration
             $table->id();
             $table->longText('description');
             $table->smallInteger('room_number');
-            $table->enum('heating', ['gas', 'wood', 'electric']);
+            $table->enum('heating', HeatingEnum::toArray());
             $table->string('address');
             $table->string('location');
             $table->string('country');
             $table->smallInteger('size');
-            $table->enum('offer_type', ['sale', 'rent']);
-            $table->integer('price');
             $table->string('main_photo_path');
             $table->timestamps();
         });
