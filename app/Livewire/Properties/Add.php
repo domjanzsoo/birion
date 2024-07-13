@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 class Add extends Component
 {
     private $propertyRepository;
+    public $roomNumberOptions = 6;
     
     public array $state = [
         'address'       => '',
@@ -54,7 +55,10 @@ class Add extends Component
 
     public function render()
     {
-        return view('livewire.properties.add');
+        return view('livewire.properties.add', [
+            'roomNumberOptions' => $this->roomNumberOptions,
+            'heatingOptions'    => HeatingEnum::toArray()
+        ]);
     }
 
     public function boot(
