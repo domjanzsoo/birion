@@ -1,4 +1,4 @@
-<x-form-section submit="addUser">
+<x-form-section submit="addProperty">
     <x-slot name="title">
         {{ __('properties.add') }}
     </x-slot>
@@ -25,10 +25,10 @@
         <div class="col-span-2 grid grid-cols-3 gap-2">
             <div>
                 <x-label for="heating" value="{{ __('properties.heating_type') }}"/>
-                <x-input id="heating" type="select" class="mt-1 w-full" wire:model="state.heating">
+                <x-input id="heating" type="select" class="mt-1 w-full text-sm" wire:model="state.heating">
                     <x-slot name="options">
                         @foreach($heatingOptions as $option)
-                            <option value="{{ $option }}">{{ $option }}</option>
+                            <option class="text-sm" value="{{ $option }}">{{ $option }}</option>
                         @endforeach
                     </x-slot>
                 </x-input>
@@ -36,10 +36,10 @@
             </div>
             <div>
             <x-label for="room_number" value="{{ __('properties.room_number') }}"/>
-                <x-input id="room_number" type="select" class="mt-1 w-full" wire:model="state.room_number">
+                <x-input id="room_number" type="select" class="mt-1 w-full text-sm" wire:model="state.room_number">
                     <x-slot name="options">
                         @for($i = 1; $i <= $roomNumberOptions; $i++)
-                            <option value="{{ $i }}">{{ $i }}</option>
+                            <option class="text-sm" value="{{ $i }}">{{ $i }}</option>
                         @endfor
                     </x-slot>
                 </x-input>

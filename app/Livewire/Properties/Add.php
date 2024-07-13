@@ -17,7 +17,7 @@ class Add extends Component
         'address'       => '',
         'description'   => '',
         'heating'       => null,
-        'room_number'   => 1,
+        'room_number'   => null,
         'location'      => '',
         'country'       => '',
         'size'          => null,
@@ -32,7 +32,7 @@ class Add extends Component
             'state.room_number' => 'required|numeric',
             'state.location'    => 'required',
             'state.country'     => 'required',
-            'state.size'        => 'requried|numeric',
+            'state.size'        => 'required|numeric',
             'state.description' => 'nullable',
             'state.photos'      => 'array'
         ];
@@ -88,6 +88,8 @@ class Add extends Component
         }
 
         $validatedData = $this->validate();
+
+        dd($this->state);
 
         $this->propertyRepository->create($validatedData['state']);
 
