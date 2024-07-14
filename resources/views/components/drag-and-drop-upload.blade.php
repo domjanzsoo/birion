@@ -14,14 +14,6 @@
 .hasImage:hover section #size {
     opacity: 1;
 }
-
-#overlay.draggedover {
-  background-color: rgba(255, 255, 255, 0.7);
-}
-#overlay.draggedover p,
-#overlay.draggedover i {
-  opacity: 1;
-}
 </style>
 
 <div
@@ -29,7 +21,7 @@
         inputId: '{{ $fileType . '-field' }}',
         selectedFileName: '',
         fileInput: null,
-        multiple: {{ $multi }},
+        multiple: {{ json_encode($multi) }},
         images: [],
         imgCols: 0
     }" 
@@ -100,9 +92,9 @@
 
                     <section class="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2">
                         <h1 id="imgName" class="ml-2 flex-1 text-white opacity-0" x-text="image.name"></h1>
-                        <div id="size" class="grid grid-cols-3 text-white">
+                        <div id="size" class="grid grid-cols-3 text-white opacity-0">
                             <div class="ml-2 p-1 size text-xs col-span-2" x-text="imgSize"></div>
-                                <x-icon name="trash" class="pointer-events-none fill-white mx-auto" />             
+                                <x-icon name="trash" wrapperClasses="w-auto mx-auto pt-1 rounded-md hover:bg-gray" class="pointer-events-none fill-white mx-auto" />             
                             </div>
                         </div>
                     </section>
