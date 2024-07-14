@@ -56,6 +56,11 @@
             <x-input id="description" type="text-area" class="mt-1 w-full" wire:model="state.description" />
             <x-input-error for="state.description" class="mt-2" />
         </div>
+        <div class="col-span-2 mt-3">
+            <x-label for="photos" value="{{ __('properties.photos') }}"/>
+            <x-drag-and-drop-upload wire:model="state.profile_picture" :multi="true" class="w-full" fileType='profile-picture' />
+            <x-input-error for="state.profile_picture" class="mt-2" />
+        </div>
         <div class="flex flex-row justify-end col-span-2 pr-5 mt-6">
             <x-button type="submit" class="bg-blue ml-2">
                 {{ __('general.submit') }}

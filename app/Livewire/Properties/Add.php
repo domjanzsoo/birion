@@ -7,9 +7,12 @@ use Livewire\Component;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Models\Enums\HeatingEnum;
 use Illuminate\Validation\Rule;
+use Livewire\WithFileUploads;
 
 class Add extends Component
 {
+    use WithFileUploads;
+    
     private $propertyRepository;
     public $roomNumberOptions = 6;
     

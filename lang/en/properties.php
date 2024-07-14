@@ -14,5 +14,6 @@ return [
     'location' => 'Location',
     'country' => 'Country',
     'price' => 'Price',
-    'description' => 'Description'
+    'description' => 'Description',
+    'photos' => 'Photos'
 ];
