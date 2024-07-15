@@ -1,4 +1,4 @@
-@props(['fileType' => '', 'multi' => false])
+@props(['fileType' => '', 'multi' => false, 'resetEvent' => ''])
 
 <style>
 [x-cloak] { display: none !important }
@@ -22,11 +22,34 @@
         selectedFileName: '',
         fileInput: null,
         multiple: {{ json_encode($multi) }},
+        resetEvent: '{{ $resetEvent }}',
         images: [],
-        imgCols: 0
+        removeImage(image) {
+            console.log(image);
+
+            $dispatch('{{ $fileType }}-deleted', {fileName: image.name, fileSize: image.size});
+        }
     }" 
     x-init="() => {
-        fileInput = document.getElementById(inputId);
+        console.log('init')
+        Livewire.on(resetEvent, event => {
+            selectedFileName = '';
+            images = []
+        });
+
+        $nextTick(() => {
+            fileInput = document.getElementById(inputId);
+
+            if (multiple) {
+                fileInput.setAttribute('multiple', '');
+            }
+
+            console.log('from next tick')
+            console.log('images');
+        console.log(images);
+        console.log('files');
+        console.log(fileInput.files);
+        });
     }"
     class="w-full"
     x-on:drop="$event => {
@@ -46,11 +69,17 @@
 
         fileInput.files = dataTransfer.files;
 
+        console.log('inside drop event');
+        console.log(fileInput.files);
+
         if (!multiple) {
             selectedFileName = $event.dataTransfer.files[0].name;
         } else {
             images = Array.from(fileInput.files);
         }
+
+        console.log('images');
+        console.log(images);
 
         fileInput.dispatchEvent(new Event('change', { bubbles: true }));
     }"
@@ -64,17 +93,22 @@
                 <span class="text-blue-600 underline">{{ __('files.browse') }}</span>
             </span>
         </span>
-        <input id="{{ $fileType . '-field' }}" type="file" name="file_upload" {!! $attributes->merge(['class' => 'hidden']) !!}>
+        <input
+            :id="inputId"
+            type="file"
+            name="file_upload"
+            {!! $attributes->merge(['class' => 'hidden']) !!}
+        >
     </label>
     <div x-cloak class="w-full text-center" x-show="selectedFileName">
         {{ ucfirst(__('files.selected')) }}: <span x-text="selectedFileName"></span>
     </div>
-    <div x-show="multiple" class="w-auto grid mt-3 gap-1" :style="`grid-template-columns: repeat(${images.length < 5 ? images.length : 5}, max-content)`">
-        <template x-for="image in images" :key="image.name">
+    <div wire:ignore class="w-auto grid mt-3 gap-1" :style="`grid-template-columns: repeat(${images.length < 5 ? images.length : 5}, max-content)`">
+        <template x-for="(image, index) in images" :key="index">
             <div
                 x-data="{
                     imgUrl: null,
-                    imgSize: image.size + 'kb'
+                    imgSize: Math.ceil(image.size/1000) + 'kb'
                 }"
                 x-init="() => {
                     let reader = new FileReader();
@@ -94,7 +128,9 @@
                         <h1 id="imgName" class="ml-2 flex-1 text-white opacity-0" x-text="image.name"></h1>
                         <div id="size" class="grid grid-cols-3 text-white opacity-0">
                             <div class="ml-2 p-1 size text-xs col-span-2" x-text="imgSize"></div>
+                            <button x-on:click="removeImage(image)" type="button">
                                 <x-icon name="trash" wrapperClasses="w-auto mx-auto pt-1 rounded-md hover:bg-gray" class="pointer-events-none fill-white mx-auto" />             
+                            </button>    
                             </div>
                         </div>
                     </section>

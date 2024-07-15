@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rules\Password;
+use Livewire\Attributes\Renderless;
 
 class Add extends Component
 {
@@ -29,6 +30,7 @@ class Add extends Component
         'password_confirmation' => null,
         'verified'              => false,
         'profile_picture'       => null,
+        'pictures'              => [],
         'permissions'           => [],
         'roles'                 => []
     ];
@@ -42,12 +44,15 @@ class Add extends Component
             'state.password_confirmation'   => 'required',
             'state.profile_picture'         => 'image|max:2048|nullable',
             'state.permissions'             => 'array',
-            'state.roles'                   => 'array'    
+            'state.roles'                   => 'array',    
+            'state.pictures'                   => 'array'    
         ];
     } 
 
     protected $listeners = [
-        'user-permissions' => 'handlePermissions'
+        'user-permissions'  => 'handlePermissions',
+        'user-roles'        => 'handleRoles',
+        'pictures-deleted'   => 'handlePictureDelete'          
     ];
     
     public function messages(): array
@@ -74,6 +79,18 @@ class Add extends Component
     public function updatedStatePasswordConfirmation(): void
     {
         $this->validateOnly('state.password');
+    }
+
+    public function handlePictureDelete($fileName, $fileSize)
+    {
+        $this->state['pictures'] = array_filter($this->state['pictures'], function($picture) use($fileName, $fileSize) {
+            return $picture->getClientOriginalName() !== $fileName;
+        });
+
+        // dd(array_map(function($picture) {
+        //     return $picture->getClientOriginalName();
+        // }, $this->state['pictures']));
+        // dd($this->state['pictures'][0]->getClientOriginalName() . $this->state['pictures'][0]->getSize());
     }
 
     public function handlePermissions(array $selections): void
@@ -118,7 +135,10 @@ class Add extends Component
     }
 
     public function addUser(): void
-    {     
+    { 
+        dd(array_map(function($picture) {
+            return $picture->getClientOriginalName();
+        }, $this->state['pictures']));  
         if (!access_control()->canAccess(auth()->user(), 'add_user')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add user']));
         }
@@ -166,6 +186,7 @@ class Add extends Component
         $this->state['profile_picture'] = null;
         $this->state['permissions'] = [];
         $this->state['roles'] = [];
+        $this->state['pictures'] = [];
 
         $this->dispatch('user-permissions-cleared');
     }
