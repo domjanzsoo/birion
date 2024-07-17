@@ -16,6 +16,7 @@
 }
 </style>
 
+<!-- some changes to follow  -->
 <div
     x-data="{
         inputId: '{{ $fileType . '-field' }}',
@@ -77,9 +78,6 @@
         } else {
             images = Array.from(fileInput.files);
         }
-
-        console.log('images');
-        console.log(images);
 
         fileInput.dispatchEvent(new Event('change', { bubbles: true }));
     }"
