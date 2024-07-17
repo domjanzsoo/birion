@@ -16,7 +16,6 @@
 }
 </style>
 
-<!-- some changes to follow  -->
 <div
     x-data="{
         inputId: '{{ $fileType . '-field' }}',
@@ -26,9 +25,22 @@
         resetEvent: '{{ $resetEvent }}',
         images: [],
         removeImage(image) {
-            console.log(image);
+            const dataTransfer = new DataTransfer();
 
-            $dispatch('{{ $fileType }}-deleted', {fileName: image.name, fileSize: image.size});
+            Array.from(this.fileInput.files).forEach(file => {
+                if (file.name !== image.name) {
+                    console.log('file added');
+                    dataTransfer.items.add(file);
+                }
+            });
+
+            this.fileInput.value = '';
+
+            this.fileInput.files = dataTransfer.files;
+
+            this.images = this.fileInput.files;
+
+            this.fileInput.dispatchEvent(new Event('change', { bubbles: true }));
         }
     }" 
     x-init="() => {
@@ -44,12 +56,6 @@
             if (multiple) {
                 fileInput.setAttribute('multiple', '');
             }
-
-            console.log('from next tick')
-            console.log('images');
-        console.log(images);
-        console.log('files');
-        console.log(fileInput.files);
         });
     }"
     class="w-full"
@@ -70,9 +76,6 @@
 
         fileInput.files = dataTransfer.files;
 
-        console.log('inside drop event');
-        console.log(fileInput.files);
-
         if (!multiple) {
             selectedFileName = $event.dataTransfer.files[0].name;
         } else {
@@ -91,12 +94,22 @@
                 <span class="text-blue-600 underline">{{ __('files.browse') }}</span>
             </span>
         </span>
-        <input
-            :id="inputId"
-            type="file"
-            name="file_upload"
-            {!! $attributes->merge(['class' => 'hidden']) !!}
-        >
+        @if ($multi)
+            <input
+                :id="inputId"
+                type="file"
+                name="file_upload"
+                {!! $attributes->merge(['class' => 'hidden']) !!}
+                multiple
+            >
+        @else
+            <input
+                :id="inputId"
+                type="file"
+                name="file_upload"
+                {!! $attributes->merge(['class' => 'hidden']) !!}
+            >
+        @endif
     </label>
     <div x-cloak class="w-full text-center" x-show="selectedFileName">
         {{ ucfirst(__('files.selected')) }}: <span x-text="selectedFileName"></span>
