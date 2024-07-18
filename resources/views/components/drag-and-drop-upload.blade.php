@@ -18,33 +18,37 @@
 
 <div
     x-data="{
+        fileType: '{{ $fileType }}',
         inputId: '{{ $fileType . '-field' }}',
         selectedFileName: '',
         fileInput: null,
         multiple: {{ json_encode($multi) }},
         resetEvent: '{{ $resetEvent }}',
         images: [],
-        removeImage(image) {
+        removeImage(image, index) {
             const dataTransfer = new DataTransfer();
 
             Array.from(this.fileInput.files).forEach(file => {
                 if (file.name !== image.name) {
-                    console.log('file added');
                     dataTransfer.items.add(file);
                 }
             });
 
             this.fileInput.value = '';
 
-            this.fileInput.files = dataTransfer.files;
+            if (dataTransfer.files.length > 0) {
+                this.fileInput.files = dataTransfer.files;
+            } else {
+                $dispatch(this.fileType + '-empty');
+            }
 
-            this.images = this.fileInput.files;
+            this.images.splice(index, 1);
 
             this.fileInput.dispatchEvent(new Event('change', { bubbles: true }));
         }
     }" 
     x-init="() => {
-        console.log('init')
+        console.log('init');
         Livewire.on(resetEvent, event => {
             selectedFileName = '';
             images = []
@@ -66,21 +70,21 @@
 
         if (multiple) {
             Array.from(fileInput.files).forEach(file => {
-            dataTransfer.items.add(file);
+                dataTransfer.items.add(file);
             });
         }
 
         Array.from($event.dataTransfer.files).forEach(file => {
             dataTransfer.items.add(file);
+
+            if (multiple) {
+                images.push(file);
+            } else {
+                selectedFileName = file.name;
+            }
         });
 
         fileInput.files = dataTransfer.files;
-
-        if (!multiple) {
-            selectedFileName = $event.dataTransfer.files[0].name;
-        } else {
-            images = Array.from(fileInput.files);
-        }
 
         fileInput.dispatchEvent(new Event('change', { bubbles: true }));
     }"
@@ -115,7 +119,7 @@
         {{ ucfirst(__('files.selected')) }}: <span x-text="selectedFileName"></span>
     </div>
     <div wire:ignore class="w-auto grid mt-3 gap-1" :style="`grid-template-columns: repeat(${images.length < 5 ? images.length : 5}, max-content)`">
-        <template x-for="(image, index) in images" :key="index">
+        <template x-for="(image, index) in images" :key="index + image.lastModified">
             <div
                 x-data="{
                     imgUrl: null,
@@ -137,9 +141,9 @@
 
                     <section class="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2">
                         <h1 id="imgName" class="ml-2 flex-1 text-white opacity-0" x-text="image.name"></h1>
-                        <div id="size" class="grid grid-cols-3 text-white opacity-0">
+                        <div x-init id="size" class="grid grid-cols-3 text-white opacity-0">
                             <div class="ml-2 p-1 size text-xs col-span-2" x-text="imgSize"></div>
-                            <button x-on:click="removeImage(image)" type="button">
+                            <button x-on:click="removeImage(image, index)" type="button">
                                 <x-icon name="trash" wrapperClasses="w-auto mx-auto pt-1 rounded-md hover:bg-gray" class="pointer-events-none fill-white mx-auto" />             
                             </button>    
                             </div>

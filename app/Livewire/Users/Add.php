@@ -45,14 +45,14 @@ class Add extends Component
             'state.profile_picture'         => 'image|max:2048|nullable',
             'state.permissions'             => 'array',
             'state.roles'                   => 'array',    
-            'state.pictures'                   => 'array'    
+            'state.pictures'                => 'array'    
         ];
     } 
 
     protected $listeners = [
         'user-permissions'  => 'handlePermissions',
         'user-roles'        => 'handleRoles',
-        'pictures-deleted'   => 'handlePictureDelete'          
+        'pictures-empty'    => 'clearPictures'          
     ];
     
     public function messages(): array
@@ -81,16 +81,9 @@ class Add extends Component
         $this->validateOnly('state.password');
     }
 
-    public function handlePictureDelete($fileName, $fileSize)
+    public function clearPictures()
     {
-        $this->state['pictures'] = array_filter($this->state['pictures'], function($picture) use($fileName, $fileSize) {
-            return $picture->getClientOriginalName() !== $fileName;
-        });
-
-        // dd(array_map(function($picture) {
-        //     return $picture->getClientOriginalName();
-        // }, $this->state['pictures']));
-        // dd($this->state['pictures'][0]->getClientOriginalName() . $this->state['pictures'][0]->getSize());
+        $this->state['pictures'] = [];
     }
 
     public function handlePermissions(array $selections): void
