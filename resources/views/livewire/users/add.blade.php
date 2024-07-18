@@ -43,7 +43,7 @@
             <x-input-error for="state.roles" class="mt-2" />
         </div>
         <div class="col-span-2 mt-3">
-            <x-label for="pictures" value="{{ __('users.profile_pictures') }}"/>
+            <x-label for="pictures" value="{{ __('users.profile_picture') }}"/>
             <x-drag-and-drop-upload resetEvent="user-added" wire:model="state.profile_picture" class="w-full" fileType='profile_picture' />
             <x-input-error for="state.profile_picture" class="mt-2" />
         </div>

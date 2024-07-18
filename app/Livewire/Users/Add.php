@@ -11,7 +11,6 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rules\Password;
-use Livewire\Attributes\Renderless;
 
 class Add extends Component
 {
@@ -168,7 +167,6 @@ class Add extends Component
         $this->state['profile_picture'] = null;
         $this->state['permissions'] = [];
         $this->state['roles'] = [];
-        $this->state['pictures'] = [];
 
         $this->dispatch('user-permissions-cleared');
     }
