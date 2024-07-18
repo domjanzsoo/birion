@@ -22,12 +22,9 @@
       $start = 1;
       $end = $paginator->lastPage() < $segment ? $paginator->lastPage() : $segment;
 
-      if (($paginator->currentPage() - 1) % $segment === 0 && $paginator->currentPage() > $segment) {
-        $start =  $paginator->currentPage();
-      } elseif ($paginator->currentPage() > $segment + 1) {
-        $stepsAhead = ($paginator->currentPage() % $segment) - 1;
-
-        $start = $paginator->currentPage() - $stepsAhead;
+      if ($paginator->currentPage() > $segment) {
+        $start =  $paginator->currentPage() - $segment + 1;
+        $end = $paginator->currentPage();
       }
 
       if ($end === $paginator->currentPage() - 1) {

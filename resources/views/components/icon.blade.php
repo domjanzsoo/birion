@@ -1,6 +1,6 @@
-@props(['name' => null, 'classes' => ''])
+@props(['name' => null, 'classes' => '', 'wrapperClasses' => ''])
 
-<div>
+<div class="{{ $wrapperClasses }}">
 @switch ($name)
     @case ('trash')
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 {{ $classes }}">
