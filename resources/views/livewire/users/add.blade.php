@@ -44,7 +44,7 @@
         </div>
         <div class="col-span-2 mt-3">
             <x-label for="pictures" value="{{ __('users.profile_pictures') }}"/>
-            <x-drag-and-drop-upload resetEvent="user-added" :multi="true" wire:model="state.pictures" class="w-full" fileType='pictures' />
+            <x-drag-and-drop-upload resetEvent="user-added" wire:model="state.profile_picture" class="w-full" fileType='profile_picture' />
             <x-input-error for="state.profile_picture" class="mt-2" />
         </div>
         <div class="flex flex-row justify-end col-span-2 pr-5 mt-6">

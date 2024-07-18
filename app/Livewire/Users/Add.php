@@ -30,7 +30,6 @@ class Add extends Component
         'password_confirmation' => null,
         'verified'              => false,
         'profile_picture'       => null,
-        'pictures'              => [],
         'permissions'           => [],
         'roles'                 => []
     ];
@@ -44,15 +43,13 @@ class Add extends Component
             'state.password_confirmation'   => 'required',
             'state.profile_picture'         => 'image|max:2048|nullable',
             'state.permissions'             => 'array',
-            'state.roles'                   => 'array',    
-            'state.pictures'                => 'array'    
+            'state.roles'                   => 'array'
         ];
     } 
 
     protected $listeners = [
         'user-permissions'  => 'handlePermissions',
-        'user-roles'        => 'handleRoles',
-        'pictures-empty'    => 'clearPictures'          
+        'user-roles'        => 'handleRoles'
     ];
     
     public function messages(): array
@@ -79,11 +76,6 @@ class Add extends Component
     public function updatedStatePasswordConfirmation(): void
     {
         $this->validateOnly('state.password');
-    }
-
-    public function clearPictures()
-    {
-        $this->state['pictures'] = [];
     }
 
     public function handlePermissions(array $selections): void
@@ -128,10 +120,7 @@ class Add extends Component
     }
 
     public function addUser(): void
-    { 
-        dd(array_map(function($picture) {
-            return $picture->getClientOriginalName();
-        }, $this->state['pictures']));  
+    {   
         if (!access_control()->canAccess(auth()->user(), 'add_user')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add user']));
         }
