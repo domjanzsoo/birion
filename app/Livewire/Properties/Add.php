@@ -24,7 +24,7 @@ class Add extends Component
         'location'      => '',
         'country'       => '',
         'size'          => null,
-        'photos'        => []
+        'pictures'        => []
     ];
 
     public function rules(): array
@@ -37,7 +37,8 @@ class Add extends Component
             'state.country'     => 'required',
             'state.size'        => 'required|numeric',
             'state.description' => 'nullable',
-            'state.photos'      => 'array'
+            'state.pictures'    => 'array',
+            'state.picrures.*'  => 'image|max:2048|nullable'
         ];
     } 
 
@@ -52,7 +53,9 @@ class Add extends Component
             'state.size.required'           => trans('validation.required', ['attribute' => 'size']),
             'state.size.numeric'            => trans('validation.numeric', ['attribute' => 'size']),
             'state.country.required'        => trans('validation.required', ['attribute' => 'country']),
-            'state.photos.array'            => trans('validation.array', ['attribute' => 'photos']),
+            'state.pictures.array'          => trans('validation.array', ['attribute' => 'photos']),
+            'state.pictures.*.image'        => trans('validation.image', ['attribute' => 'profile picture']),
+            'state.pictures.*.max'          => trans('validation.max.file', ['max' => '2048', 'attribute' => 'profile picture']),
         ];
     }
 
@@ -63,6 +66,10 @@ class Add extends Component
             'heatingOptions'    => HeatingEnum::toArray()
         ]);
     }
+
+    protected $listeners = [
+        'property-picture-empty' => 'clearPropertyPictures'
+    ];
 
     public function boot(
         PropertyRepositoryInterface $propertyRepository
@@ -80,7 +87,12 @@ class Add extends Component
         $this->state['heating'] = null;
         $this->state['room_number'] = null;
         $this->state['size'] = null;
-        $this->state['photos'] = [];
+        $this->state['pictures'] = [];
+    }
+
+    public function clearPropertyPictures()
+    {
+        $this->state['pictures'] = [];
     }
 
 
@@ -92,16 +104,31 @@ class Add extends Component
 
         $validatedData = $this->validate();
 
-        dd($this->state);
+        try {
+            dd($this->state);
 
-        $this->propertyRepository->create($validatedData['state']);
+            $property = $this->propertyRepository->create($validatedData['state']);
 
-        $this->refreshFields();
+            if (count($validatedData['state']['pictures']) > 0) {
+                foreach ($validatedData['state']['pictures'] as $picture) {
+                    $profilePictureFileName = md5($property->id) . '.' . $validatedData['state']['profile_picture']->extension();
+    
+                $validatedData['state']['profile_picture']->storeAs(explode('/', config('filesystems.user_profile_image_path'))[1], $profilePictureFileName, $disk = config('filesystems.default'));
+    
+                $user->profile_photo_path = config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName;
+                $user->save();
+                }
+            }
 
-        $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'Property'])]);
-        
-        $this->dispatch('property-added');
+            $this->refreshFields();
 
-        return;
+            $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'Property'])]);
+            
+            $this->dispatch('property-added');
+
+            return;
+        } catch(\Exception $exception) {
+            $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
+        }
     }
 }
