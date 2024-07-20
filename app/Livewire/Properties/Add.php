@@ -107,13 +107,12 @@ class Add extends Component
 
         $fileDirectories = explode('/', config('filesystems.image_path'));
 
-        // dd($validatedData);
         try {
             $property = $this->propertyRepository->create($validatedData['state']);
 
             if (count($validatedData['state']['pictures']) > 0) {
                 foreach ($validatedData['state']['pictures'] as $picture) {
-                    $profilePictureFileName = md5($property->id . '-property');
+                    $profilePictureFileName = md5($property->id . '-property-' . $picture->getClientOriginalName());
     
                     $picture->storeAs($fileDirectories[count($fileDirectories) - 1], $profilePictureFileName . '.' . $picture->extension(), $disk = config('filesystems.default'));
         
@@ -134,7 +133,6 @@ class Add extends Component
 
             return;
         } catch(\Exception $exception) {
-            dd($exception->getMessage());
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
     }
