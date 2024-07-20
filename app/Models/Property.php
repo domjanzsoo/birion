@@ -18,4 +18,9 @@ class Property extends Model
     protected $fillable = [
         'address', 'roomNumber', 'heating', 'description', 'size', 'price', 'offerType'
     ];
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }
