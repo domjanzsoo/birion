@@ -8,6 +8,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use App\Models\Enums\HeatingEnum;
 use Illuminate\Validation\Rule;
 use Livewire\WithFileUploads;
+use App\Models\Image;
 
 class Add extends Component
 {
@@ -24,7 +25,7 @@ class Add extends Component
         'location'      => '',
         'country'       => '',
         'size'          => null,
-        'pictures'        => []
+        'pictures'      => []
     ];
 
     public function rules(): array
@@ -104,19 +105,24 @@ class Add extends Component
 
         $validatedData = $this->validate();
 
-        try {
-            dd($this->state);
+        $fileDirectories = explode('/', config('filesystems.image_path'));
 
+        // dd($validatedData);
+        try {
             $property = $this->propertyRepository->create($validatedData['state']);
 
             if (count($validatedData['state']['pictures']) > 0) {
                 foreach ($validatedData['state']['pictures'] as $picture) {
-                    $profilePictureFileName = md5($property->id) . '.' . $validatedData['state']['profile_picture']->extension();
+                    $profilePictureFileName = md5($property->id . '-property');
     
-                $validatedData['state']['profile_picture']->storeAs(explode('/', config('filesystems.user_profile_image_path'))[1], $profilePictureFileName, $disk = config('filesystems.default'));
-    
-                $user->profile_photo_path = config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName;
-                $user->save();
+                    $picture->storeAs($fileDirectories[count($fileDirectories) - 1], $profilePictureFileName . '.' . $picture->extension(), $disk = config('filesystems.default'));
+        
+                    $image = new Image([
+                        'name' => $profilePictureFileName,
+                        'file_route' => config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName . '.' . $picture->extension() 
+                    ]);
+
+                    $property->images()->save($image);
                 }
             }
 
@@ -128,6 +134,7 @@ class Add extends Component
 
             return;
         } catch(\Exception $exception) {
+            dd($exception->getMessage());
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
     }

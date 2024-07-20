@@ -11,12 +11,8 @@ class Property extends Model
 
     protected $table = 'properties';
 
-    protected $attributes = [
-        'offerType' => 'sale'
-    ];
-
     protected $fillable = [
-        'address', 'roomNumber', 'heating', 'description', 'size', 'price', 'offerType'
+        'address', 'room_number', 'heating', 'description', 'size', 'location', 'country',
     ];
 
     public function images()
