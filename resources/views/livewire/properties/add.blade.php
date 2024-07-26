@@ -9,7 +9,18 @@
     <x-slot name="form">
         <div class="col-span-2">
             <x-label for="address" value="{{ __('properties.address') }}" />
-            <x-input id="address" type="text" class="mt-1 w-full" wire:model="state.address" />
+            <x-input id="address" type="text" class="mt-1 w-full" wire:model.live="state.address" />
+            @if (count($addressOptions) > 0)
+                <div class="border-2 border-gray-light rounded-b-lg border-separate">
+                    <ul>
+                        @foreach ($addressOptions as $index => $option)
+                            <li class="px-3 hover:bg-gray-light cursor-pointer" wire:click="handleAddressSelection('{{$index}}')">
+                                {{ $option->address->freeformAddress }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </div> 
+            @endif
             <x-input-error for="state.address" class="mt-2" />
         </div>
         <div>

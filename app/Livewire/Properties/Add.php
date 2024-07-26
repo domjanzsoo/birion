@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use Livewire\WithFileUploads;
 use App\Models\Image;
 use App\Services\TomtomService;
+use Livewire\Attributes\Renderless;
 
 class Add extends Component
 {
@@ -18,6 +19,7 @@ class Add extends Component
     private $propertyRepository;
     private $tomTomService;
     public $roomNumberOptions = 6;
+    public $addressOptions = [];
     
     public array $state = [
         'address'       => '',
@@ -60,6 +62,22 @@ class Add extends Component
             'state.pictures.*.image'        => trans('validation.image', ['attribute' => 'profile picture']),
             'state.pictures.*.max'          => trans('validation.max.file', ['max' => '2048', 'attribute' => 'profile picture']),
         ];
+    }
+
+    #[Renderless]
+    public function updatedStateAddress(): void
+    {
+        $this->addressOptions = (strlen($this->state['address']) > 3) ? $this->tomTomService->search($this->state['address']) : [];
+    }
+
+    public function handleAddressSelection(int $addressOptionIndex): void
+    {
+        $option = $this->addressOptions[$addressOptionIndex];
+
+        $this->state['location'] = $option->address->municipality;
+        $this->state['country'] = $option->address->country;
+
+        return;
     }
 
     public function render()
