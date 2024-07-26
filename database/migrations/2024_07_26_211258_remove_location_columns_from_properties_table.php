@@ -32,6 +32,7 @@ return new class extends Migration
             $table->string('location');
             $table->string('country');
 
+            $table->dropForeign(['address_id']);
             $table->dropColumn('address_id');
         });
     }

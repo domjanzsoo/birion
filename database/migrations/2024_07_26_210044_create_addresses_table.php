@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('post_code')->nullable();
             $table->double('lat');
             $table->double('lon');
+            $table->integer('house_number')->nullable();
+            $table->string('house_name')->nullable();
         });
     }
 
