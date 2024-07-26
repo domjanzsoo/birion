@@ -12,11 +12,16 @@ class Property extends Model
     protected $table = 'properties';
 
     protected $fillable = [
-        'address', 'room_number', 'heating', 'description', 'size', 'location', 'country',
+        'room_number', 'heating', 'description', 'size',
     ];
 
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 }
