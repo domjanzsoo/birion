@@ -35,6 +35,6 @@ class TomtomService
 
         ]);
 
-        return $response->body();
+        return json_decode($response->body())->results;
     }
 }

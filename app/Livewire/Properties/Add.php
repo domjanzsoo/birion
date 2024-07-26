@@ -9,12 +9,14 @@ use App\Models\Enums\HeatingEnum;
 use Illuminate\Validation\Rule;
 use Livewire\WithFileUploads;
 use App\Models\Image;
+use App\Services\TomtomService;
 
 class Add extends Component
 {
     use WithFileUploads;
     
     private $propertyRepository;
+    private $tomTomService;
     public $roomNumberOptions = 6;
     
     public array $state = [
@@ -73,10 +75,12 @@ class Add extends Component
     ];
 
     public function boot(
-        PropertyRepositoryInterface $propertyRepository
+        PropertyRepositoryInterface $propertyRepository,
+        TomtomService $tomTomService
     )
     {
         $this->propertyRepository = $propertyRepository;
+        $this->tomTomService = $tomTomService;
     }
 
     public function refreshFields()
@@ -99,6 +103,7 @@ class Add extends Component
 
     public function addProperty(): void
     {
+        dd($this->tomTomService->search('test'));
         if (!access_control()->canAccess(auth()->user(), 'add_property')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add property']));
         }
