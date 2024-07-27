@@ -3,6 +3,7 @@
 namespace App\Livewire\Properties;
 
 use App\Contract\PropertyRepositoryInterface;
+use App\Models\Address;
 use Livewire\Component;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Models\Enums\HeatingEnum;
@@ -110,7 +111,8 @@ class Add extends Component
 
     public function refreshFields()
     {
-        $this->state['address'] = '';
+        $this->state['street_number'] = '';
+        $this->state['street'] = '';
         $this->state['location'] = '';
         $this->state['country'] = '';
         $this->state['description'] = '';
@@ -128,7 +130,6 @@ class Add extends Component
 
     public function addProperty(): void
     {
-        dd($this->tomTomService->search('test'));
         if (!access_control()->canAccess(auth()->user(), 'add_property')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add property']));
         }
@@ -140,6 +141,21 @@ class Add extends Component
         try {
             $property = $this->propertyRepository->create($validatedData['state']);
 
+            $property->address = new Address([
+                'street' => $validatedData['street'],
+                'municipality' => $this->selectedAddress->address->municipality,
+                'municipality_sub_division' => $this->selectedAddress->address->municipalitySubdivision,
+                'municipality_secondary_sub_division' => $this->selectedAddress->address->municipalitySecondarySubdivision,
+                'country' => $validatedData['state']['country'],
+                'post_code' => $this->selectedAddress->address->postalCode,
+                'lat' => $this->selectedAddress->position->lat,
+                'lon' => $this->selectedAddress->position->lon,
+                'house_number' => preg_match("/^\d+$/", $validatedData['state']['street_number']) ? $validatedData['state']['street_number'] : null,
+                'house_name' => !preg_match("/^\d+$/", $validatedData['state']['street_number']) ? $validatedData['state']['street_number'] : null
+            ]);
+
+            $property->save();
+
             if (count($validatedData['state']['pictures']) > 0) {
                 foreach ($validatedData['state']['pictures'] as $picture) {
                     $profilePictureFileName = md5($property->id . '-property-' . $picture->getClientOriginalName());
@@ -148,7 +164,7 @@ class Add extends Component
 
                     $image = new Image([
                         'name' => $profilePictureFileName,
-                        'file_route' => config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName . '.' . $picture->extension() 
+                        'file_route' => config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName . '.' . $picture->extension()
                     ]);
 
                     $property->images()->save($image);
