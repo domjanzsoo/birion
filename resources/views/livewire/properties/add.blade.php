@@ -20,7 +20,7 @@
                     <div class="border-2 border-gray-light rounded-b-lg border-separate">
                         <ul>
                             @foreach ($addressOptions as $index => $option)
-                                <li class="px-3 hover:bg-gray-light cursor-pointer" wire:click="handleAddressSelection('{{$index}}')">
+                                <li class="px-3 hover:bg-gray-light cursor-pointer" wire:click="handleStreetSelection('{{$index}}')">
                                     {{ $option->address->freeformAddress }}
                                 </li>
                             @endforeach

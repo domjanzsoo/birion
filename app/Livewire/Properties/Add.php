@@ -15,12 +15,13 @@ use Livewire\Attributes\Renderless;
 class Add extends Component
 {
     use WithFileUploads;
-    
+
     private $propertyRepository;
     private $tomTomService;
     public $roomNumberOptions = 6;
     public $addressOptions = [];
-    
+    public $selectedAddress;
+
     public array $state = [
         'address'       => '',
         'description'   => '',
@@ -35,22 +36,24 @@ class Add extends Component
     public function rules(): array
     {
         return [
-            'state.address'     => 'required',
-            'state.heating'     => ['required', Rule::enum(HeatingEnum::class)],
-            'state.room_number' => 'required|numeric',
-            'state.location'    => 'required',
-            'state.country'     => 'required',
-            'state.size'        => 'required|numeric',
-            'state.description' => 'nullable',
-            'state.pictures'    => 'array',
-            'state.picrures.*'  => 'image|max:2048|nullable'
+            'state.street_number'   => 'required',
+            'state.street'          => 'required',
+            'state.heating'         => ['required', Rule::enum(HeatingEnum::class)],
+            'state.room_number'     => 'required|numeric',
+            'state.location'        => 'required',
+            'state.country'         => 'required',
+            'state.size'            => 'required|numeric',
+            'state.description'     => 'nullable',
+            'state.pictures'        => 'array',
+            'state.picrures.*'      => 'image|max:2048|nullable'
         ];
-    } 
+    }
 
     public function messages(): array
     {
         return [
-            'state.address.required'        => trans('validation.required', ['attribute' => 'address']),
+            'state.street_number.required'  => trans('validation.required', ['attribute' => 'street number/house']),
+            'state.street.required'         => trans('validation.required', ['attribute' => 'street']),
             'state.heating.required'        => trans('validation.required', ['attribute' => 'heating']),
             'state.room_number.required'    => trans('validation.required', ['attribute' => 'room number']),
             'state.room_number.numeric'     => trans('validation.numeric', ['attribute' => 'room number']),
@@ -65,17 +68,21 @@ class Add extends Component
     }
 
     #[Renderless]
-    public function updatedStateAddress(): void
+    public function updatedStateStreet(): void
     {
-        $this->addressOptions = (strlen($this->state['address']) > 3) ? $this->tomTomService->search($this->state['address']) : [];
+        $this->addressOptions = (strlen($this->state['street']) > 3) ? $this->tomTomService->search($this->state['street_number'] . ' ' . $this->state['street']) : [];
     }
 
-    public function handleAddressSelection(int $addressOptionIndex): void
+    public function handleStreetSelection(int $addressOptionIndex): void
     {
         $option = $this->addressOptions[$addressOptionIndex];
 
+        $this->state['street'] = $option->address->streetName;
         $this->state['location'] = $option->address->municipality;
         $this->state['country'] = $option->address->country;
+
+        $this->selectedAddress = $option;
+        $this->addressOptions = [];
 
         return;
     }
@@ -136,9 +143,9 @@ class Add extends Component
             if (count($validatedData['state']['pictures']) > 0) {
                 foreach ($validatedData['state']['pictures'] as $picture) {
                     $profilePictureFileName = md5($property->id . '-property-' . $picture->getClientOriginalName());
-    
+
                     $picture->storeAs($fileDirectories[count($fileDirectories) - 1], $profilePictureFileName . '.' . $picture->extension(), $disk = config('filesystems.default'));
-        
+
                     $image = new Image([
                         'name' => $profilePictureFileName,
                         'file_route' => config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName . '.' . $picture->extension() 
@@ -151,7 +158,7 @@ class Add extends Component
             $this->refreshFields();
 
             $this->dispatch('toastr', ['type' => 'confirm', 'message' => trans('notifications.successfull_creation', ['entity' => 'Property'])]);
-            
+
             $this->dispatch('property-added');
 
             return;
