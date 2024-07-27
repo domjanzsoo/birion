@@ -30,7 +30,7 @@ class TomtomService
             'key' => $this->apiKey,
             'countrySet' => $this->countrySet,
             'language' => $this->language,
-            'idxSet' => 'Str',
+            'idxSet' => 'Str,PAD',
             'typeahead' => true
 
         ]);

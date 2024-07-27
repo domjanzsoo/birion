@@ -2,6 +2,8 @@
 
 return [
     'property_entity' => 'property',
+    'street' => 'Street',
+    'house_name_number' => 'House Number/Name',
     'properties' => 'Properties',
     'properties_full' => 'All existing properties listed.',
     'add' => 'Add Property',
