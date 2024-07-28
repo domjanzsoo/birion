@@ -3,7 +3,7 @@
 namespace App\Livewire\Properties;
 
 use App\Contract\PropertyRepositoryInterface;
-use App\Models\Address;
+use App\Contract\AddressRepositoryInterface;
 use Livewire\Component;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Models\Enums\HeatingEnum;
@@ -18,6 +18,7 @@ class Add extends Component
     use WithFileUploads;
 
     private $propertyRepository;
+    private $addressRepository;
     private $tomTomService;
     public $roomNumberOptions = 6;
     public $addressOptions = [];
@@ -102,10 +103,12 @@ class Add extends Component
 
     public function boot(
         PropertyRepositoryInterface $propertyRepository,
+        AddressRepositoryInterface $addressRepository,
         TomtomService $tomTomService
     )
     {
         $this->propertyRepository = $propertyRepository;
+        $this->addressRepository = $addressRepository;
         $this->tomTomService = $tomTomService;
     }
 
@@ -139,13 +142,11 @@ class Add extends Component
         $fileDirectories = explode('/', config('filesystems.image_path'));
 
         try {
-            $property = $this->propertyRepository->create($validatedData['state']);
-
-            $property->address = new Address([
-                'street' => $validatedData['street'],
+            $address = $this->addressRepository->create([
+                'street' => $validatedData['state']['street'],
                 'municipality' => $this->selectedAddress->address->municipality,
-                'municipality_sub_division' => $this->selectedAddress->address->municipalitySubdivision,
-                'municipality_secondary_sub_division' => $this->selectedAddress->address->municipalitySecondarySubdivision,
+                'municipality_sub_division' => $this->selectedAddress->address->municipalitySubdivision ?? null,
+                'municipality_secondary_sub_division' => $this->selectedAddress->address->municipalitySecondarySubdivision ?? null,
                 'country' => $validatedData['state']['country'],
                 'post_code' => $this->selectedAddress->address->postalCode,
                 'lat' => $this->selectedAddress->position->lat,
@@ -154,7 +155,7 @@ class Add extends Component
                 'house_name' => !preg_match("/^\d+$/", $validatedData['state']['street_number']) ? $validatedData['state']['street_number'] : null
             ]);
 
-            $property->save();
+            $property = $this->propertyRepository->createProperty($validatedData['state'], $address);
 
             if (count($validatedData['state']['pictures']) > 0) {
                 foreach ($validatedData['state']['pictures'] as $picture) {

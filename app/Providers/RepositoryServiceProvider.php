@@ -11,6 +11,8 @@ use App\Repositories\RoleRepository;
 use App\Contract\RoleRepositoryInterface;
 use App\Repositories\PropertyRepository;
 use App\Contract\PropertyRepositoryInterface;
+use App\Contract\AddressRepositoryInterface;
+use App\Repositories\AddressRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
         $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
         $this->app->bind(PropertyRepositoryInterface::class, PropertyRepository::class);
+        $this->app->bind(AddressRepositoryInterface::class, AddressRepository::class);
     }
 
     /**

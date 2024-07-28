@@ -23,6 +23,7 @@ return new class extends Migration
             $table->double('lon');
             $table->integer('house_number')->nullable();
             $table->string('house_name')->nullable();
+            $table->timestamps();
         });
     }
 
