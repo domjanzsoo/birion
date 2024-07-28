@@ -10,17 +10,17 @@
         <div class="col-span-2 gap-3 grid grid-cols-5">
             <div>
                 <x-label for="street_number" value="{{ __('properties.house_name_number') }}" />
-                <x-input id="street_number" type="text" class="mt-1 w-full" wire:model="state.street_number" />
+                <x-input id="street_number" type="text" class="mt-1 w-full text-sm" wire:model="state.street_number" />
                 <x-input-error for="state.street_number" class="mt-2" />
             </div>
             <div class="col-span-4">
                 <x-label for="street" value="{{ __('properties.street') }}" />
-                <x-input id="street" type="text" class="mt-1 w-full" wire:model.live="state.street" />
+                <x-input id="street" autocomplete="off" type="text" class="mt-1 w-full text-sm" wire:model.live="state.street" />
                 @if (count($addressOptions) > 0)
                     <div class="border-2 border-gray-light rounded-b-lg border-separate">
                         <ul>
                             @foreach ($addressOptions as $index => $option)
-                                <li class="px-3 hover:bg-gray-light cursor-pointer" wire:click="handleStreetSelection('{{$index}}')">
+                                <li class="px-3 hover:bg-gray-light cursor-pointer text-sm" wire:click="handleStreetSelection('{{$index}}')">
                                     {{ $option->address->freeformAddress }}
                                 </li>
                             @endforeach
@@ -32,12 +32,12 @@
         </div>
         <div>
             <x-label for="location" value="{{ __('properties.location') }}" />
-            <x-input id="location" type="text" class="mt-1 w-full" wire:model="state.location" />
+            <x-input id="location" type="text" class="mt-1 w-full text-sm" wire:model="state.location" />
             <x-input-error for="state.location" class="mt-2 form-control" />
         </div>
         <div>
             <x-label for="country" value="{{ __('properties.country') }}"/>
-            <x-input id="country" type="text" class="mt-1 w-full" wire:model="state.country" />
+            <x-input id="country" type="text" class="mt-1 w-full text-sm" wire:model="state.country" />
             <x-input-error for="state.country" class="mt-2" />
         </div>
         <div class="col-span-2 grid grid-cols-3 gap-2">
@@ -64,14 +64,14 @@
                 <x-input-error for="state.room_number" class="mt-2" />
             </div>
             <div>
-                <x-label for="size" value="{{ __('properties.size') }}"/>
-                <x-input id="size" type="number" class="mt-1 w-full" wire:model="state.size" />
+                <x-label for="size">{!! __('properties.size') !!}</x-label>
+                <x-input id="size" type="number" class="mt-1 w-full text-sm" wire:model="state.size" />
                 <x-input-error for="state.size" class="mt-2" />
             </div>
         </div>
         <div class="col-span-2">
             <x-label for="description" value="{{ __('properties.description') }}"/>
-            <x-input id="description" type="text-area" class="mt-1 w-full" wire:model="state.description" />
+            <x-input id="description" type="text-area" class="mt-1 w-full text-sm" wire:model="state.description" />
             <x-input-error for="state.description" class="mt-2" />
         </div>
         <div class="col-span-2 mt-3">

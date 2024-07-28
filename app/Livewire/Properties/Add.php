@@ -25,7 +25,8 @@ class Add extends Component
     public $selectedAddress;
 
     public array $state = [
-        'address'       => '',
+        'street_number' => '',
+        'street'        => '',
         'description'   => '',
         'heating'       => null,
         'room_number'   => null,
@@ -80,7 +81,7 @@ class Add extends Component
         $option = $this->addressOptions[$addressOptionIndex];
 
         $this->state['street'] = $option->address->streetName;
-        $this->state['location'] = $option->address->municipality;
+        $this->state['location'] = $option->address->municipality ?? $option->address->municipalitySubdivision ?? $option->address->countrySecondarySubdivision ?? null;
         $this->state['country'] = $option->address->country;
 
         $this->selectedAddress = $option;
@@ -144,7 +145,7 @@ class Add extends Component
         try {
             $address = $this->addressRepository->create([
                 'street' => $validatedData['state']['street'],
-                'municipality' => $this->selectedAddress->address->municipality,
+                'municipality' => $this->selectedAddress->address->municipality ?? $this->selectedAddress->address->municipalitySubdivision ?? null,
                 'municipality_sub_division' => $this->selectedAddress->address->municipalitySubdivision ?? null,
                 'municipality_secondary_sub_division' => $this->selectedAddress->address->municipalitySecondarySubdivision ?? null,
                 'country' => $validatedData['state']['country'],

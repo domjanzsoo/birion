@@ -10,7 +10,7 @@ return [
     'add_full' => 'Add a new property.',
     'permission_name' => 'Property Name',
     'room_number' => 'Number of Rooms',
-    'size' => 'Size',
+    'size' => "Size(m<sup>2</sup>)",
     'heating_type' => 'Heating Type',
     'address' => 'Address',
     'location' => 'Location',
