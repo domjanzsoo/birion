@@ -7,7 +7,83 @@
     </x-slot>
 
     <x-slot name="form">
-        <div class="col-span-2 gap-3 grid grid-cols-5">
+        <div
+            x-data="{ selectedAddressOption: null }"
+            x-init="() => {
+                let streetOnFocus = false;
+                let currentSelectedOptionIndex = -1;
+                let addressOptions = document.getElementsByClassName('address-option');
+
+                document.getElementById('street').onfocus = e => {
+                    streetOnFocus = true;
+                };
+
+                document.getElementById('street').onblur = e => {
+                    streetOnFocus = false;
+                    document.getElementById('address-option-' + currentSelectedOptionIndex).classList.remove('bg-gray-light');
+                    document.getElementById('address-option-lister').classList.add('hidden');
+                    currentSelectedOptionIndex = -1;
+                };
+
+                document.onkeydown = e => {
+                    if (streetOnFocus) {
+                        let currentSelection = document.getElementById('address-option-' + currentSelectedOptionIndex);
+
+                        switch (e.keyCode) {
+                            case 40:
+                                document.getElementById('address-option-lister').classList.remove('hidden');
+                                if (addressOptions.length > 0  && currentSelectedOptionIndex < addressOptions.length - 1) {
+                                    if (currentSelection) {
+                                        currentSelection.classList.remove('bg-gray-light');
+                                    }
+
+                                    currentSelectedOptionIndex ++;
+
+                                    document.getElementById('address-option-' + currentSelectedOptionIndex).classList.add('bg-gray-light');
+                                }
+                                break;
+                            case 38:
+                                if (addressOptions.length > 0) {
+                                    if (currentSelection) {
+                                        currentSelection.classList.remove('bg-gray-light');
+                                    }
+
+                                    currentSelectedOptionIndex = currentSelectedOptionIndex <= 0 ? addressOptions.length - 1 : currentSelectedOptionIndex - 1;
+
+                                    document.getElementById('address-option-' + currentSelectedOptionIndex).classList.add('bg-gray-light');
+                                }
+                                break;
+                            case 27:
+                                if (currentSelection) {
+                                    currentSelection.classList.remove('bg-gray-light');
+                                }
+
+                                currentSelection = null;
+                                currentSelectedOptionIndex = -1;
+                                document.getElementById('address-option-lister').classList.add('hidden');
+                                break;
+                            case 13:
+                                e.preventDefault();
+
+                                if (currentSelection) {
+                                    currentSelection.classList.remove('bg-gray-light');
+                                }
+
+                                if (currentSelectedOptionIndex > -1) {
+                                    $dispatch('address-selected', { addressIndex: currentSelectedOptionIndex })
+                                }
+
+                                currentSelection = null;
+                                currentSelectedOptionIndex = -1;
+                                document.getElementById('address-option-lister').classList.add('hidden');
+                                break;
+                            default:
+                                return;
+                        }
+                    }
+                }
+            }"
+            class="col-span-2 gap-3 grid grid-cols-5">
             <div>
                 <x-label for="street_number" value="{{ __('properties.house_name_number') }}" />
                 <x-input id="street_number" type="text" class="mt-1 w-full text-sm" wire:model="state.street_number" />
@@ -15,12 +91,12 @@
             </div>
             <div class="col-span-4">
                 <x-label for="street" value="{{ __('properties.street') }}" />
-                <x-input id="street" autocomplete="off" type="text" class="mt-1 w-full text-sm" wire:model.live="state.street" />
+                <x-input id="street" type="text" class="mt-1 w-full text-sm" wire:model.live="state.street" />
                 @if (count($addressOptions) > 0)
-                    <div class="border-2 border-gray-light rounded-b-lg border-separate">
+                    <div class="border-2 border-gray-light rounded-b-lg border-separate" id="address-option-lister">
                         <ul>
                             @foreach ($addressOptions as $index => $option)
-                                <li class="px-3 hover:bg-gray-light cursor-pointer text-sm" wire:click="handleStreetSelection('{{$index}}')">
+                                <li class="px-3 hover:bg-gray-light cursor-pointer text-sm address-option" id="address-option-{{$index}}" wire:click="handleStreetSelection('{{$index}}')">
                                     {{ $option->address->freeformAddress }}
                                 </li>
                             @endforeach
