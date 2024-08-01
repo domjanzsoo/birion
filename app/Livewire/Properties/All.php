@@ -24,7 +24,6 @@ class All extends MainList
         $this->authorizeRender();
 
         return view('livewire.properties.all', [
-            'blaa' => 'this is blaaaaa',
             'properties' => $this->propertyRepository->getAllPaginated($this->pagination)
         ]);
     }

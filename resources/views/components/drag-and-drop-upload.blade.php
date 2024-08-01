@@ -46,7 +46,7 @@
 
             this.fileInput.dispatchEvent(new Event('change', { bubbles: true }));
         }
-    }" 
+    }"
     x-init="() => {
         console.log('init');
         Livewire.on(resetEvent, event => {
@@ -145,7 +145,7 @@
                             <div class="ml-2 p-1 size text-xs col-span-2" x-text="imgSize"></div>
                             <button x-on:click="removeImage(image, index)" type="button">
                                 <x-icon name="trash" wrapperClasses="w-auto mx-auto pt-1 rounded-md hover:bg-gray" class="pointer-events-none fill-white mx-auto" />             
-                            </button>    
+                            </button>
                             </div>
                         </div>
                     </section>
