@@ -99,7 +99,8 @@ class Add extends Component
     }
 
     protected $listeners = [
-        'property-picture-empty' => 'clearPropertyPictures'
+        'property-picture-empty'    => 'clearPropertyPictures',
+        'address-selected'          => 'handleStreetSelection'
     ];
 
     public function boot(

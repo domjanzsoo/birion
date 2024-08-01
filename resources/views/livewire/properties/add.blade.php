@@ -70,7 +70,7 @@
                                 }
 
                                 if (currentSelectedOptionIndex > -1) {
-                                    $dispatch('address-selected', { addressIndex: currentSelectedOptionIndex })
+                                    $dispatch('address-selected', { addressOptionIndex: currentSelectedOptionIndex })
                                 }
 
                                 currentSelection = null;
