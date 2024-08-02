@@ -91,7 +91,7 @@
             </div>
             <div class="col-span-4">
                 <x-label for="street" value="{{ __('properties.street') }}" />
-                <x-input id="street" type="text" class="mt-1 w-full text-sm" wire:model.live="state.street" />
+                <x-input id="street" autocomplete="off" type="text" class="mt-1 w-full text-sm" wire:model.live="state.street" />
                 @if (count($addressOptions) > 0)
                     <div class="border-2 border-gray-light rounded-b-lg border-separate" id="address-option-lister">
                         <ul>
