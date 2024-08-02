@@ -11,6 +11,8 @@ use Illuminate\Validation\Rule;
 use Livewire\WithFileUploads;
 use App\Models\Image;
 use App\Services\TomtomService;
+use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Renderless;
 
 class Add extends Component
 {
@@ -74,6 +76,7 @@ class Add extends Component
         $this->addressOptions = (strlen($this->state['street']) > 3) ? $this->tomTomService->search($this->state['street_number'] . ' ' . $this->state['street']) : [];
     }
 
+    #[Renderless]
     public function handleStreetSelection(int $addressOptionIndex): void
     {
         $option = $this->addressOptions[$addressOptionIndex];
@@ -140,6 +143,8 @@ class Add extends Component
         $validatedData = $this->validate();
 
         try {
+            DB::beginTransaction();
+
             $address = $this->addressRepository->create([
                 'street' => $validatedData['state']['street'],
                 'municipality' => $this->selectedAddress->address->municipality ?? $this->selectedAddress->address->municipalitySubdivision ?? null,
@@ -176,8 +181,10 @@ class Add extends Component
 
             $this->dispatch('property-added');
 
+            DB::commit();
             return;
         } catch(\Exception $exception) {
+            DB::rollBack();
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
     }

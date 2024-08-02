@@ -8,7 +8,7 @@
 
     <x-slot name="form">
         <div
-            x-data="{ selectedAddressOption: null }"
+            x-data="{'selectedAddressOption': null}"
             x-init="() => {
                 let streetOnFocus = false;
                 let currentSelectedOptionIndex = -1;
@@ -20,9 +20,10 @@
 
                 document.getElementById('street').onblur = e => {
                     streetOnFocus = false;
-                    document.getElementById('address-option-' + currentSelectedOptionIndex).classList.remove('bg-gray-light');
-                    document.getElementById('address-option-lister').classList.add('hidden');
-                    currentSelectedOptionIndex = -1;
+
+                    if (document.getElementById('address-option-lister')) {
+                        document.getElementById('address-option-lister').classList.add('hidden');
+                    }
                 };
 
                 document.onkeydown = e => {
@@ -81,7 +82,7 @@
                                 return;
                         }
                     }
-                }
+                };
             }"
             class="col-span-2 gap-3 grid grid-cols-5">
             <div>
@@ -91,7 +92,7 @@
             </div>
             <div class="col-span-4">
                 <x-label for="street" value="{{ __('properties.street') }}" />
-                <x-input id="street" autocomplete="off" type="text" class="mt-1 w-full text-sm" wire:model.live="state.street" />
+                <x-input wire:key="street" id="street" autocomplete="off" type="text" class="mt-1 w-full text-sm" wire:model.live="state.street" />
                 @if (count($addressOptions) > 0)
                     <div class="border-2 border-gray-light rounded-b-lg border-separate" id="address-option-lister">
                         <ul>

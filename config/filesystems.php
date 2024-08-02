@@ -74,6 +74,6 @@ return [
     ],
 
     'user_profile_image_path' => 'storage/avatar',
-    'user_property_path' => 'storage/property',
+    'property_image_path' => 'storage/property',
     'image_path' => env('IMAGE_PATH', '')
 ];
