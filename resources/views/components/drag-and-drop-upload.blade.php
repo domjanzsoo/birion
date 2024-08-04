@@ -153,7 +153,7 @@ input[type="radio"] {
                             @if ($checkable)
                                 <div class="flex flex-col">
                                     <label>
-                                        <x-input type="radio" name="image-radio-button" x-on:click="$dispatch('image-checked', { itemIndex: index })" />{{ $checkLabel }}
+                                        <x-input type="radio" name="image-radio-button" x-on:click="$dispatch(checkEvent, { itemIndex: index })" />{{ $checkLabel }}
                                     </label>
                                 </div>
                             @endif
