@@ -158,11 +158,13 @@ input[type="radio"] {
                                 </div>
                             @endif
                         </div>
-                        <div x-init id="size" class="grid grid-cols-3 text-white opacity-0">
+                        <div id="size" class="grid grid-cols-3 text-white opacity-0">
                             <div class="ml-2 p-1 size text-xs col-span-2" x-text="imgSize"></div>
-                            <button x-on:click="removeImage(image, index)" type="button">
-                                <x-icon name="trash" wrapperClasses="w-auto mx-auto pt-1 rounded-md hover:bg-gray" class="pointer-events-none fill-white mx-auto" />
-                            </button>
+                            <div class="rounded-md w-7 h-auto hover:bg-gray" x-on:click="removeImage(image, index)">
+                                <div class="mx-1 my-1">
+                                    <x-icon name="trash" wrapperClasses="mx-auto" class="pointer-events-none fill-white mx-auto" />
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </article>
