@@ -1,4 +1,4 @@
-@props(['fileType' => '', 'multi' => false, 'resetEvent' => ''])
+@props(['fileType' => '', 'multi' => false, 'resetEvent' => '', 'checkable' => false, 'checkLabel' => 'Select', 'checkEvent' => null])
 
 <style>
 [x-cloak] { display: none !important }
@@ -14,6 +14,12 @@
 .hasImage:hover section #size {
     opacity: 1;
 }
+
+input[type="radio"] {
+  -ms-transform: scale(0.7); /* IE 9 */
+  -webkit-transform: scale(0.7); /* Chrome, Safari, Opera */
+  transform: scale(0.7);
+}
 </style>
 
 <div
@@ -24,6 +30,7 @@
         fileInput: null,
         multiple: {{ json_encode($multi) }},
         resetEvent: '{{ $resetEvent }}',
+        checkEvent: '{{ $checkEvent }}',
         images: [],
         removeImage(image, index) {
             const dataTransfer = new DataTransfer();
@@ -49,6 +56,7 @@
     }"
     x-init="() => {
         console.log('init');
+
         Livewire.on(resetEvent, event => {
             selectedFileName = '';
             images = []
@@ -140,13 +148,21 @@
                     <img :src="imgUrl" class="w-full h-full sticky object-cover rounded-md bg-fixed" />
 
                     <section class="flex flex-col rounded-md text-xs break-words w-full h-full z-20 absolute top-0 py-2">
-                        <h1 id="imgName" class="ml-2 flex-1 text-white opacity-0" x-text="image.name"></h1>
+                        <div id="imgName" class="ml-2 flex-1 text-white opacity-0">
+                            <h1  x-text="image.name"></h1>
+                            @if ($checkable)
+                                <div class="flex flex-col">
+                                    <label>
+                                        <x-input type="radio" name="image-radio-button" x-on:click="$dispatch('image-checked', { itemIndex: index })" />{{ $checkLabel }}
+                                    </label>
+                                </div>
+                            @endif
+                        </div>
                         <div x-init id="size" class="grid grid-cols-3 text-white opacity-0">
                             <div class="ml-2 p-1 size text-xs col-span-2" x-text="imgSize"></div>
                             <button x-on:click="removeImage(image, index)" type="button">
-                                <x-icon name="trash" wrapperClasses="w-auto mx-auto pt-1 rounded-md hover:bg-gray" class="pointer-events-none fill-white mx-auto" />             
+                                <x-icon name="trash" wrapperClasses="w-auto mx-auto pt-1 rounded-md hover:bg-gray" class="pointer-events-none fill-white mx-auto" />
                             </button>
-                            </div>
                         </div>
                     </section>
                 </article>
