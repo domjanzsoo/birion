@@ -8,22 +8,24 @@
 
     <x-slot name="form">
         <div
-            x-data="{'selectedAddressOption': null}"
+            x-data="{ selectedAddressOption: null }"
             x-init="() => {
                 let streetOnFocus = false;
                 let currentSelectedOptionIndex = -1;
                 let addressOptions = document.getElementsByClassName('address-option');
 
-                document.getElementById('street').onfocus = e => {
-                    streetOnFocus = true;
+                document.onmousedown = e => {
+                    if(!e.target.classList.contains('address-option')) {
+                        streetOnFocus = false;
+
+                        if (document.getElementById('address-option-lister')) {
+                            document.getElementById('address-option-lister').classList.add('hidden');
+                        }
+                    }
                 };
 
-                document.getElementById('street').onblur = e => {
-                    streetOnFocus = false;
-
-                    if (document.getElementById('address-option-lister')) {
-                        document.getElementById('address-option-lister').classList.add('hidden');
-                    }
+                document.getElementById('street').onfocus = e => {
+                    streetOnFocus = true;
                 };
 
                 document.onkeydown = e => {
@@ -130,7 +132,7 @@
                 <x-input-error for="state.heating" class="mt-2" />
             </div>
             <div>
-            <x-label for="room_number" value="{{ __('properties.room_number') }}"/>
+                <x-label for="room_number" value="{{ __('properties.room_number') }}"/>
                 <x-input id="room_number" type="select" class="mt-1 w-full text-sm" wire:model="state.room_number">
                     <x-slot name="options">
                         @for($i = 1; $i <= $roomNumberOptions; $i++)

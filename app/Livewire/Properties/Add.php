@@ -12,7 +12,6 @@ use Livewire\WithFileUploads;
 use App\Models\Image;
 use App\Services\TomtomService;
 use Illuminate\Support\Facades\DB;
-use Livewire\Attributes\Renderless;
 
 class Add extends Component
 {
@@ -74,16 +73,16 @@ class Add extends Component
     }
 
     public $listeners = [
-            'property-picture-empty'    => 'clearPropertyPictures',
-            'address-selected'          => 'handleStreetSelection',
+        'property-picture-empty'    => 'clearPropertyPictures',
+        'address-selected'          => 'handleStreetSelection',
     ];
+
 
     public function updatedStateStreet(): void
     {
         $this->addressOptions = (strlen($this->state['street']) > 3) ? $this->tomTomService->search($this->state['street_number'] . ' ' . $this->state['street']) : [];
     }
 
-    #[Renderless]
     public function handleStreetSelection(int $addressOptionIndex): void
     {
         $option = $this->addressOptions[$addressOptionIndex];
@@ -146,7 +145,6 @@ class Add extends Component
         $this->state['pictures'] = [];
     }
 
-
     public function addProperty(): void
     {
         if (!access_control()->canAccess(auth()->user(), 'add_property')) {
@@ -174,7 +172,7 @@ class Add extends Component
             $property = $this->propertyRepository->createProperty($validatedData['state'], $address);
 
             if (count($validatedData['state']['pictures']) > 0) {
-                foreach ($validatedData['state']['pictures'] as $picture) {
+                foreach ($validatedData['state']['pictures'] as $index => $picture) {
                     $profilePictureFileName = $property->id . '-property-' . md5($picture->getClientOriginalName()) . '.' . $picture->extension();
 
                     $picture->storeAs(explode('/', config('filesystems.property_image_path'))[1], $profilePictureFileName , $disk = config('filesystems.default'));
@@ -183,6 +181,10 @@ class Add extends Component
                         'name' => $profilePictureFileName,
                         'file_route' => config('filesystems.property_image_path') . '/' . $profilePictureFileName . '.' . $picture->extension()
                     ]);
+
+                    if ((!isset($this->checkedImageIndex) && $index === 0) || $this->checkedImageIndex === $index) {
+                        $image->main_image = true;
+                    }
 
                     $property->images()->save($image);
                 }

@@ -17,7 +17,7 @@ class MainList extends Component
     private $entity;
 
     protected $listeners = [];
-    
+
     private $itemsNaming;
     private $itemRepositoryNaming;
     private $itemDeletetionArrayNaming;
@@ -38,7 +38,7 @@ class MainList extends Component
     }
 
     protected function authorizeRender()
-    { 
+    {
         if (!access_control()->canAccess(auth()->user(), ['view_' . $this->entity . 's', 'add_' . $this->entity, 'edit_' . $this->entity])) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'view ' . $this->entity]));
         }
@@ -75,7 +75,7 @@ class MainList extends Component
                     $buttonDisable = true;
                 }
             }
-    
+
             $this->deleteButtonAccess = $buttonDisable;
             $this->{$this->itemDeletetionArrayNaming} = $items;
         }
