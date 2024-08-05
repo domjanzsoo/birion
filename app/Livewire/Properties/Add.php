@@ -73,14 +73,10 @@ class Add extends Component
         ];
     }
 
-    public function listeners(): array
-    {
-        return [
+    public $listeners = [
             'property-picture-empty'    => 'clearPropertyPictures',
             'address-selected'          => 'handleStreetSelection',
-            $this->imageSelectionEvent  => 'handleImageCheck'
-        ];
-    }
+    ];
 
     public function updatedStateStreet(): void
     {
@@ -102,7 +98,7 @@ class Add extends Component
         return;
     }
 
-    public function handleImageCheck(int $itemIndex): void
+    public function handleImageCheck(?int $itemIndex): void
     {
         $this->checkedImageIndex = $itemIndex;
     }
@@ -125,6 +121,11 @@ class Add extends Component
         $this->propertyRepository = $propertyRepository;
         $this->addressRepository = $addressRepository;
         $this->tomTomService = $tomTomService;
+    }
+
+    public function mount(): void
+    {
+        $this->listeners[$this->imageSelectionEvent] = 'handleImageCheck';
     }
 
     public function refreshFields()

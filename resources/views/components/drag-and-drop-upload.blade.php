@@ -29,6 +29,7 @@ input[type="radio"] {
         selectedFileName: '',
         fileInput: null,
         multiple: {{ json_encode($multi) }},
+        checkable: {{ json_encode($checkable) }},
         resetEvent: '{{ $resetEvent }}',
         checkEvent: '{{ $checkEvent }}',
         images: [],
@@ -52,6 +53,10 @@ input[type="radio"] {
             this.images.splice(index, 1);
 
             this.fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+            if (this.checkable) {
+                $dispatch(this.checkEvent, { itemIndex: null });
+            }
         }
     }"
     x-init="() => {
