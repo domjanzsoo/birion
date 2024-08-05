@@ -26,10 +26,13 @@ class Add extends Component
         'state.permissions' => 'array'
     ];
 
-    protected $messages = [
-        'state.role_name.required' => 'The role name is required.',
-        'state.role_name.unique' => 'A role with the given name already exists.'
-    ];
+    public function  messages(): array
+    {
+        return [
+            'state.role_name.required' => trans('validation.required', ['attribute' => 'name']),
+            'state.role_name.unique' => trans('validation.unique', ['attribute' => 'role name'])
+        ];
+    }
 
     public function render()
     {

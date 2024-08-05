@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Contract\UserRepositoryInterface;
 use App\Contract\PermissionRepositoryInterface;
 use App\Contract\RoleRepositoryInterface;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Livewire\WithFileUploads;
 use Illuminate\Validation\Rules\Password;
@@ -145,7 +144,7 @@ class Add extends Component
                 $user->profile_photo_path = config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName;
                 $user->save();
             }
-        } catch(Exception $exception) {
+        } catch(\Exception $exception) {
             $this->dispatch('toastr', ['type' => 'error', 'message' => $exception->getMessage()]);
         }
 

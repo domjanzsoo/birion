@@ -73,5 +73,7 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
-    'user_profile_image_path' => env('USER_IMAGE_PROFILE_PATH', '')
+    'user_profile_image_path' => 'storage/avatar',
+    'property_image_path' => 'storage/property',
+    'image_path' => env('IMAGE_PATH', '')
 ];

@@ -22,7 +22,7 @@ class BaseRepository implements BaseRepositoryInterface
         if (isset($orderBy)) {
             return $this->model::query()->orderBy('name')->get();
         }
-        
+
         return $this->model::all();
     }
 

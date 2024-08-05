@@ -38,6 +38,11 @@
                             {{ __('general.user_management') }}
                         </x-nav-link >
                     @endcanAccess
+                    @canAccess("['view_properties', 'add_property', 'edit_property']")
+                        <x-nav-link href="{{ route('properties') }}" :active="request()->routeIs('properties')">
+                            {{ __('properties.properties') }}
+                        </x-nav-link >
+                    @endcanAccess
                 </div>
             </div>
 
