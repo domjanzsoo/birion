@@ -153,7 +153,7 @@
         </div>
         <div class="col-span-2 mt-3">
             <x-label for="pictures" value="{{ __('properties.photos') }}"/>
-            <x-drag-and-drop-upload wire:model="state.pictures" :multi="true" class="w-full" fileType='property-picture' resetEvent='property-added' />
+            <x-drag-and-drop-upload wire:model="state.pictures" :multi="true" class="w-full" fileType='property-picture' resetEvent='property-added' :checkable="true" :checkLabel="__('properties.main_image')" :checkEvent="$imageCheckEvent" />
             <x-input-error for="state.pictures" class="mt-2" />
         </div>
         <div class="flex flex-row justify-end col-span-2 pr-5 mt-6">

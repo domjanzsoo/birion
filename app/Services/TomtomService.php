@@ -32,7 +32,6 @@ class TomtomService
             'language' => $this->language,
             'idxSet' => 'Str,PAD',
             'typeahead' => true
-
         ]);
 
         return json_decode($response->body())->results;

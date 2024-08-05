@@ -24,6 +24,8 @@ class Add extends Component
     public $roomNumberOptions = 6;
     public $addressOptions = [];
     public $selectedAddress;
+    public $checkedImageIndex;
+    public $imageSelectionEvent = 'check-main-property-image';
 
     public array $state = [
         'street_number' => '',
@@ -71,6 +73,15 @@ class Add extends Component
         ];
     }
 
+    public function listeners(): array
+    {
+        return [
+            'property-picture-empty'    => 'clearPropertyPictures',
+            'address-selected'          => 'handleStreetSelection',
+            $this->imageSelectionEvent  => 'handleImageCheck'
+        ];
+    }
+
     public function updatedStateStreet(): void
     {
         $this->addressOptions = (strlen($this->state['street']) > 3) ? $this->tomTomService->search($this->state['street_number'] . ' ' . $this->state['street']) : [];
@@ -91,18 +102,19 @@ class Add extends Component
         return;
     }
 
+    public function handleImageCheck(int $itemIndex): void
+    {
+        $this->checkedImageIndex = $itemIndex;
+    }
+
     public function render()
     {
         return view('livewire.properties.add', [
-            'roomNumberOptions' => $this->roomNumberOptions,
-            'heatingOptions'    => HeatingEnum::toArray()
+            'roomNumberOptions'     => $this->roomNumberOptions,
+            'heatingOptions'        => HeatingEnum::toArray(),
+            'imageCheckEvent'       => $this->imageSelectionEvent
         ]);
     }
-
-    protected $listeners = [
-        'property-picture-empty'    => 'clearPropertyPictures',
-        'address-selected'          => 'handleStreetSelection'
-    ];
 
     public function boot(
         PropertyRepositoryInterface $propertyRepository,

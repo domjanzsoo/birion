@@ -17,5 +17,6 @@ return [
     'country' => 'Country',
     'price' => 'Price',
     'description' => 'Description',
-    'photos' => 'Photos'
+    'photos' => 'Photos',
+    'main_image' => 'Main image'
 ];
