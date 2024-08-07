@@ -26,9 +26,9 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model::all();
     }
 
-    public function getAllPaginated(int $pagination = 10): LengthAwarePaginator
+    public function getAllPaginated(int $pagination = 10, array $with = null): LengthAwarePaginator
     {
-        return $this->model::paginate($pagination);
+        return isset($with) ? $this->model::with(['images'])->paginate($pagination) : $this->model::paginate($pagination);
     }
 
     public function getById(int $id): Model

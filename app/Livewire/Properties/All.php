@@ -13,7 +13,7 @@ class All extends MainList
     protected $propertyRepository;
 
     protected $listeners = [
-        'delete-properties'    => 'deleteProperties',
+        'delete-properties'     => 'deleteProperties',
         'permission-added'      => 'refetch',
         'item-selection'        => 'processItemCheck',
         'permission-edited'     => 'refetch'
@@ -24,7 +24,7 @@ class All extends MainList
         $this->authorizeRender();
 
         return view('livewire.properties.all', [
-            'properties' => $this->propertyRepository->getAllPaginated($this->pagination)
+            'properties' => $this->propertyRepository->getAllPaginated($this->pagination, ['images'])
         ]);
     }
 
