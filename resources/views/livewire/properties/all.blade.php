@@ -23,7 +23,7 @@
             }
 
             if (address.house_number) {
-              header += address.house_number;
+              header += address.house_number + ' ';
             }
 
             header += address.street;
@@ -34,9 +34,11 @@
             <b x-text="header"></b>
           </div>
         </div>
-        <div class="mt-3 px-3 pt-4 text-sm relative">
-          <div x-text="elmData.description.substring(0, 80) + '...'"></div>
-          <div style="width: 97%" class="h-4 bg-white absolute bottom-0 opacity-80"></div>
+        <div class="w-full h-24">
+          <div class="mt-3 px-3 pt-4 text-sm relative">
+            <div x-text="elmData.description.substring(0, 80) + '...'"></div>
+            <div style="width: 97%" class="h-4 bg-white absolute bottom-0 opacity-80"></div>
+          </div>
         </div>
         <div class="mt-6 grid grid-cols-3 gap-2 w-full">
           <template x-for="image in elmData.images">

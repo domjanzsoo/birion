@@ -14,7 +14,7 @@ class All extends MainList
 
     protected $listeners = [
         'delete-properties'     => 'deleteProperties',
-        'permission-added'      => 'refetch',
+        'property-added'        => 'refetch',
         'item-selection'        => 'processItemCheck',
         'permission-edited'     => 'refetch'
     ];
