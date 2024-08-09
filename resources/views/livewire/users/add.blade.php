@@ -37,7 +37,7 @@
             <x-multi-select :options="$permissions" event="user-permissions" />
             <x-input-error for="state.permissions" class="mt-2" />
         </div>
-        <div> 
+        <div>
             <x-label for="state.roles" value="{{ __('users.user_roles') }}" />
             <x-multi-select :options="$roles" event="user-roles" />
             <x-input-error for="state.roles" class="mt-2" />
