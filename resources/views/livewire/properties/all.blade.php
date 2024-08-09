@@ -6,7 +6,7 @@
     {{ __('properties.properties_full') }}
   </x-slot>
   <x-slot name="list">
-    <x-grid-paginated :data="$properties">
+    <x-grid-paginated :items="$properties" wrapperStyle="height: 980px">
       <div style="height: 400px" class="bg-white border-solid border-2 border-gray px-2 py-2 rounded-sm">
         <div
           x-data="{ imgUrl: null, header: '' }"
@@ -41,8 +41,9 @@
           </div>
         </div>
         <div class="mt-6 grid grid-cols-3 gap-2 w-full">
-          <template x-for="image in elmData.images">
-            <div :style="`background-image: url(${image.file_route})`" class="h-20 bg-center bg-cover bg-no-repeat"></div>
+          <template x-for="(image, index) in elmData.images">
+            <div
+              x-show="index < 6" :style="`background-image: url(${image.file_route})`" class="h-20 bg-center bg-cover bg-no-repeat"></div>
           </template>
         </div>
       </div>

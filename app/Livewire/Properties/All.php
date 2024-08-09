@@ -8,6 +8,8 @@ use App\Contract\PropertyRepositoryInterface;
 class All extends MainList
 {
     public $propertiesToDelete;
+    protected $pagination = 6;
+
     const ENTITY = 'property';
 
     protected $propertyRepository;
