@@ -5,6 +5,12 @@
         <p class="mt-1 text-sm text-gray-600">
             {{ $description }}
         </p>
+
+        @if (isset($additional))
+            <p class="mt-1 text-sm text-gray-600">
+                {{ $additional }}
+            </p>
+        @endif
     </div>
 
     <div class="px-4 sm:px-0">
