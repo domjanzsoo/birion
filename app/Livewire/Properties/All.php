@@ -8,26 +8,40 @@ use App\Contract\PropertyRepositoryInterface;
 class All extends MainList
 {
     public $propertiesToDelete;
+
     protected $pagination = 6;
+    protected $entityRelations = ['images', 'address'];
 
     const ENTITY = 'property';
 
     protected $propertyRepository;
+    protected $searchFields = ['description', 'address.street', 'address.municipality', 'address.municipality_sub_division', 'address.municipality_secondary_sub_division', 'address.house_name'];
+    protected $search;
 
     protected $listeners = [
         'delete-properties'     => 'deleteProperties',
         'property-added'        => 'refetch',
         'item-selection'        => 'processItemCheck',
-        'permission-edited'     => 'refetch'
+        'property-search'       => 'updateSearch'
     ];
+
+    public function updateSearch(string $search = null): void
+    {
+        $this->search = $search;
+
+        return;
+    }
+
+    public function getPropertiesProperty()
+    {
+        return $this->propertyRepository->getAllPaginated($this->pagination, $this->entityRelations, $this->search);
+    }
 
     public function render()
     {
         $this->authorizeRender();
 
-        return view('livewire.properties.all', [
-            'properties' => $this->propertyRepository->getAllPaginated($this->pagination, ['images', 'address'])
-        ]);
+        return view('livewire.properties.all', ['properties' => $this->propertyRepository->getAllPaginated($this->pagination, $this->entityRelations, ['value' => $this->search, 'searchFields' => $this->searchFields])]);
     }
 
     public function boot(PropertyRepositoryInterface $propertyRepository)

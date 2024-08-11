@@ -1,9 +1,13 @@
+<div>
 <x-form-section>
   <x-slot name="title">
     {{ __('properties.properties') }}
   </x-slot>
   <x-slot name="description">
     {{ __('properties.properties_full') }}
+  </x-slot>
+  <x-slot name="additional">
+    <x-search entity="property"/>
   </x-slot>
   <x-slot name="list">
     <x-grid-paginated :items="$properties" wrapperStyle="height: 980px">
@@ -50,4 +54,5 @@
     </x-grid-paginated>
   </x-slot>
 </x-form-section>
+</div>
 
