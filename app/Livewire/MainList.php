@@ -13,14 +13,16 @@ class MainList extends Component
 
     public $deleteButtonAccess = false;
     protected $pagination = 5;
+    protected $entityRelations = [];
+    protected $filters = [];
 
     private $entity;
 
     protected $listeners = [];
-    
-    private $itemsNaming;
-    private $itemRepositoryNaming;
-    private $itemDeletetionArrayNaming;
+
+    protected $itemsNaming;
+    protected $itemRepositoryNaming;
+    protected $itemDeletetionArrayNaming;
 
     public function preBoot()
     {
@@ -38,7 +40,7 @@ class MainList extends Component
     }
 
     protected function authorizeRender()
-    { 
+    {
         if (!access_control()->canAccess(auth()->user(), ['view_' . $this->entity . 's', 'add_' . $this->entity, 'edit_' . $this->entity])) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'view ' . $this->entity]));
         }
@@ -75,7 +77,7 @@ class MainList extends Component
                     $buttonDisable = true;
                 }
             }
-    
+
             $this->deleteButtonAccess = $buttonDisable;
             $this->{$this->itemDeletetionArrayNaming} = $items;
         }
