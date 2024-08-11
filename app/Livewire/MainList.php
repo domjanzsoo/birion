@@ -13,14 +13,15 @@ class MainList extends Component
 
     public $deleteButtonAccess = false;
     protected $pagination = 5;
+    protected $entityRelations = [];
+    protected $filters = [];
 
     private $entity;
 
     protected $listeners = [];
-
-    private $itemsNaming;
-    private $itemRepositoryNaming;
-    private $itemDeletetionArrayNaming;
+    protected $itemsNaming;
+    protected $itemRepositoryNaming;
+    protected $itemDeletetionArrayNaming;
 
     public function preBoot()
     {

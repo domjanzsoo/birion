@@ -14,7 +14,7 @@ class All extends MainList
     public $extraInformation = [
         'component' => 'data-grid',
         'dataProperty' => [
-          'email', 
+          'email',
           'verified',
           'user_permission_list' => [
             'componentName'     => 'info-tooltip',
