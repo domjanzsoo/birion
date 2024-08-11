@@ -7,6 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class BaseRepository implements BaseRepositoryInterface
 {
@@ -22,13 +23,29 @@ class BaseRepository implements BaseRepositoryInterface
         if (isset($orderBy)) {
             return $this->model::query()->orderBy('name')->get();
         }
-        
+
         return $this->model::all();
     }
 
-    public function getAllPaginated(int $pagination = 10): LengthAwarePaginator
+    public function getAllPaginated(int $pagination = 10, array $with = [], array $search = [], array $filters = []): LengthAwarePaginator
     {
-        return $this->model::paginate($pagination);
+        $results = $this->model::with($with);
+
+        if (isset($search['value'])) {
+            foreach ($search['searchFields'] as $field) {
+                $fieldAssociation = explode('.', $field);
+
+                if (count($fieldAssociation) > 1) {
+                    $results->orWhereHas($fieldAssociation[0], function (Builder $q) use($search, $fieldAssociation) {
+                        $q->where($fieldAssociation[1], 'LIKE', '%'. $search['value'] . '%');
+                    });
+                } else {
+                    $results->orWhere($fieldAssociation[0], 'LIKE', '%' . $search['value'] . '%');
+                }
+            }
+        }
+
+        return $results->paginate($pagination);
     }
 
     public function getById(int $id): Model
