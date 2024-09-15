@@ -36,11 +36,27 @@ class BaseRepository implements BaseRepositoryInterface
                 $fieldAssociation = explode('.', $field);
 
                 if (count($fieldAssociation) > 1) {
-                    $results->orWhereHas($fieldAssociation[0], function (Builder $q) use($search, $fieldAssociation) {
+                    $results->orWhereHas($fieldAssociation[0], function (Builder $q) use ($search, $fieldAssociation) {
                         $q->where($fieldAssociation[1], 'LIKE', '%'. $search['value'] . '%');
                     });
                 } else {
                     $results->orWhere($fieldAssociation[0], 'LIKE', '%' . $search['value'] . '%');
+                }
+            }
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+                $fieldAssociation = explode('.', $filter['property']);
+
+                if (!empty($filter['value'])) {
+                    if (count($fieldAssociation) > 1) {
+                        $results->orWhereHas($fieldAssociation[0], function (Builder $q) use($filter, $fieldAssociation) {
+                            $q->where($fieldAssociation[1], $filter['condition'], $filter['value']);
+                        });
+                    } else {
+                        $results->where($filter['property'], $filter['condition'], $filter['value']);
+                    }
                 }
             }
         }

@@ -13,5 +13,5 @@
     <div class="pt-2 pl-1 pr-2 rounded-l-md text-white bg-gray">
         <x-icon name="magnifying-glass" />
     </div>
-    <x-input id="search-{{ $entity }}" x-ref="searchInput" placeholder="{{ __('general.search') }}" class="text-sm rounded-none rounded-r-md" type="text" />
+    <x-input id="search-{{ $entity }}" x-ref="searchInput" placeholder="{{ __('general.search') }}" class="flex-1 text-sm rounded-none rounded-r-md" type="text" />
 </div>

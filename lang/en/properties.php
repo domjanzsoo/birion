@@ -18,5 +18,6 @@ return [
     'price' => 'Price',
     'description' => 'Description',
     'photos' => 'Photos',
-    'main_image' => 'Main image'
+    'main_image' => 'Main image',
+    'rooms' => 'Rooms'
 ];

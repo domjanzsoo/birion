@@ -7,7 +7,27 @@
     {{ __('properties.properties_full') }}
   </x-slot>
   <x-slot name="additional">
-    <x-search entity="property"/>
+    <div class="w-92">
+      <x-search entity="property" class="w-full"/>
+    </div>
+    @foreach ($filters as $filter => $config)
+      <div class="flex flex-wrap w-92">
+        <div class=" text-center flex-1">
+          <x-label class="pt-4 mr-2" for="{{ $filter }}" value="{{ $config['label'] }}"/>
+        </div>
+        @if (array_key_exists('options', $config))
+          <div class="flex-1">
+            <x-input wire:change="filter('{{ $filter }}', $event.target.value)" wire:key="$filter" type="select" class="mt-1 text-sm">
+              <x-slot name="options">
+                  @foreach ($config['options'] as $name => $value)
+                      <option wire:key="option-{{$name}}" :value="$value" class="text-sm">{{ $name }}</option>
+                  @endforeach
+              </x-slot>
+            </x-input>
+          </div>
+        @endif
+      </div>
+    @endforeach
   </x-slot>
   <x-slot name="list">
     <x-grid-paginated :items="$properties" wrapperStyle="height: 980px">
@@ -47,7 +67,8 @@
         <div class="mt-6 grid grid-cols-3 gap-2 w-full">
           <template x-for="(image, index) in elmData.images">
             <div
-              x-show="index < 6" :style="`background-image: url(${image.file_route})`" class="h-20 bg-center bg-cover bg-no-repeat"></div>
+              x-show="index < 6" :style="`background-image: url(${image.file_route})`" class="h-20 bg-center bg-cover bg-no-repeat">
+            </div>
           </template>
         </div>
       </div>
