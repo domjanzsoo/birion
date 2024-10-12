@@ -20,10 +20,14 @@
             <x-input wire:change="filter('{{ $filter }}', $event.target.value)" wire:key="$filter" type="select" class="mt-1 text-sm">
               <x-slot name="options">
                   @foreach ($config['options'] as $name => $value)
-                      <option wire:key="option-{{$name}}" :value="$value" class="text-sm">{{ $name }}</option>
+                      <option wire:key="option-{{$name}}" value="{{ $value }}" class="text-sm">{{ $name }}</option>
                   @endforeach
               </x-slot>
             </x-input>
+          </div>
+        @elseif (array_key_exists('range', $config))
+          <div class="flex-1 relative">
+            <x-input wire:change="filter('{{ $filter }}', $event.target.value)" wire:key="$filter" type="range" class="mt-1 text-sm" />
           </div>
         @endif
       </div>

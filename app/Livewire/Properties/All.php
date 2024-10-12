@@ -31,6 +31,13 @@ class All extends MainList
             'property' => 'heating',
             'label' => '',
             'options' => []
+        ],
+        'size' => [
+            'value' => null,
+            'condition' => '>',
+            'property' => 'size',
+            'label' => '',
+            'range' => [1, 100]
         ]
     ];
     protected $searchFields = ['description', 'address.street', 'address.municipality', 'address.municipality_sub_division', 'address.municipality_secondary_sub_division', 'address.house_name'];
