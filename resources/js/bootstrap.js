@@ -32,10 +32,3 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
-import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
-import resolveConfig from 'tailwindcss/resolveConfig';
-import tailwindConfig from '/tailwind.config.js';
-
-Alpine.data('loszar', tailwindConfig.theme);
-
-Livewire.start();
