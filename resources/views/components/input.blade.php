@@ -1,4 +1,4 @@
-@props(['disabled' => false, 'type' => null, 'value' => null, 'min' => 1, 'max' => 1000, 'name' => null])
+@props(['disabled' => false, 'type' => null, 'value' => null, 'min' => 1, 'max' => 1000, 'fieldName' => null])
 
 <style>
     .form_control {
@@ -150,14 +150,14 @@
                     Min
                     <span x-text="min"></span>
                 </div>
-                <input class="form_control_container__time__input hidden" x-model="min" x-ref="minInput" type="number" value="{{ $min }}" min="{{ $min }}" name="{{ $name }}-min" max="{{ $max }}"/>
+                <input class="form_control_container__time__input hidden" x-model="min" x-ref="minInput" type="number" value="{{ $min }}" min="{{ $min }}" name="{{ $fieldName }}-min" max="{{ $max }}"/>
             </div>
             <div class="form_control_container flex absolute top-1 right-0">
                 <div class="form_control_container__time">
                     Max
                     <span x-text="max"></max>
                 </div>
-                <input class="form_control_container__time__input hidden" x-ref="maxInput" x-model="max" type="number" value="{{ $max }}" min="{{ $min }}" name="{{ $name }}-max" max="{{ $max }}"/>
+                <input class="form_control_container__time__input hidden" x-ref="maxInput" x-model="max" type="number" value="{{ $max }}" min="{{ $min }}" name="{{ $fieldName }}-max" max="{{ $max }}"/>
             </div>
         </div>
     </div>
