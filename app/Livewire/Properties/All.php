@@ -19,25 +19,25 @@ class All extends MainList
     protected $propertyRepository;
     public $filters = [
         'room_number' => [
-            'value' => null,
+            'value'     => null,
             'condition' => '=',
-            'property' => 'room_number',
-            'label' => '',
-            'options' => []
+            'property'  => 'room_number',
+            'label'     => '',
+            'options'   => []
         ],
         'heating' => [
-            'value' => null,
+            'value'     => null,
             'condition' => '=',
-            'property' => 'heating',
-            'label' => '',
-            'options' => []
+            'property'  => 'heating',
+            'label'     => '',
+            'options'   => []
         ],
         'size' => [
-            'value' => null,
+            'value'     => null,
             'condition' => '>',
-            'property' => 'size',
-            'label' => '',
-            'range' => [1, 100]
+            'property'  => 'size',
+            'label'     => 'Size',
+            'range'     => [1, 100]
         ]
     ];
     protected $searchFields = ['description', 'address.street', 'address.municipality', 'address.municipality_sub_division', 'address.municipality_secondary_sub_division', 'address.house_name'];

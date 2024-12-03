@@ -89,7 +89,7 @@
                     this.min = from;
                 }
 
-                console.log($refs.minInput.value);
+                $refs.finalValueInput.value = this.min + '-' + this.max;
             },
             controlToSlider() {
                 const [from, to] = this.getParsed($refs.fromSlider, $refs.toSlider);
@@ -103,7 +103,7 @@
                     toSlider.value = from;
                 }
 
-                console.log($refs.maxInput.value);
+                $refs.finalValueInput.value = this.min + '-' + this.max;
             },
             getParsed(currentFrom, currentTo) {
                 const from = parseInt(currentFrom.value, 10);
@@ -111,7 +111,6 @@
                 return [from, to];
             },
             fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
-                console.log(loszar)
                 const rangeDistance = to.max - to.min;
                 const fromPosition = from.value - to.min;
                 const toPosition = to.value - to.min;
@@ -126,12 +125,17 @@
             },
             setToggleAccessible(currentTarget) {
                 const toSlider = document.querySelector('#toSlider');
-                    if (Number(currentTarget.value) <= 0 ) {
-                        toSlider.style.zIndex = 2;
-                    } else {
-                        toSlider.style.zIndex = 0;
-                    }
+
+                if (Number(currentTarget.value) <= 0 ) {
+                    toSlider.style.zIndex = 2;
+                } else {
+                    toSlider.style.zIndex = 0;
                 }
+            },
+            dispatchValue(event) {
+                event.preventDefault();
+                $refs.finalValueInput.dispatchEvent(new window.Event('change', { bubbles: true }));
+            }
         }"
         x-init="() => {
             const fromSlider = document.querySelector('#fromSlider');
@@ -139,12 +143,13 @@
             fillSlider($refs.fromSlider, $refs.toSlider, '#C6C6C6', '#25daa5', toSlider);
             setToggleAccessible($refs.toSlider);
         }"
-        class="range_container w-full mt-7 mx-auto my-10 flex flex-col">
+        class="range_container w-full mt-6 mx-auto my-10 flex flex-col">
         <div class="sliders_control w-full relative">
-            <input id="fromSlider" x-on:input="controlFromSlider" type="range" x-ref="fromSlider" value="{{ $min }}" min="{{ $min }}" max="{{ $max }}"/>
-            <input id="toSlider" x-on:input="controlToSlider" type="range" x-ref="toSlider" value="{{ $max }}" min="{{ $min }}" max="{{ $max }}"/>
+            <input id="fromSlider" x-on:input="controlFromSlider" x-on:mouseup="dispatchValue" type="range" x-ref="fromSlider" value="{{ $min }}" min="{{ $min }}" max="{{ $max }}"/>
+            <input id="toSlider" x-on:input="controlToSlider" x-on:mouseup="dispatchValue" type="range" x-ref="toSlider" value="{{ $max }}" min="{{ $min }}" max="{{ $max }}"/>
+            <input x-ref="finalValueInput" type="hidden" {!! $attributes->merge([]) !!} />
         </div>
-        <div class="form_control flex content-around mt-6 size-5 w-full text-sm relative">
+        <div class="form_control flex content-around w-40 mt-6 size-5 text-sm relative">
             <div class="form_control_container flex absolute top-1 left-0">
                 <div class="form_control_container__time">
                     Min

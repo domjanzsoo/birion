@@ -11,7 +11,7 @@
       <x-search entity="property" class="w-full"/>
     </div>
     @foreach ($filters as $filter => $config)
-      <div class="flex flex-wrap w-92">
+      <div class="flex flex-wrap w-full">
         <div class=" text-center flex-1">
           <x-label class="pt-4 mr-2" for="{{ $filter }}" value="{{ $config['label'] }}"/>
         </div>

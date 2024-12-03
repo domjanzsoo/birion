@@ -32,7 +32,7 @@ class Add extends Component
         'roles'                 => []
     ];
 
-    public function rules(): array 
+    public function rules(): array
     {
         return [
             'state.full_name'               => 'required',
@@ -43,13 +43,13 @@ class Add extends Component
             'state.permissions'             => 'array',
             'state.roles'                   => 'array'
         ];
-    } 
+    }
 
     protected $listeners = [
         'user-permissions'  => 'handlePermissions',
         'user-roles'        => 'handleRoles'
     ];
-    
+
     public function messages(): array
     {
         return [
@@ -118,7 +118,7 @@ class Add extends Component
     }
 
     public function addUser(): void
-    {   
+    {
         if (!access_control()->canAccess(auth()->user(), 'add_user')) {
             throw new AuthorizationException(trans('errors.unauthorized_action', ['action' => 'add user']));
         }
@@ -138,9 +138,9 @@ class Add extends Component
 
             if ($validatedData['state']['profile_picture']) {
                 $profilePictureFileName = md5($user->id) . '.' . $validatedData['state']['profile_picture']->extension();
-    
+
                 $validatedData['state']['profile_picture']->storeAs(explode('/', config('filesystems.user_profile_image_path'))[1], $profilePictureFileName, $disk = config('filesystems.default'));
-    
+
                 $user->profile_photo_path = config('filesystems.user_profile_image_path') . '/' . $profilePictureFileName;
                 $user->save();
             }
