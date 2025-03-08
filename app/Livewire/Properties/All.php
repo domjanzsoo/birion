@@ -34,7 +34,7 @@ class All extends MainList
         ],
         'size' => [
             'value'     => null,
-            'condition' => '>',
+            'condition' => 'between',
             'property'  => 'size',
             'label'     => 'Size',
             'range'     => [1, 100]

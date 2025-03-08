@@ -27,7 +27,7 @@
           </div>
         @elseif (array_key_exists('range', $config))
           <div class="flex-1 relative">
-            <x-input wire:change="filter('{{ $filter }}', $event.target.value)" wire:key="$filter" type="range" class="mt-1 text-sm" />
+            <x-input wire:change="filter('{{ $filter }}', $event.target.value)" wire:key="$filter" type="range" class="mt-1 text-sm" min="1" max="100"/>
           </div>
         @endif
       </div>
@@ -45,7 +45,7 @@
             if (address.municipality) {
               header += address.municipality + ', ';
             } else if (address.municipality_sub_division) {
-             header += address.municipality_sub_division + ', ';
+              header += address.municipality_sub_division + ', ';
             } else if (address.municipality_secondary_sub_division) {
               header += address.municipality_secondary_sub_division + ', ';
             }

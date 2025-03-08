@@ -52,10 +52,22 @@ class BaseRepository implements BaseRepositoryInterface
                 if (!empty($filter['value'])) {
                     if (count($fieldAssociation) > 1) {
                         $results->orWhereHas($fieldAssociation[0], function (Builder $q) use($filter, $fieldAssociation) {
-                            $q->where($fieldAssociation[1], $filter['condition'], $filter['value']);
+                            if ($filter['condition'] === 'between') {
+                                $range = explode('-', $filter['value']);
+
+                                $q->whereBetween($fieldAssociation[1], [$range[0], $range[1]]);
+                            } else {
+                                $q->where($fieldAssociation[1], $filter['condition'], $filter['value']);
+                            }
                         });
                     } else {
-                        $results->where($filter['property'], $filter['condition'], $filter['value']);
+                        if ($filter['condition'] === 'between') {
+                            $range = explode('-', $filter['value']);
+
+                            $results->whereBetween($filter['property'], [$range[0], $range[1]]);
+                        } else {
+                            $results->where($filter['property'], $filter['condition'], $filter['value']);
+                        }
                     }
                 }
             }

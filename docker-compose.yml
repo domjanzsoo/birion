@@ -1,5 +1,5 @@
 version: "2"
-services:   
+services:
     laravel:
         build:
             context: ./vendor/laravel/sail/runtimes/8.3
