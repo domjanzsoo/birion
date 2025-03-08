@@ -173,13 +173,13 @@ class Add extends Component
 
             if (count($validatedData['state']['pictures']) > 0) {
                 foreach ($validatedData['state']['pictures'] as $index => $picture) {
-                    $profilePictureFileName = $property->id . '-property-' . md5($picture->getClientOriginalName()) . '.' . $picture->extension();
+                    $profilePictureFileName = $property->id . '-property-' . md5($picture->getClientOriginalName());
 
                     $picture->storeAs(explode('/', config('filesystems.property_image_path'))[1], $profilePictureFileName , $disk = config('filesystems.default'));
 
                     $image = new Image([
                         'name' => $profilePictureFileName,
-                        'file_route' => config('filesystems.property_image_path') . '/' . $profilePictureFileName . '.' . $picture->extension()
+                        'file_route' => config('filesystems.property_image_path') . '/' . $profilePictureFileName
                     ]);
 
                     if ((!isset($this->checkedImageIndex) && $index === 0) || $this->checkedImageIndex === $index) {

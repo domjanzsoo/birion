@@ -61,7 +61,7 @@ class All extends Component
                     $buttonDisable = true;
                 }
             }
-    
+
             $this->deleteButtonAccess = $buttonDisable;
             $this->rolesToDelete = $items;
         }

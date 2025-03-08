@@ -78,7 +78,7 @@ input[type="radio"] {
     class="w-full"
     x-on:drop="$event => {
         $event.preventDefault();
-
+        console.log('mi a szar')
         const dataTransfer = new DataTransfer();
 
         if (multiple) {

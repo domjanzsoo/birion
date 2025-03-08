@@ -36,11 +36,39 @@ class BaseRepository implements BaseRepositoryInterface
                 $fieldAssociation = explode('.', $field);
 
                 if (count($fieldAssociation) > 1) {
-                    $results->orWhereHas($fieldAssociation[0], function (Builder $q) use($search, $fieldAssociation) {
+                    $results->orWhereHas($fieldAssociation[0], function (Builder $q) use ($search, $fieldAssociation) {
                         $q->where($fieldAssociation[1], 'LIKE', '%'. $search['value'] . '%');
                     });
                 } else {
                     $results->orWhere($fieldAssociation[0], 'LIKE', '%' . $search['value'] . '%');
+                }
+            }
+        }
+
+        if (!empty($filters)) {
+            foreach ($filters as $filter) {
+                $fieldAssociation = explode('.', $filter['property']);
+
+                if (!empty($filter['value'])) {
+                    if (count($fieldAssociation) > 1) {
+                        $results->orWhereHas($fieldAssociation[0], function (Builder $q) use($filter, $fieldAssociation) {
+                            if ($filter['condition'] === 'between') {
+                                $range = explode('-', $filter['value']);
+
+                                $q->whereBetween($fieldAssociation[1], [$range[0], $range[1]]);
+                            } else {
+                                $q->where($fieldAssociation[1], $filter['condition'], $filter['value']);
+                            }
+                        });
+                    } else {
+                        if ($filter['condition'] === 'between') {
+                            $range = explode('-', $filter['value']);
+
+                            $results->whereBetween($filter['property'], [$range[0], $range[1]]);
+                        } else {
+                            $results->where($filter['property'], $filter['condition'], $filter['value']);
+                        }
+                    }
                 }
             }
         }

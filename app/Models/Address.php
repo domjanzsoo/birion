@@ -12,7 +12,7 @@ class Address extends Model
     protected $table = 'addresses';
 
     protected $fillable = [
-        'street', 'municipality_sub_division', 'municipality_secondary_sub_division', 'municipality', 'country', 'post_code', 'lat', 'lon',
+        'street', 'municipality_sub_division', 'municipality_secondary_sub_division', 'municipality', 'country', 'post_code', 'lat', 'lon', 'house_number', 'house_name'
     ];
 
     public function properties()
